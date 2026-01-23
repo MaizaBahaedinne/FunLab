@@ -97,12 +97,17 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function($routes) 
     $routes->get('availability/occupied', 'AvailabilityApi::occupied');
     $routes->options('availability/(:any)', 'AvailabilityApi::options');
     
-    // API Réservations
+    // API Réservations (Phase 2 - BookingService)
     $routes->post('booking/create', 'BookingApi::create');
     $routes->post('booking/cancel/(:num)', 'BookingApi::cancel/$1');
+    $routes->post('booking/confirm/(:num)', 'BookingApi::confirm/$1');
+    $routes->post('booking/complete/(:num)', 'BookingApi::complete/$1');
     $routes->get('booking/(:num)', 'BookingApi::get/$1');
+    $routes->get('booking/customer', 'BookingApi::customer');
+    $routes->options('booking/(:any)', 'BookingApi::options');
     
     // API Scanner
     $routes->post('scan/validate', 'ScanApi::validate');
     $routes->post('scan/checkin', 'ScanApi::checkIn');
+    $routes->options('scan/(:any)', 'ScanApi::options');
 });
