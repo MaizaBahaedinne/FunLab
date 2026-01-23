@@ -7,6 +7,32 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 // ============================================================
+// ROUTES AUTHENTIFICATION
+// ============================================================
+$routes->group('auth', function($routes) {
+    // Login/Register natif
+    $routes->get('login', 'AuthController::login');
+    $routes->post('login', 'AuthController::attemptLogin');
+    $routes->get('register', 'AuthController::register');
+    $routes->post('register', 'AuthController::attemptRegister');
+    $routes->get('logout', 'AuthController::logout');
+    
+    // Mot de passe oublié
+    $routes->get('forgot-password', 'AuthController::forgotPassword');
+    $routes->post('forgot-password', 'AuthController::sendResetLink');
+    $routes->get('reset-password/(:any)', 'AuthController::resetPassword/$1');
+    $routes->post('reset-password', 'AuthController::updatePassword');
+    
+    // OAuth Google
+    $routes->get('google', 'SocialAuthController::redirectToGoogle');
+    $routes->get('google/callback', 'SocialAuthController::handleGoogleCallback');
+    
+    // OAuth Facebook
+    $routes->get('facebook', 'SocialAuthController::redirectToFacebook');
+    $routes->get('facebook/callback', 'SocialAuthController::handleFacebookCallback');
+});
+
+// ============================================================
 // ROUTES FRONT-END
 // ============================================================
 $routes->get('/', 'Front\HomeController::index');
@@ -22,12 +48,15 @@ $routes->group('booking', ['namespace' => 'App\Controllers\Front'], function($ro
 // Calendrier
 $routes->get('calendar', 'Front\CalendarController::index');
 
-// Compte client
-$routes->group('account', ['namespace' => 'App\Controllers\Front'], function($routes) {
+// Compte client (PROTÉGÉ - Nécessite authentification)
+$routes->group('account', ['filter' => 'auth'], function($routes) {
     $routes->get('/', 'AccountController::index');
-    $routes->get('bookings', 'AccountController::bookings');
     $routes->get('profile', 'AccountController::profile');
-    $routes->post('update', 'AccountController::update');
+    $routes->post('profile', 'AccountController::updateProfile');
+    $routes->get('bookings', 'AccountController::bookings');
+    $routes->get('bookings/(:num)', 'AccountController::bookingDetails/$1');
+    $routes->get('password', 'AccountController::changePassword');
+    $routes->post('password', 'AccountController::updatePassword');
 });
 
 // ============================================================
