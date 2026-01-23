@@ -8,7 +8,7 @@ class BookingController extends BaseController
 {
     public function index()
     {
-        return view('front/booking/index');
+        return view('front/booking/create');
     }
 
     public function create()
