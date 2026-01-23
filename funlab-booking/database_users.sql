@@ -35,6 +35,6 @@ CREATE TABLE IF NOT EXISTS `password_resets` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Créer un admin par défaut
-INSERT INTO `users` (`username`, `email`, `password`, `first_name`, `last_name`, `role`, `email_verified`, `is_active`)
-VALUES ('admin', 'admin@funlab.tn', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Admin', 'FunLab', 'admin', 1, 1);
 -- Mot de passe : password (à changer en production !)
+INSERT INTO `users` (`username`, `email`, `password`, `first_name`, `last_name`, `role`, `email_verified`, `is_active`) 
+VALUES ('admin', 'admin@funlab.tn', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Admin', 'FunLab', 'admin', 1, 1);

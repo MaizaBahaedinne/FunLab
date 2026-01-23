@@ -156,7 +156,8 @@ class AccountController extends BaseController
         $user = $this->userModel->find($userId);
 
         // Si c'est un compte OAuth sans mot de passe
-        if ($user['auth_provider'] !== 'native') {
+        $authProvider = $user['auth_provider'] ?? 'native';
+        if ($authProvider !== 'native') {
             return redirect()->back()->with('error', 'Les comptes Google/Facebook ne peuvent pas changer de mot de passe');
         }
 
@@ -171,7 +172,8 @@ class AccountController extends BaseController
         }
 
         // Vérifier le mot de passe actuel
-        if (!password_verify($this->request->getPost('current_password'), $user['password'])) {
+        $currentPassword = $user['password'] ?? '';
+        if (empty($currentPassword) || !password_verify($this->request->getPost('current_password'), $currentPassword)) {
             return redirect()->back()->with('error', 'Le mot de passe actuel est incorrect');
         }
 

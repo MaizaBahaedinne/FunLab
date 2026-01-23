@@ -139,4 +139,16 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function($routes) 
     $routes->post('scan/validate', 'ScanApi::validate');
     $routes->post('scan/checkin', 'ScanApi::checkIn');
     $routes->options('scan/(:any)', 'ScanApi::options');
+    
+    // API Paiements (Phase 7)
+    $routes->post('payment/calculate', 'PaymentApi::calculate');
+    $routes->post('payment/validate-promo', 'PaymentApi::validatePromo');
+    $routes->post('payment/stripe/create', 'PaymentApi::createStripePayment');
+    $routes->post('payment/stripe/webhook', 'PaymentApi::stripeWebhook');
+    $routes->post('payment/onsite', 'PaymentApi::createOnsitePayment');
+    $routes->post('payment/confirm/(:num)', 'PaymentApi::confirmPayment/$1');
+    $routes->post('payment/refund/(:num)', 'PaymentApi::refund/$1');
+    $routes->get('payment/history', 'PaymentApi::history');
+    $routes->post('payment/invoice/generate', 'PaymentApi::generateInvoice');
+    $routes->options('payment/(:any)', 'PaymentApi::options');
 });
