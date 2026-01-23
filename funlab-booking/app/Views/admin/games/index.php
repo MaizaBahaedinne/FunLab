@@ -128,6 +128,7 @@
                                         <?php endif; ?>
 
                                         <div class="row mb-3">
+                                            <?php if (isset($game['duration']) && $game['duration'] > 0): ?>
                                             <div class="col-6">
                                                 <div class="d-flex justify-content-between">
                                                     <span class="text-muted small">
@@ -136,25 +137,31 @@
                                                     <strong><?= $game['duration'] ?> min</strong>
                                                 </div>
                                             </div>
+                                            <?php endif; ?>
+                                            <?php if (isset($game['min_participants']) && isset($game['max_participants'])): ?>
                                             <div class="col-6">
                                                 <div class="d-flex justify-content-between">
                                                     <span class="text-muted small">
-                                                        <i class="bi bi-people"></i> Min
+                                                        <i class="bi bi-people"></i> Participants
                                                     </span>
                                                     <strong><?= $game['min_participants'] ?>-<?= $game['max_participants'] ?></strong>
                                                 </div>
                                             </div>
+                                            <?php endif; ?>
                                         </div>
 
+                                        <?php if (isset($game['price']) || isset($game['price_per_person'])): ?>
                                         <div class="row mb-3">
+                                            <?php if (isset($game['price']) && $game['price'] > 0): ?>
                                             <div class="col-6">
                                                 <div class="d-flex justify-content-between">
                                                     <span class="text-muted small">
                                                         <i class="bi bi-tag"></i> Prix
                                                     </span>
-                                                    <strong><?= number_format($game['price'] ?? 0, 2) ?> TND</strong>
+                                                    <strong><?= number_format($game['price'], 2) ?> TND</strong>
                                                 </div>
                                             </div>
+                                            <?php endif; ?>
                                             <?php if (isset($game['price_per_person']) && $game['price_per_person'] > 0): ?>
                                             <div class="col-6">
                                                 <div class="d-flex justify-content-between">
@@ -166,6 +173,7 @@
                                             </div>
                                             <?php endif; ?>
                                         </div>
+                                        <?php endif; ?>
 
                                         <?php if (isset($game['deposit_required']) && $game['deposit_required']): ?>
                                             <div class="alert alert-info py-2 px-3 mb-3 small">
