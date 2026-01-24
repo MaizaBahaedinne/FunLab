@@ -101,9 +101,25 @@
                                                     </div>
                                                     <div class="modal-body">
                                                         <div class="mb-3">
-                                                            <label class="form-label">Nom</label>
-                                                            <input type="text" class="form-control" name="name" 
-                                                                value="<?= esc($userName) ?>" required>
+                                                            <label class="form-label">Nom d'utilisateur</label>
+                                                            <input type="text" class="form-control" name="username" 
+                                                                value="<?= esc($user['username']) ?>" required>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">Prénom</label>
+                                                                    <input type="text" class="form-control" name="first_name" 
+                                                                        value="<?= esc($user['first_name'] ?? '') ?>">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">Nom</label>
+                                                                    <input type="text" class="form-control" name="last_name" 
+                                                                        value="<?= esc($user['last_name'] ?? '') ?>">
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                         <div class="mb-3">
                                                             <label class="form-label">Email</label>
@@ -113,7 +129,7 @@
                                                         <div class="mb-3">
                                                             <label class="form-label">Rôle</label>
                                                             <select class="form-select" name="role" required>
-                                                                <option value="user" <?= $user['role'] === 'user' ? 'selected' : '' ?>>Utilisateur</option>
+                                                                <option value="customer" <?= $user['role'] === 'customer' ? 'selected' : '' ?>>Client</option>
                                                                 <option value="staff" <?= $user['role'] === 'staff' ? 'selected' : '' ?>>Staff</option>
                                                                 <option value="admin" <?= $user['role'] === 'admin' ? 'selected' : '' ?>>Admin</option>
                                                             </select>
@@ -152,8 +168,22 @@
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label class="form-label">Nom</label>
-                            <input type="text" class="form-control" name="name" required>
+                            <label class="form-label">Nom d'utilisateur</label>
+                            <input type="text" class="form-control" name="username" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Prénom</label>
+                                    <input type="text" class="form-control" name="first_name">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Nom</label>
+                                    <input type="text" class="form-control" name="last_name">
+                                </div>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Email</label>
@@ -166,9 +196,12 @@
                         <div class="mb-3">
                             <label class="form-label">Rôle</label>
                             <select class="form-select" name="role" required>
-                                <option value="user">Utilisateur</option>
+                                <option value="customer">Client</option>
                                 <option value="staff">Staff</option>
                                 <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                    </div>
                             </select>
                         </div>
                     </div>

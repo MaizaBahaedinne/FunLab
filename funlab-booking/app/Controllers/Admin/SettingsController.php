@@ -269,10 +269,10 @@ class SettingsController extends BaseController
         $validation = \Config\Services::validation();
         
         $validation->setRules([
-            'name' => 'required|min_length[3]',
+            'username' => 'required|min_length[3]|is_unique[users.username]',
             'email' => 'required|valid_email|is_unique[users.email]',
             'password' => 'required|min_length[8]',
-            'role' => 'required|in_list[admin,staff,user]'
+            'role' => 'required|in_list[admin,staff,customer]'
         ]);
 
         if (!$validation->withRequest($this->request)->run()) {
@@ -282,10 +282,12 @@ class SettingsController extends BaseController
         }
 
         $this->userModel->insert([
-            'name' => $this->request->getPost('name'),
+            'username' => $this->request->getPost('username'),
             'email' => $this->request->getPost('email'),
             'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
-            'role' => $this->request->getPost('role')
+            'role' => $this->request->getPost('role'),
+            'first_name' => $this->request->getPost('first_name'),
+            'last_name' => $this->request->getPost('last_name')
         ]);
 
         return redirect()->to('/admin/settings/users')
@@ -298,9 +300,11 @@ class SettingsController extends BaseController
     public function updateUser($id)
     {
         $data = [
-            'name' => $this->request->getPost('name'),
+            'username' => $this->request->getPost('username'),
             'email' => $this->request->getPost('email'),
-            'role' => $this->request->getPost('role')
+            'role' => $this->request->getPost('role'),
+            'first_name' => $this->request->getPost('first_name'),
+            'last_name' => $this->request->getPost('last_name')
         ];
 
         // Mettre à jour le mot de passe si fourni
