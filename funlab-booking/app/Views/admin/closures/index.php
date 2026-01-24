@@ -140,16 +140,17 @@
                     <?php else: ?>
                         <?php foreach ($closures as $closure): ?>
                             <?php
-                            $startDate = strtotime(($closure['start_date'] ?? date('Y-m-d')) . ' ' . ($closure['start_time'] ?? '00:00:00'));
-                            $endDate = strtotime(($closure['end_date'] ?? date('Y-m-d')) . ' ' . ($closure['end_time'] ?? '23:59:59'));
+                            $closureDate = strtotime($closure['closure_date'] ?? date('Y-m-d'));
+                            $startTime = strtotime(($closure['start_time'] ?? '00:00:00'));
+                            $endTime = strtotime(($closure['end_time'] ?? '23:59:59'));
                             $now = time();
-                            $isActive = $now >= $startDate && $now <= $endDate;
-                            $isPast = $now > $endDate;
-                            $isUpcoming = $now < $startDate;
+                            $isToday = date('Y-m-d', $closureDate) === date('Y-m-d');
+                            $isPast = $closureDate < strtotime('today');
+                            $isUpcoming = $closureDate > strtotime('today');
                             ?>
                             <div class="col-md-6 mb-4 closure-item" 
-                                 data-type="<?= $closure['type'] ?? 'full_day' ?>"
-                                 data-status="<?= $isPast ? 'past' : ($isActive ? 'active' : 'upcoming') ?>">
+                                 data-type="<?= !empty($closure['start_time']) && !empty($closure['end_time']) ? 'partial' : 'full_day' ?>"
+                                 data-status="<?= $isPast ? 'past' : ($isToday ? 'active' : 'upcoming') ?>">
                                 <div class="card closure-card">
                                     <div class="card-body">
                                         <div class="d-flex justify-content-between align-items-start mb-3">
@@ -158,11 +159,14 @@
                                                 <?= esc($closure['reason'] ?? 'Fermeture') ?>
                                             </h5>
                                             <div>
-                                                <span class="badge badge-type bg-<?= ($closure['type'] ?? 'full_day') === 'full_day' ? 'danger' : 'warning' ?>">
-                                                    <?= ($closure['type'] ?? 'full_day') === 'full_day' ? 'Journée complète' : 'Partielle' ?>
+                                                <span class="badge badge-type bg-<?= (!empty($closure['start_time']) && !empty($closure['end_time'])) ? 'warning' : 'danger' ?>">
+                                                    <?= (!empty($closure['start_time']) && !empty($closure['end_time'])) ? 'Partielle' : 'Journée complète' ?>
                                                 </span>
-                                                <?php if ($isActive): ?>
-                                                    <span class="badge bg-success ms-1">En cours</span>
+                                                <?php if ($closure['all_rooms'] ?? 0): ?>
+                                                    <span class="badge bg-dark ms-1">Toutes les salles</span>
+                                                <?php endif; ?>
+                                                <?php if ($isToday): ?>
+                                                    <span class="badge bg-success ms-1">Aujourd'hui</span>
                                                 <?php elseif ($isPast): ?>
                                                     <span class="badge bg-secondary ms-1">Terminée</span>
                                                 <?php else: ?>
@@ -171,18 +175,14 @@
                                             </div>
                                         </div>
 
-                                        <div class="mb-3">
-                                            <div class="d-flex align-items-center mb-2">
-                                                <i class="bi bi-calendar3 text-muted me-2"></i>
-                                                <strong>Du <?= isset($closure['start_date']) ? date('d/m/Y', strtotime($closure['start_date'])) : 'N/A' ?></strong>
-                                                <?php if (($closure['type'] ?? '') === 'partial' && !empty($closure['start_time'])): ?>
-                                                    à <?= date('H:i', strtotime($closure['start_time'])) ?>
-                                                <?php endif; ?>
+                                        <div class="mb-3<?= isset($closure['closure_date']) ? date('d/m/Y', strtotime($closure['closure_date'])) : 'N/A' ?></strong>
                                             </div>
-                                            <div class="d-flex align-items-center">
-                                                <i class="bi bi-calendar-check text-muted me-2"></i>
-                                                <strong>Au <?= isset($closure['end_date']) ? date('d/m/Y', strtotime($closure['end_date'])) : 'N/A' ?></strong>
-                                                <?php if (($closure['type'] ?? '') === 'partial' && !empty($closure['end_time'])): ?>
+                                            <?php if (!empty($closure['start_time']) && !empty($closure['end_time'])): ?>
+                                                <div class="d-flex align-items-center">
+                                                    <i class="bi bi-clock text-muted me-2"></i>
+                                                    <strong>De <?= date('H:i', strtotime($closure['start_time'])) ?> à <?= date('H:i', strtotime($closure['end_time'])) ?></strong>
+                                                </div>
+                                            <?php endif; ??php if (($closure['type'] ?? '') === 'partial' && !empty($closure['end_time'])): ?>
                                                     à <?= date('H:i', strtotime($closure['end_time'])) ?>
                                                 <?php endif; ?>
                                             </div>

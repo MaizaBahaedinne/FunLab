@@ -14,13 +14,11 @@ class ClosureModel extends Model
     protected $protectFields    = true;
     protected $allowedFields    = [
         'room_id',
-        'start_date',
-        'end_date',
+        'closure_date',
         'start_time',
         'end_time',
-        'type',
+        'all_rooms',
         'reason',
-        'description',
         'is_recurring',
         'recurring_pattern'
     ];
@@ -34,8 +32,7 @@ class ClosureModel extends Model
 
     // Validation
     protected $validationRules      = [
-        'start_date' => 'required|valid_date',
-        'end_date'   => 'required|valid_date',
+        'closure_date' => 'required|valid_date',
     ];
     protected $validationMessages   = [];
     protected $skipValidation       = false;

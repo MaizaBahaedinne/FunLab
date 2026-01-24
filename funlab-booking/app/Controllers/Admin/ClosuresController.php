@@ -20,7 +20,7 @@ class ClosuresController extends BaseController
         $builder = $this->closureModel->builder();
         $builder->select('closures.*, rooms.name as room_name')
                 ->join('rooms', 'rooms.id = closures.room_id', 'left')
-                ->orderBy('closures.start_date', 'DESC');
+                ->orderBy('closures.closure_date', 'DESC');
         
         $data['closures'] = $builder->get()->getResultArray();
         return view('admin/closures/index', $data);
@@ -34,9 +34,7 @@ class ClosuresController extends BaseController
     public function store()
     {
         $rules = [
-            'start_date' => 'required|valid_date',
-            'end_date' => 'required|valid_date',
-            'type' => 'required|in_list[full_day,partial]',
+            'closure_date' => 'required|valid_date',
         ];
 
         if (!$this->validate($rules)) {
@@ -45,13 +43,11 @@ class ClosuresController extends BaseController
 
         $data = [
             'room_id' => $this->request->getPost('room_id') ?: null,
-            'start_date' => $this->request->getPost('start_date'),
-            'end_date' => $this->request->getPost('end_date'),
+            'closure_date' => $this->request->getPost('closure_date'),
             'start_time' => $this->request->getPost('start_time'),
             'end_time' => $this->request->getPost('end_time'),
-            'type' => $this->request->getPost('type'),
+            'all_rooms' => $this->request->getPost('all_rooms') ? 1 : 0,
             'reason' => $this->request->getPost('reason'),
-            'description' => $this->request->getPost('description'),
         ];
 
         if ($this->closureModel->insert($data)) {
@@ -75,9 +71,7 @@ class ClosuresController extends BaseController
     public function update($id)
     {
         $rules = [
-            'start_date' => 'required|valid_date',
-            'end_date' => 'required|valid_date',
-            'type' => 'required|in_list[full_day,partial]',
+            'closure_date' => 'required|valid_date',
         ];
 
         if (!$this->validate($rules)) {
@@ -86,13 +80,11 @@ class ClosuresController extends BaseController
 
         $data = [
             'room_id' => $this->request->getPost('room_id') ?: null,
-            'start_date' => $this->request->getPost('start_date'),
-            'end_date' => $this->request->getPost('end_date'),
+            'closure_date' => $this->request->getPost('closure_date'),
             'start_time' => $this->request->getPost('start_time'),
             'end_time' => $this->request->getPost('end_time'),
-            'type' => $this->request->getPost('type'),
+            'all_rooms' => $this->request->getPost('all_rooms') ? 1 : 0,
             'reason' => $this->request->getPost('reason'),
-            'description' => $this->request->getPost('description'),
         ];
 
         if ($this->closureModel->update($id, $data)) {
