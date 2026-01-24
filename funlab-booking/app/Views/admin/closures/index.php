@@ -175,17 +175,17 @@
                                             </div>
                                         </div>
 
-                                        <div class="mb-3<?= isset($closure['closure_date']) ? date('d/m/Y', strtotime($closure['closure_date'])) : 'N/A' ?></strong>
+                                        <div class="mb-3">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <i class="bi bi-calendar3 text-muted me-2"></i>
+                                                <strong><?= isset($closure['closure_date']) ? date('d/m/Y', strtotime($closure['closure_date'])) : 'N/A' ?></strong>
                                             </div>
                                             <?php if (!empty($closure['start_time']) && !empty($closure['end_time'])): ?>
                                                 <div class="d-flex align-items-center">
                                                     <i class="bi bi-clock text-muted me-2"></i>
                                                     <strong>De <?= date('H:i', strtotime($closure['start_time'])) ?> à <?= date('H:i', strtotime($closure['end_time'])) ?></strong>
                                                 </div>
-                                            <?php endif; ??php if (($closure['type'] ?? '') === 'partial' && !empty($closure['end_time'])): ?>
-                                                    à <?= date('H:i', strtotime($closure['end_time'])) ?>
-                                                <?php endif; ?>
-                                            </div>
+                                            <?php endif; ?>
                                         </div>
 
                                         <div class="mb-3">
@@ -195,9 +195,9 @@
                                             </span>
                                         </div>
 
-                                        <?php if (!empty($closure['description'])): ?>
+                                        <?php if (!empty($closure['reason'])): ?>
                                             <p class="card-text text-muted small">
-                                                <?= esc($closure['description']) ?>
+                                                <?= esc($closure['reason']) ?>
                                             </p>
                                         <?php endif; ?>
 
