@@ -427,18 +427,15 @@ class BookingService
     public function getBookingDetails(int $bookingId): ?array
     {
         // Récupérer les détails avec JOINs pour avoir toutes les données nécessaires
+        // Note: bookings a déjà customer_name, customer_email, customer_phone (pas de user_id)
         $builder = $this->bookingModel->builder();
         $booking = $builder
             ->select('bookings.*, 
                      games.name as game_name, 
                      games.duration_minutes,
-                     rooms.name as room_name,
-                     CONCAT(users.first_name, " ", users.last_name) as customer_name,
-                     users.email as customer_email,
-                     users.phone as customer_phone')
+                     rooms.name as room_name')
             ->join('games', 'games.id = bookings.game_id', 'left')
             ->join('rooms', 'rooms.id = bookings.room_id', 'left')
-            ->join('users', 'users.id = bookings.user_id', 'left')
             ->where('bookings.id', $bookingId)
             ->get()
             ->getRowArray();
