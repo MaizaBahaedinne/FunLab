@@ -91,6 +91,31 @@ class SettingsController extends BaseController
     }
 
     /**
+     * Configuration du Footer
+     */
+    public function footer()
+    {
+        if ($this->request->getMethod() === 'post') {
+            $data = $this->request->getPost();
+            unset($data['csrf_test_name']); // Retirer le token CSRF
+
+            foreach ($data as $key => $value) {
+                $this->settingModel->setSetting('footer', $key, $value);
+            }
+
+            return redirect()->to('/admin/settings/footer')
+                           ->with('success', 'Configuration du footer mise à jour avec succès');
+        }
+
+        $data = [
+            'title' => 'Configuration Footer',
+            'settings' => $this->settingModel->getByCategory('footer')
+        ];
+
+        return view('admin/settings/footer', $data);
+    }
+
+    /**
      * Configuration OAuth (Google, Facebook)
      */
     public function oauth()

@@ -87,6 +87,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-footer' ? 'text-white' : '' ?>" 
+                               href="<?= base_url('admin/settings/footer') ?>">
+                                <i class="bi bi-layout-text-sidebar-reverse"></i> Footer
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-oauth' ? 'text-white' : '' ?>" 
                                href="<?= base_url('admin/settings/oauth') ?>">
                                 <i class="bi bi-shield-lock"></i> Authentification OAuth
