@@ -43,15 +43,23 @@ class BookingsController extends BaseController
             return redirect()->to('/admin/bookings')->with('error', 'Réservation introuvable');
         }
 
-        // Récupérer les participants
-        $participants = $this->participantModel->where('booking_id', $id)->findAll();
+        // Récupérer les équipes avec leurs participants
+        $teamModel = new \App\Models\TeamModel();
+        $teams = $teamModel->getTeamsWithParticipants($id);
+
+        // Récupérer les participants non assignés (sans équipe)
+        $unassignedParticipants = $this->participantModel
+            ->where('booking_id', $id)
+            ->where('team_id', null)
+            ->findAll();
 
         // Récupérer le paiement associé
         $payment = $this->paymentModel->where('booking_id', $id)->first();
 
         $data = [
             'booking' => $booking,
-            'participants' => $participants,
+            'teams' => $teams,
+            'unassignedParticipants' => $unassignedParticipants,
             'payment' => $payment
         ];
 

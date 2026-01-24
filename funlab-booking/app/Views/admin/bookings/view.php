@@ -200,10 +200,20 @@
                             </div>
                         </div>
 
-                        <!-- Participants -->
+                        <!-- Participants & Équipes -->
                         <div class="detail-card">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5><i class="bi bi-people-fill"></i> Participants (<?= count($participants) ?>)</h5>
+                                <h5>
+                                    <i class="bi bi-people-fill"></i> 
+                                    Participants 
+                                    <?php 
+                                    $totalParticipants = count($unassignedParticipants);
+                                    foreach ($teams as $team) {
+                                        $totalParticipants += count($team['participants']);
+                                    }
+                                    ?>
+                                    (<?= $totalParticipants ?>)
+                                </h5>
                                 <div>
                                     <a href="<?= base_url('admin/teams/manage/' . $booking['id']) ?>" class="btn btn-sm btn-info me-2">
                                         <i class="bi bi-diagram-3"></i> Gérer Équipes
@@ -214,25 +224,72 @@
                                 </div>
                             </div>
 
-                            <?php if (empty($participants)): ?>
+                            <?php if (empty($teams) && empty($unassignedParticipants)): ?>
                                 <p class="text-muted">Aucun participant enregistré</p>
                             <?php else: ?>
-                                <?php foreach ($participants as $participant): ?>
-                                <div class="participant-item">
-                                    <div>
-                                        <strong><?= esc($participant['first_name'] . ' ' . $participant['last_name']) ?></strong><br>
-                                        <small class="text-muted">
-                                            <?= esc($participant['email'] ?? 'Pas d\'email') ?> | 
-                                            <?= esc($participant['phone'] ?? 'Pas de tél') ?>
-                                        </small>
+                                <!-- Afficher les équipes -->
+                                <?php if (!empty($teams)): ?>
+                                    <?php foreach ($teams as $team): ?>
+                                        <div class="mb-3">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div class="me-2" style="width: 20px; height: 20px; background-color: <?= esc($team['color']) ?>; border-radius: 50%;"></div>
+                                                <h6 class="mb-0">
+                                                    <i class="bi bi-diagram-3"></i> 
+                                                    <?= esc($team['name']) ?>
+                                                    <span class="badge bg-secondary ms-2"><?= count($team['participants']) ?> membres</span>
+                                                </h6>
+                                            </div>
+                                            
+                                            <?php if (!empty($team['participants'])): ?>
+                                                <div style="margin-left: 32px;">
+                                                    <?php foreach ($team['participants'] as $participant): ?>
+                                                    <div class="participant-item" style="border-left: 3px solid <?= esc($team['color']) ?>;">
+                                                        <div>
+                                                            <strong><?= esc(($participant['first_name'] ?? '') . ' ' . ($participant['last_name'] ?? '')) ?></strong><br>
+                                                            <small class="text-muted">
+                                                                <?= esc($participant['email'] ?? 'Pas d\'email') ?> 
+                                                                <?php if (!empty($participant['phone'])): ?>
+                                                                    | <?= esc($participant['phone']) ?>
+                                                                <?php endif; ?>
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                    <?php endforeach; ?>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+
+                                <!-- Participants non assignés -->
+                                <?php if (!empty($unassignedParticipants)): ?>
+                                    <div class="mb-3">
+                                        <h6 class="text-muted">
+                                            <i class="bi bi-person"></i> Sans équipe
+                                            <span class="badge bg-secondary ms-2"><?= count($unassignedParticipants) ?></span>
+                                        </h6>
+                                        <div style="margin-left: 32px;">
+                                            <?php foreach ($unassignedParticipants as $participant): ?>
+                                            <div class="participant-item">
+                                                <div>
+                                                    <strong><?= esc(($participant['first_name'] ?? '') . ' ' . ($participant['last_name'] ?? '')) ?></strong><br>
+                                                    <small class="text-muted">
+                                                        <?= esc($participant['email'] ?? 'Pas d\'email') ?> 
+                                                        <?php if (!empty($participant['phone'])): ?>
+                                                            | <?= esc($participant['phone']) ?>
+                                                        <?php endif; ?>
+                                                    </small>
+                                                </div>
+                                                <a href="<?= base_url('admin/bookings/delete-participant/' . $participant['id']) ?>" 
+                                                   class="btn btn-sm btn-outline-danger"
+                                                   onclick="return confirm('Supprimer ce participant ?')">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            </div>
+                                            <?php endforeach; ?>
+                                        </div>
                                     </div>
-                                    <a href="<?= base_url('admin/bookings/delete-participant/' . $participant['id']) ?>" 
-                                       class="btn btn-sm btn-outline-danger"
-                                       onclick="return confirm('Supprimer ce participant ?')">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </div>
-                                <?php endforeach; ?>
+                                <?php endif; ?>
                             <?php endif; ?>
                         </div>
                     </div>
