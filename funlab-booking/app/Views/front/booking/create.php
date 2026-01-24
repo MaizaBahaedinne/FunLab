@@ -52,6 +52,18 @@
         .slot-btn.selected {
             background-color: #28a745;
             border-color: #28a745;
+            color: white;
+        }
+        .slot-btn:disabled {
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+            color: #6c757d;
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .slot-btn:disabled:hover {
+            transform: none;
+            box-shadow: none;
         }
         .booking-summary {
             position: sticky;
@@ -509,13 +521,14 @@
             container.innerHTML = '<div class="text-center"><div class="spinner-border text-primary"></div></div>';
 
             try {
-                const response = await fetch(`${API_BASE_URL}/availability/slots?game_id=${gameId}&date=${date}`);
+                // Utiliser le nouvel endpoint qui retourne TOUS les créneaux avec leur statut
+                const response = await fetch(`${API_BASE_URL}/availability/all-slots?game_id=${gameId}&date=${date}`);
                 const result = await response.json();
 
                 if (result.status === 'success' && Object.keys(result.data).length > 0) {
                     displaySlots(result.data);
                 } else {
-                    container.innerHTML = '<div class="alert alert-warning">Aucun créneau disponible pour cette date</div>';
+                    container.innerHTML = '<div class="alert alert-warning">Aucun créneau trouvé pour cette date</div>';
                 }
             } catch (error) {
                 console.error('Erreur:', error);
@@ -536,10 +549,16 @@
                     let roomSection = `<h5 class="mt-4 mb-3">${roomName}</h5><div class="d-flex flex-wrap">`;
                     
                     roomSlots.forEach(slot => {
+                        const isAvailable = slot.available;
+                        const disabledAttr = isAvailable ? '' : 'disabled';
+                        const btnClass = isAvailable ? 'btn-outline-primary' : 'btn-outline-secondary';
+                        
                         roomSection += `
-                            <button class="btn btn-outline-primary slot-btn" 
-                                    onclick="selectSlot(${roomId}, '${roomName}', '${slot.start}', '${slot.end}', '${slot.start_formatted}', '${slot.end_formatted}')">
+                            <button class="btn ${btnClass} slot-btn" 
+                                    ${disabledAttr}
+                                    ${isAvailable ? `onclick="selectSlot(${roomId}, '${roomName}', '${slot.start}', '${slot.end}', '${slot.start_formatted}', '${slot.end_formatted}')"` : ''}>
                                 ${slot.start_formatted} - ${slot.end_formatted}
+                                ${!isAvailable ? '<small class="d-block text-muted">Indisponible</small>' : ''}
                             </button>
                         `;
                     });

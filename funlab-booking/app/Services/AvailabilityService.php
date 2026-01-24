@@ -116,6 +116,76 @@ class AvailabilityService
     }
 
     /**
+     * Récupère TOUS les créneaux (disponibles ET indisponibles) pour un jeu à une date donnée
+     * 
+     * @param int $gameId ID du jeu
+     * @param string $date Date au format YYYY-MM-DD
+     * @return array Tableau des créneaux avec leur statut par salle
+     * 
+     * Format de retour :
+     * [
+     *   'room_1' => [
+     *     ['start' => '10:00', 'end' => '11:00', 'available' => true, 'room_id' => 1, 'room_name' => 'Salle VR'],
+     *     ['start' => '11:30', 'end' => '12:30', 'available' => false, 'room_id' => 1, 'room_name' => 'Salle VR']
+     *   ],
+     *   'room_2' => [...]
+     * ]
+     */
+    public function getAllSlotsWithStatus(int $gameId, string $date): array
+    {
+        // Validation de la date
+        if (!$this->isValidDate($date)) {
+            return [];
+        }
+
+        // Ne pas autoriser les réservations dans le passé
+        if (strtotime($date) < strtotime('today')) {
+            return [];
+        }
+
+        // Récupérer les informations du jeu
+        $game = $this->gameModel->find($gameId);
+        if (!$game) {
+            return [];
+        }
+
+        $durationMinutes = (int) $game['duration_minutes'];
+
+        // Récupérer les salles compatibles avec ce jeu
+        $rooms = $this->getRoomsForGame($gameId);
+        if (empty($rooms)) {
+            return [];
+        }
+
+        $allSlots = [];
+
+        foreach ($rooms as $room) {
+            $roomId = (int) $room['room_id'];
+            
+            // Générer tous les créneaux possibles pour cette salle
+            $slots = $this->generatePossibleSlots($durationMinutes, $date);
+
+            // Ajouter le statut disponible/indisponible à chaque créneau
+            $slotsWithStatus = [];
+            foreach ($slots as $slot) {
+                $isClosed = $this->isClosed($date, $roomId);
+                $isFree = !$isClosed && $this->isSlotFree($roomId, $date, $slot['start'], $slot['end']);
+                
+                $slot['room_id'] = $roomId;
+                $slot['room_name'] = $room['room_name'];
+                $slot['available'] = $isFree;
+                $slotsWithStatus[] = $slot;
+            }
+
+            if (!empty($slotsWithStatus)) {
+                $allSlots['room_' . $roomId] = $slotsWithStatus;
+            }
+        }
+
+        return $allSlots;
+    }
+
+    /**
      * Génère tous les créneaux possibles pour une durée donnée
      * 
      * @param int $durationMinutes Durée du jeu en minutes

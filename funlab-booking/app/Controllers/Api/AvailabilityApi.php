@@ -114,6 +114,99 @@ class AvailabilityApi extends ResourceController
     }
 
     /**
+     * Récupère TOUS les créneaux (disponibles ET indisponibles) pour un jeu à une date donnée
+     * 
+     * Endpoint : GET /api/availability/all-slots
+     * 
+     * Paramètres requis :
+     * - game_id (int) : ID du jeu
+     * - date (string) : Date au format YYYY-MM-DD
+     * 
+     * Exemple de requête :
+     * GET /api/availability/all-slots?game_id=1&date=2026-01-25
+     * 
+     * Exemple de réponse :
+     * {
+     *   "status": "success",
+     *   "data": {
+     *     "room_1": [
+     *       {
+     *         "start": "10:00:00",
+     *         "end": "11:00:00",
+     *         "start_formatted": "10:00",
+     *         "end_formatted": "11:00",
+     *         "room_id": 1,
+     *         "room_name": "Salle VR",
+     *         "available": true
+     *       },
+     *       {
+     *         "start": "11:30:00",
+     *         "end": "12:30:00",
+     *         "start_formatted": "11:30",
+     *         "end_formatted": "12:30",
+     *         "room_id": 1,
+     *         "room_name": "Salle VR",
+     *         "available": false
+     *       }
+     *     ]
+     *   },
+     *   "message": "Créneaux récupérés avec succès"
+     * }
+     * 
+     * @return \CodeIgniter\HTTP\ResponseInterface
+     */
+    public function allSlots()
+    {
+        try {
+            // Récupération des paramètres
+            $gameId = $this->request->getGet('game_id');
+            $date = $this->request->getGet('date');
+
+            // Validation des paramètres
+            if (!$gameId || !$date) {
+                return $this->failValidationErrors('Paramètres manquants : game_id et date sont requis');
+            }
+
+            // Validation du format de la date
+            if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+                return $this->failValidationErrors('Format de date invalide. Utilisez YYYY-MM-DD');
+            }
+
+            // Validation que game_id est un entier
+            if (!is_numeric($gameId)) {
+                return $this->failValidationErrors('game_id doit être un nombre entier');
+            }
+
+            $gameId = (int) $gameId;
+
+            // Appel au service pour récupérer TOUS les créneaux avec leur statut
+            $allSlots = $this->availabilityService->getAllSlotsWithStatus($gameId, $date);
+
+            // Vérifier si des créneaux existent
+            if (empty($allSlots)) {
+                return $this->respond([
+                    'status' => 'success',
+                    'data' => [],
+                    'message' => 'Aucun créneau trouvé pour cette date'
+                ], 200);
+            }
+
+            // Retour de tous les créneaux avec leur statut
+            return $this->respond([
+                'status' => 'success',
+                'data' => $allSlots,
+                'message' => 'Créneaux récupérés avec succès',
+                'count' => count($allSlots)
+            ], 200);
+
+        } catch (\Exception $e) {
+            log_message('error', 'Erreur API Availability/all-slots : ' . $e->getMessage());
+            
+            return $this->failServerError('Une erreur est survenue lors de la récupération des créneaux');
+        }
+    }
+
+    /**
      * Vérifie la disponibilité d'un créneau spécifique
      * 
      * Endpoint : POST /api/availability/check

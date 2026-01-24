@@ -120,6 +120,7 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function($routes) 
     
     // API Disponibilités (CRITIQUE - Availability Engine)
     $routes->get('availability/slots', 'AvailabilityApi::slots');
+    $routes->get('availability/all-slots', 'AvailabilityApi::allSlots'); // Tous les créneaux avec statut
     $routes->post('availability/check', 'AvailabilityApi::check');
     $routes->get('availability/rooms', 'AvailabilityApi::rooms');
     $routes->get('availability/closure', 'AvailabilityApi::closure');
