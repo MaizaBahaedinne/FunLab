@@ -27,22 +27,88 @@ class ClosuresController extends BaseController
 
     public function store()
     {
-        // Création d'une fermeture
+        $rules = [
+            'start_date' => 'required|valid_date',
+            'end_date' => 'required|valid_date',
+            'type' => 'required|in_list[full_day,partial]',
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()->back()->withInput()->with('validation', $this->validator);
+        }
+
+        $data = [
+            'room_id' => $this->request->getPost('room_id') ?: null,
+            'start_date' => $this->request->getPost('start_date'),
+            'end_date' => $this->request->getPost('end_date'),
+            'start_time' => $this->request->getPost('start_time'),
+            'end_time' => $this->request->getPost('end_time'),
+            'type' => $this->request->getPost('type'),
+            'reason' => $this->request->getPost('reason'),
+            'description' => $this->request->getPost('description'),
+        ];
+
+        if ($this->closureModel->insert($data)) {
+            return redirect()->to('admin/closures')->with('success', 'Fermeture créée avec succès');
+        }
+
+        return redirect()->back()->withInput()->with('error', 'Erreur lors de la création');
     }
 
     public function edit($id)
     {
         $data['closure'] = $this->closureModel->find($id);
+        
+        if (!$data['closure']) {
+            return redirect()->to('admin/closures')->with('error', 'Fermeture introuvable');
+        }
+        
         return view('admin/closures/edit', $data);
     }
 
     public function update($id)
     {
-        // Mise à jour d'une fermeture
+        $rules = [
+            'start_date' => 'required|valid_date',
+            'end_date' => 'required|valid_date',
+            'type' => 'required|in_list[full_day,partial]',
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()->back()->withInput()->with('validation', $this->validator);
+        }
+
+        $data = [
+            'room_id' => $this->request->getPost('room_id') ?: null,
+            'start_date' => $this->request->getPost('start_date'),
+            'end_date' => $this->request->getPost('end_date'),
+            'start_time' => $this->request->getPost('start_time'),
+            'end_time' => $this->request->getPost('end_time'),
+            'type' => $this->request->getPost('type'),
+            'reason' => $this->request->getPost('reason'),
+            'description' => $this->request->getPost('description'),
+        ];
+
+        if ($this->closureModel->update($id, $data)) {
+            return redirect()->to('admin/closures')->with('success', 'Fermeture mise à jour');
+        }
+
+        return redirect()->back()->withInput()->with('error', 'Erreur lors de la mise à jour');
     }
 
     public function delete($id)
     {
-        // Suppression d'une fermeture
+        if ($this->request->isAJAX()) {
+            try {
+                if ($this->closureModel->delete($id)) {
+                    return $this->response->setJSON(['success' => true, 'message' => 'Fermeture supprimée']);
+                }
+                return $this->response->setJSON(['success' => false, 'message' => 'Erreur lors de la suppression']);
+            } catch (\Exception $e) {
+                return $this->response->setJSON(['success' => false, 'message' => $e->getMessage()]);
+            }
+        }
+        
+        return redirect()->to('admin/closures')->with('error', 'Méthode non autorisée');
     }
 }
