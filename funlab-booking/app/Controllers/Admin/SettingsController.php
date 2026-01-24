@@ -97,9 +97,15 @@ class SettingsController extends BaseController
     {
         if ($this->request->getMethod() === 'post') {
             $data = $this->request->getPost();
+            
+            // Debug : écrire dans les logs
+            log_message('info', 'Footer POST data: ' . print_r($data, true));
+            
             unset($data['csrf_test_name']); // Retirer le token CSRF
 
             $updated = 0;
+            $errors = [];
+            
             foreach ($data as $key => $value) {
                 // Déterminer le type selon le champ
                 $type = 'text';
@@ -107,18 +113,25 @@ class SettingsController extends BaseController
                     $type = 'textarea';
                 }
                 
+                log_message('info', "Updating $key = $value (type: $type, category: footer)");
+                
                 $result = $this->settingModel->setSetting($key, $value, $type, 'footer');
+                
                 if ($result) {
                     $updated++;
+                } else {
+                    $errors[] = $key;
                 }
             }
+
+            log_message('info', "Footer update complete: $updated updated, errors: " . implode(', ', $errors));
 
             if ($updated > 0) {
                 return redirect()->to('/admin/settings/footer')
                                ->with('success', "Configuration du footer mise à jour avec succès ($updated champs modifiés)");
             } else {
                 return redirect()->to('/admin/settings/footer')
-                               ->with('error', 'Aucune modification effectuée');
+                               ->with('error', 'Aucune modification effectuée. Champs en erreur: ' . implode(', ', $errors));
             }
         }
 
