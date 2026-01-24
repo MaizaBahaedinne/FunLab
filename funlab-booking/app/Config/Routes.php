@@ -90,8 +90,12 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'ad
     $routes->get('bookings/view/(:num)', 'BookingsController::view/$1');
     $routes->get('bookings/edit/(:num)', 'BookingsController::edit/$1');
     $routes->post('bookings/update/(:num)', 'BookingsController::update/$1');
-    $routes->post('bookings/cancel/(:num)', 'BookingsController::cancel/$1');
-    $routes->post('bookings/delete/(:num)', 'BookingsController::delete/$1');
+    $routes->post('bookings/update-status/(:num)', 'BookingsController::updateStatus/$1');
+    $routes->post('bookings/update-payment/(:num)', 'BookingsController::updatePayment/$1');
+    $routes->post('bookings/add-participant/(:num)', 'BookingsController::addParticipant/$1');
+    $routes->get('bookings/delete-participant/(:num)', 'BookingsController::deleteParticipant/$1');
+    $routes->get('bookings/cancel/(:num)', 'BookingsController::cancel/$1');
+    $routes->get('bookings/delete/(:num)', 'BookingsController::delete/$1');
     
     // Gestion des participants
     $routes->get('participants', 'ParticipantsController::index');

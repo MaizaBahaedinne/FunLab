@@ -412,6 +412,12 @@
                     ` : ''}
                 </dl>
 
+                <div class="text-center mt-3">
+                    <a href="/admin/bookings/view/${booking.id}" class="btn btn-primary">
+                        <i class="bi bi-eye"></i> Voir tous les détails
+                    </a>
+                </div>
+
                 ${booking.qr_code ? `
                 <div class="text-center mt-3">
                     <h6>QR Code</h6>
