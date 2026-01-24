@@ -79,6 +79,10 @@ class Filters extends BaseFilters
             // 'invalidchars',
         ],
         'after' => [
+            'toolbar' => ['except' => [
+                'register/*',
+                'api/*'
+            ]],
             // 'honeypot',
             // 'secureheaders',
         ],
