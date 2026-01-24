@@ -183,21 +183,12 @@ $additionalJS = <<<'JS'
 
         // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
-            updateTime();
-            setInterval(updateTime, 1000);
-            
             initCharts();
             loadRecentBookings();
             
             // Rafraîchir les données toutes les 30 secondes
             setInterval(loadRecentBookings, 30000);
         });
-
-        function updateTime() {
-            const now = new Date();
-            document.getElementById('current-time').textContent = 
-                now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-        }
         function updateStats(stats) {
             document.getElementById('stat-today').textContent = stats.total_bookings || 0;
             document.getElementById('stat-active').textContent = stats.in_progress || 0;
