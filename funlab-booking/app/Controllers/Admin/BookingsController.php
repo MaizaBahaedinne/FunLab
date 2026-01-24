@@ -125,7 +125,7 @@ class BookingsController extends BaseController
                 'currency' => 'TND',
                 'payment_method' => $paymentMethod,
                 'status' => $paymentStatus,
-                'transaction_date' => date('Y-m-d H:i:s')
+                'paid_at' => date('Y-m-d H:i:s')
             ]);
         }
 

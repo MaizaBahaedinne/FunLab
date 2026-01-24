@@ -18,11 +18,16 @@ class PaymentModel extends Model
         'amount',
         'currency',
         'payment_method',
+        'payment_type',
         'status',
         'transaction_id',
-        'transaction_date',
-        'stripe_payment_intent_id',
+        'paid_at',
+        'stripe_payment_intent',
         'stripe_charge_id',
+        'refunded_at',
+        'refund_amount',
+        'refund_reason',
+        'metadata',
         'notes'
     ];
 
