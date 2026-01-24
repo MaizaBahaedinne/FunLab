@@ -155,7 +155,7 @@ class PaymentService
             // Enregistrer le paiement
             $paymentId = $this->db->table('payments')->insert([
                 'booking_id' => $bookingId,
-                'customer_id' => $booking['customer_id'] ?? null,
+                'customer_id' => $booking['user_id'] ?? null,
                 'amount' => $amount,
                 'currency' => 'TND',
                 'payment_method' => 'stripe',
@@ -236,7 +236,7 @@ class PaymentService
 
         $paymentId = $this->db->table('payments')->insert([
             'booking_id' => $bookingId,
-            'customer_id' => $booking['customer_id'] ?? null,
+            'customer_id' => $booking['user_id'] ?? null,
             'amount' => $amount,
             'currency' => 'TND',
             'payment_method' => 'cash',
@@ -312,7 +312,7 @@ class PaymentService
             ->select('bookings.*, games.name as game_name, games.price, rooms.name as room_name, users.email as customer_email')
             ->join('games', 'games.id = bookings.game_id')
             ->join('rooms', 'rooms.id = bookings.room_id')
-            ->join('users', 'users.id = bookings.customer_id', 'left')
+            ->join('users', 'users.id = bookings.user_id', 'left')
             ->find($bookingId);
 
         if (!$booking) {
@@ -349,7 +349,7 @@ class PaymentService
         $invoiceId = $this->db->table('invoices')->insert([
             'invoice_number' => $invoiceNumber,
             'booking_id' => $bookingId,
-            'customer_id' => $booking['customer_id'],
+            'customer_id' => $booking['user_id'],
             'customer_name' => $booking['customer_name'],
             'customer_email' => $booking['customer_email'] ?? $booking['customer_email'],
             'customer_phone' => $booking['customer_phone'],

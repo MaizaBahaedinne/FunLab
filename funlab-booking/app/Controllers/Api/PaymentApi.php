@@ -323,7 +323,7 @@ class PaymentApi extends BaseController
                 ->select('payments.*, bookings.booking_date, bookings.customer_name, games.name as game_name')
                 ->join('bookings', 'bookings.id = payments.booking_id')
                 ->join('games', 'games.id = bookings.game_id')
-                ->where('payments.customer_id', $userId)
+                ->where('bookings.user_id', $userId)
                 ->orderBy('payments.created_at', 'DESC')
                 ->get()
                 ->getResultArray();

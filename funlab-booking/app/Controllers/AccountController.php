@@ -28,12 +28,12 @@ class AccountController extends BaseController
 
         // Statistiques de l'utilisateur
         $stats = [
-            'total_bookings' => $this->bookingModel->where('customer_id', $userId)->countAllResults(),
-            'upcoming_bookings' => $this->bookingModel->where('customer_id', $userId)
+            'total_bookings' => $this->bookingModel->where('user_id', $userId)->countAllResults(),
+            'upcoming_bookings' => $this->bookingModel->where('user_id', $userId)
                                                       ->where('booking_date >=', date('Y-m-d'))
                                                       ->whereIn('status', ['confirmed', 'pending'])
                                                       ->countAllResults(),
-            'completed_bookings' => $this->bookingModel->where('customer_id', $userId)
+            'completed_bookings' => $this->bookingModel->where('user_id', $userId)
                                                        ->where('status', 'completed')
                                                        ->countAllResults()
         ];
@@ -41,7 +41,7 @@ class AccountController extends BaseController
         // Réservations récentes (5 dernières)
         $recentBookings = $this->bookingModel->select('bookings.*, games.name as game_name')
                                              ->join('games', 'games.id = bookings.game_id')
-                                             ->where('bookings.customer_id', $userId)
+                                             ->where('bookings.user_id', $userId)
                                              ->orderBy('bookings.booking_date', 'DESC')
                                              ->limit(5)
                                              ->findAll();
@@ -111,7 +111,7 @@ class AccountController extends BaseController
         $bookings = $this->bookingModel->select('bookings.*, games.name as game_name, rooms.name as room_name')
                                        ->join('games', 'games.id = bookings.game_id')
                                        ->join('rooms', 'rooms.id = bookings.room_id')
-                                       ->where('bookings.customer_id', $userId)
+                                       ->where('bookings.user_id', $userId)
                                        ->orderBy('bookings.booking_date', 'DESC')
                                        ->findAll();
 
@@ -129,7 +129,7 @@ class AccountController extends BaseController
                                       ->join('games', 'games.id = bookings.game_id')
                                       ->join('rooms', 'rooms.id = bookings.room_id')
                                       ->where('bookings.id', $id)
-                                      ->where('bookings.customer_id', $userId)
+                                      ->where('bookings.user_id', $userId)
                                       ->first();
 
         if (!$booking) {
