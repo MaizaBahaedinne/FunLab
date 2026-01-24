@@ -19,6 +19,9 @@ class GameModel extends Model
         'min_players',
         'max_players',
         'price',
+        'price_per_person',
+        'deposit_required',
+        'deposit_percentage',
         'image',
         'status'
     ];
