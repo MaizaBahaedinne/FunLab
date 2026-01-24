@@ -108,7 +108,7 @@ class AccountController extends BaseController
     {
         $userId = session()->get('userId');
 
-        $bookings = $this->bookingModel->select('bookings.*, games.name as game_name, rooms.name as room_name')
+        $bookings = $this->bookingModel->select('bookings.*, games.name as game_name, games.duration_minutes, rooms.name as room_name')
                                        ->join('games', 'games.id = bookings.game_id')
                                        ->join('rooms', 'rooms.id = bookings.room_id')
                                        ->where('bookings.user_id', $userId)
