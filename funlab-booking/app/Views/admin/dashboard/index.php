@@ -176,7 +176,7 @@ $additionalStyles = '
                 </div>
 
 <?php
-$additionalJS = <<<'JS'
+$additionalJS = <<<JS
 <script>
         const API_BASE_URL = '<?= base_url() ?>';
         let bookingsChart, gamesChart;
