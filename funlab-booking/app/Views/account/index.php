@@ -221,7 +221,7 @@
                                         </p>
                                         <p class="text-muted mb-0">
                                             <i class="bi bi-people"></i>
-                                            <?= $booking['num_participants'] ?> participants
+                                            <?= $booking['num_players'] ?> participants
                                         </p>
                                     </div>
                                     <div class="col-md-4 text-md-end">

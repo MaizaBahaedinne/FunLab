@@ -235,7 +235,7 @@
                                             </p>
                                             <p class="text-muted mb-0">
                                                 <i class="bi bi-people"></i>
-                                                <?= $booking['num_participants'] ?> participants
+                                                <?= $booking['num_players'] ?> participants
                                                 <span class="mx-2">|</span>
                                                 <i class="bi bi-clock"></i>
                                                 <?= $booking['duration'] ?> minutes

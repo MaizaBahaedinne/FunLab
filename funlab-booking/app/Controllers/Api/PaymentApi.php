@@ -39,7 +39,7 @@ class PaymentApi extends BaseController
         try {
             $data = $this->request->getJSON(true);
 
-            if (!isset($data['game_id'], $data['num_participants'])) {
+            if (!isset($data['game_id'], $data['num_players'])) {
                 return $this->response->setJSON([
                     'success' => false,
                     'message' => 'Données manquantes'

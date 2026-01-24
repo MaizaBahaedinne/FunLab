@@ -27,7 +27,7 @@ class PaymentService
     public function calculateBookingTotal(array $bookingData): array
     {
         $gameId = $bookingData['game_id'];
-        $numParticipants = $bookingData['num_participants'];
+        $numParticipants = $bookingData['num_players'];
         
         // Récupérer le prix du jeu
         $game = $this->db->table('games')->where('id', $gameId)->get()->getRowArray();
@@ -340,7 +340,7 @@ class PaymentService
         $items = [
             [
                 'description' => $booking['game_name'],
-                'quantity' => $booking['num_participants'],
+                'quantity' => $booking['num_players'],
                 'unit_price' => $booking['price'],
                 'total' => $booking['total_price']
             ]

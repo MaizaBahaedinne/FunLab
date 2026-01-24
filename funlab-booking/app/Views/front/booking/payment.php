@@ -90,7 +90,7 @@
                             </div>
                             <div class="text-muted small">
                                 <i class="bi bi-people"></i>
-                                <?= $booking['num_participants'] ?> participants
+                                <?= $booking['num_players'] ?> participants
                             </div>
                         </div>
 
