@@ -1,89 +1,31 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Admin - FunLab</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <style>
-        .stat-card {
-            transition: transform 0.2s;
-        }
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-        .recent-booking {
-            border-left: 3px solid;
-            padding-left: 15px;
-            margin-bottom: 15px;
-        }
-        .status-pending { border-left-color: #ffc107; }
-        .status-confirmed { border-left-color: #28a745; }
-        .status-completed { border-left-color: #6c757d; }
-        .status-cancelled { border-left-color: #dc3545; }
-    </style>
-</head>
-<body>
-    <!-- Sidebar -->
-    <div class="d-flex">
-        <div class="bg-dark text-white p-3" style="width: 250px; min-height: 100vh;">
-            <h4 class="mb-4">
-                <i class="bi bi-speedometer2"></i> Admin FunLab
-            </h4>
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link text-white active" href="<?= base_url('admin/dashboard') ?>">
-                        <i class="bi bi-house"></i> Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="<?= base_url('admin/bookings') ?>">
-                        <i class="bi bi-calendar-check"></i> Réservations
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="<?= base_url('admin/rooms') ?>">
-                        <i class="bi bi-door-closed"></i> Salles
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="<?= base_url('admin/games') ?>">
-                        <i class="bi bi-controller"></i> Jeux
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="<?= base_url('admin/closures') ?>">
-                        <i class="bi bi-x-circle"></i> Fermetures
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="<?= base_url('admin/scanner') ?>">
-                        <i class="bi bi-qr-code-scan"></i> Scanner
-                    </a>
-                </li>
-                <hr class="text-white">
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="<?= base_url('/') ?>">
-                        <i class="bi bi-box-arrow-left"></i> Retour au site
-                    </a>
-                </li>
-            </ul>
-        </div>
+<?php
+$title = 'Dashboard Admin';
+$pageTitle = 'Tableau de bord';
+$activeMenu = 'dashboard';
+$breadcrumbs = ['Admin' => base_url('admin/dashboard'), 'Dashboard' => null];
+$additionalCSS = '<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>';
+$additionalStyles = '
+    .stat-card {
+        transition: transform 0.2s;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+    .recent-booking {
+        border-left: 3px solid;
+        padding-left: 15px;
+        margin-bottom: 15px;
+    }
+    .status-pending { border-left-color: #ffc107; }
+    .status-confirmed { border-left-color: #28a745; }
+    .status-completed { border-left-color: #6c757d; }
+    .status-cancelled { border-left-color: #dc3545; }
+';
+?>
 
-        <!-- Main Content -->
-        <div class="flex-grow-1">
-            <nav class="navbar navbar-light bg-light border-bottom">
-                <div class="container-fluid">
-                    <span class="navbar-brand mb-0 h1">Dashboard</span>
-                    <span class="text-muted">
-                        <i class="bi bi-person-circle"></i> Admin | <span id="current-time"></span>
-                    </span>
-                </div>
-            </nav>
-
-            <div class="container-fluid p-4">
+<?= view('admin/layouts/header', compact('title', 'additionalCSS', 'additionalStyles')) ?>
+<?= view('admin/layouts/sidebar', compact('activeMenu')) ?>
+<?= view('admin/layouts/topbar', compact('pageTitle', 'breadcrumbs')) ?>
                 <!-- Statistiques en temps réel -->
                 <div class="row g-4 mb-4">
                     <div class="col-md-3">
@@ -232,12 +174,9 @@
                         </ul>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
+<?php
+$additionalJS = '<script>
         const API_BASE_URL = '/api';
         let bookingsChart, gamesChart;
 
@@ -449,6 +388,7 @@
             
             return days;
         }
-    </script>
-</body>
-</html>
+    </script>';
+?>
+
+<?= view('admin/layouts/footer', compact('additionalJS')) ?>

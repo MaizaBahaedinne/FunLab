@@ -1,76 +1,29 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Fermetures - FunLab Admin</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <style>
-        .sidebar {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        .sidebar .nav-link {
-            color: rgba(255,255,255,0.8);
-            padding: 12px 20px;
-            transition: all 0.3s;
-        }
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
-            color: white;
-            background: rgba(255,255,255,0.1);
-        }
-        .closure-card {
-            border-left: 4px solid #dc3545;
-            transition: transform 0.3s;
-        }
-        .closure-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-        .badge-type {
-            padding: 6px 12px;
-            border-radius: 15px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-2 sidebar">
-                <div class="text-center py-4">
-                    <h4 class="text-white"><i class="bi bi-joystick"></i> FunLab Admin</h4>
-                </div>
-                <nav class="nav flex-column">
-                    <a class="nav-link" href="<?= base_url('admin/dashboard') ?>">
-                        <i class="bi bi-speedometer2"></i> Dashboard
-                    </a>
-                    <a class="nav-link" href="<?= base_url('admin/rooms') ?>">
-                        <i class="bi bi-door-open"></i> Salles
-                    </a>
-                    <a class="nav-link" href="<?= base_url('admin/games') ?>">
-                        <i class="bi bi-controller"></i> Jeux
-                    </a>
-                    <a class="nav-link" href="<?= base_url('admin/bookings') ?>">
-                        <i class="bi bi-calendar-check"></i> Réservations
-                    </a>
-                    <a class="nav-link active" href="<?= base_url('admin/closures') ?>">
-                        <i class="bi bi-calendar-x"></i> Fermetures
-                    </a>
-                    <a class="nav-link" href="<?= base_url('admin/scanner') ?>">
-                        <i class="bi bi-qr-code-scan"></i> Scanner QR
-                    </a>
-                    <hr class="bg-white">
-                    <a class="nav-link" href="<?= base_url('auth/logout') ?>">
-                        <i class="bi bi-box-arrow-right"></i> Déconnexion
-                    </a>
-                </nav>
-            </div>
+<?php
+$title = 'Gestion des Fermetures';
+$pageTitle = 'Gestion des Fermetures';
+$activeMenu = 'closures';
+$breadcrumbs = ['Admin' => base_url('admin'), 'Fermetures' => null];
+$additionalStyles = '
+.closure-card {
+    border-left: 4px solid #dc3545;
+    transition: transform 0.3s;
+}
+.closure-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+.badge-type {
+    padding: 6px 12px;
+    border-radius: 15px;
+}
+';
+?>
 
-            <!-- Main Content -->
-            <div class="col-md-10 p-4">
+<?= view('admin/layouts/header', compact('title', 'additionalStyles')) ?>
+<?= view('admin/layouts/sidebar', compact('activeMenu')) ?>
+<?= view('admin/layouts/topbar', compact('pageTitle', 'breadcrumbs')) ?>
+
+            <div class="container-fluid p-4">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2><i class="bi bi-calendar-x"></i> Gestion des Fermetures</h2>
                     <a href="<?= base_url('admin/closures/create') ?>" class="btn btn-danger">
@@ -218,50 +171,50 @@
                     <?php endif; ?>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function deleteClosure(id) {
-            if (confirm('Êtes-vous sûr de vouloir supprimer cette fermeture ?\n\nLes créneaux redeviendront disponibles.')) {
-                fetch(`<?= base_url('admin/closures/delete/') ?>${id}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        window.location.reload();
-                    } else {
-                        alert('Erreur: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    alert('Erreur lors de la suppression');
-                    console.error(error);
-                });
-            }
-        }
-
-        function applyFilters() {
-            const type = document.getElementById('filter-type').value;
-            const period = document.getElementById('filter-period').value;
-            const items = document.querySelectorAll('.closure-item');
-
-            items.forEach(item => {
-                const itemType = item.dataset.type;
-                const itemStatus = item.dataset.status;
-
-                let showType = !type || itemType === type;
-                let showPeriod = period === 'all' || itemStatus === period;
-
-                item.style.display = (showType && showPeriod) ? 'block' : 'none';
+<?php
+$additionalJS = '
+<script>
+    function deleteClosure(id) {
+        if (confirm("\u00cates-vous s\u00fbr de vouloir supprimer cette fermeture ?\n\nLes cr\u00e9neaux redeviendront disponibles.")) {
+            fetch(`<?= base_url("admin/closures/delete/") ?>${id}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    alert("Erreur: " + data.message);
+                }
+            })
+            .catch(error => {
+                alert("Erreur lors de la suppression");
+                console.error(error);
             });
         }
-    </script>
-</body>
-</html>
+    }
+
+    function applyFilters() {
+        const type = document.getElementById("filter-type").value;
+        const period = document.getElementById("filter-period").value;
+        const items = document.querySelectorAll(".closure-item");
+
+        items.forEach(item => {
+            const itemType = item.dataset.type;
+            const itemStatus = item.dataset.status;
+
+            let showType = !type || itemType === type;
+            let showPeriod = period === "all" || itemStatus === period;
+
+            item.style.display = (showType && showPeriod) ? "block" : "none";
+        });
+    }
+</script>
+';
+?>
+<?= view('admin/layouts/footer', compact('additionalJS')) ?>

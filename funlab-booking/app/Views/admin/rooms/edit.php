@@ -1,74 +1,27 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modifier la Salle - FunLab Admin</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <style>
-        .sidebar {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        .sidebar .nav-link {
-            color: rgba(255,255,255,0.8);
-            padding: 12px 20px;
-            transition: all 0.3s;
-        }
-        .sidebar .nav-link:hover,
-        .sidebar .nav-link.active {
-            color: white;
-            background: rgba(255,255,255,0.1);
-        }
-        .form-section {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .form-section h5 {
-            color: #667eea;
-            margin-bottom: 15px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-2 sidebar">
-                <div class="text-center py-4">
-                    <h4 class="text-white"><i class="bi bi-joystick"></i> FunLab Admin</h4>
-                </div>
-                <nav class="nav flex-column">
-                    <a class="nav-link" href="<?= base_url('admin/dashboard') ?>">
-                        <i class="bi bi-speedometer2"></i> Dashboard
-                    </a>
-                    <a class="nav-link active" href="<?= base_url('admin/rooms') ?>">
-                        <i class="bi bi-door-open"></i> Salles
-                    </a>
-                    <a class="nav-link" href="<?= base_url('admin/games') ?>">
-                        <i class="bi bi-controller"></i> Jeux
-                    </a>
-                    <a class="nav-link" href="<?= base_url('admin/bookings') ?>">
-                        <i class="bi bi-calendar-check"></i> Réservations
-                    </a>
-                    <a class="nav-link" href="<?= base_url('admin/closures') ?>">
-                        <i class="bi bi-calendar-x"></i> Fermetures
-                    </a>
-                    <a class="nav-link" href="<?= base_url('admin/scanner') ?>">
-                        <i class="bi bi-qr-code-scan"></i> Scanner QR
-                    </a>
-                    <hr class="bg-white">
-                    <a class="nav-link" href="<?= base_url('auth/logout') ?>">
-                        <i class="bi bi-box-arrow-right"></i> Déconnexion
-                    </a>
-                </nav>
-            </div>
+<?php
+$title = 'Modifier la Salle';
+$pageTitle = 'Modifier la salle';
+$activeMenu = 'rooms';
+$breadcrumbs = ['Admin' => base_url('admin'), 'Salles' => base_url('admin/rooms'), 'Modifier' => null];
+$additionalStyles = '
+.form-section {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.form-section h5 {
+    color: #667eea;
+    margin-bottom: 15px;
+}
+';
+?>
 
-            <!-- Main Content -->
-            <div class="col-md-10 p-4">
+<?= view('admin/layouts/header', compact('title', 'additionalStyles')) ?>
+<?= view('admin/layouts/sidebar', compact('activeMenu')) ?>
+<?= view('admin/layouts/topbar', compact('pageTitle', 'breadcrumbs')) ?>
+
+            <div class="container-fluid p-4">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2><i class="bi bi-door-open"></i> Modifier la salle</h2>
                     <a href="<?= base_url('admin/rooms') ?>" class="btn btn-outline-secondary">
@@ -172,6 +125,4 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<?= view('admin/layouts/footer') ?>

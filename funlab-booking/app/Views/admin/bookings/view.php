@@ -1,81 +1,40 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Détails Réservation #<?= $booking['id'] ?> - FunLab Admin</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <style>
-        .detail-card {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .status-badge {
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-        }
-        .action-btn {
-            margin: 5px;
-        }
-        .participant-item {
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-    </style>
-</head>
-<body class="bg-light">
-    <!-- Sidebar -->
-    <div class="d-flex">
-        <div class="bg-dark text-white p-3" style="width: 250px; min-height: 100vh;">
-            <h4 class="mb-4">
-                <i class="bi bi-speedometer2"></i> Admin FunLab
-            </h4>
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="<?= base_url('admin/dashboard') ?>">
-                        <i class="bi bi-house"></i> Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white active" href="<?= base_url('admin/bookings') ?>">
-                        <i class="bi bi-calendar-check"></i> Réservations
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="<?= base_url('admin/rooms') ?>">
-                        <i class="bi bi-door-closed"></i> Salles
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="<?= base_url('admin/games') ?>">
-                        <i class="bi bi-joystick"></i> Jeux
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="<?= base_url('admin/closures') ?>">
-                        <i class="bi bi-calendar-x"></i> Fermetures
-                    </a>
-                </li>
-                <hr class="text-white">
-                <li class="nav-item">
-                    <a class="nav-link text-white" href="<?= base_url('auth/logout') ?>">
-                        <i class="bi bi-box-arrow-right"></i> Déconnexion
-                    </a>
-                </li>
-            </ul>
-        </div>
+<?php
+$title = 'Réservation #' . $booking['id'];
+$pageTitle = 'Détails Réservation #' . $booking['id'];
+$activeMenu = 'bookings';
+$breadcrumbs = ['Admin' => base_url('admin'), 'Réservations' => base_url('admin/bookings'), 'Détails' => null];
+$additionalStyles = '
+.detail-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.status-badge {
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+}
+.action-btn {
+    margin: 5px;
+}
+.participant-item {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+';
+?>
 
-        <!-- Main Content -->
+<?= view('admin/layouts/header', compact('title', 'additionalStyles')) ?>
+<?= view('admin/layouts/sidebar', compact('activeMenu')) ?>
+<?= view('admin/layouts/topbar', compact('pageTitle', 'breadcrumbs')) ?>
+
         <div class="flex-grow-1 p-4">
             <div class="container-fluid">
                 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -471,21 +430,23 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function copyLink() {
-            const input = document.getElementById('registration-link');
-            input.select();
-            document.execCommand('copy');
-            
-            const btn = event.target.closest('button');
-            const originalHtml = btn.innerHTML;
-            btn.innerHTML = '<i class="bi bi-check"></i>';
-            
-            setTimeout(() => {
-                btn.innerHTML = originalHtml;
-            }, 2000);
-        }
-    </script>
-</body>
-</html>
+<?php
+$additionalJS = '
+<script>
+    function copyLink() {
+        const input = document.getElementById("registration-link");
+        input.select();
+        document.execCommand("copy");
+        
+        const btn = event.target.closest("button");
+        const originalHtml = btn.innerHTML;
+        btn.innerHTML = "<i class=\"bi bi-check\"></i>";
+        
+        setTimeout(() => {
+            btn.innerHTML = originalHtml;
+        }, 2000);
+    }
+</script>
+';
+?>
+<?= view('admin/layouts/footer', compact('additionalJS')) ?>
