@@ -100,7 +100,9 @@ class SettingsController extends BaseController
             unset($data['csrf_test_name']); // Retirer le token CSRF
 
             foreach ($data as $key => $value) {
-                $this->settingModel->setSetting('footer', $key, $value);
+                // Déterminer le type selon le champ
+                $type = (strpos($key, 'hours') !== false) ? 'textarea' : 'text';
+                $this->settingModel->setSetting($key, $value, $type, 'footer');
             }
 
             return redirect()->to('/admin/settings/footer')
