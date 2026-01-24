@@ -16,7 +16,7 @@ class ScannerController extends BaseController
         // Scanner un QR code
     }
 
-    public function validate()
+    public function validateTicket()
     {
         // Valider un ticket
     }

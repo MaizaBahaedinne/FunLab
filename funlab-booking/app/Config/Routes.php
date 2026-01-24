@@ -110,7 +110,7 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'ad
     // Scanner QR Code
     $routes->get('scanner', 'ScannerController::index');
     $routes->post('scanner/scan', 'ScannerController::scan');
-    $routes->post('scanner/validate', 'ScannerController::validate');
+    $routes->post('scanner/validate', 'ScannerController::validateTicket');
 });
 
 // ============================================================
