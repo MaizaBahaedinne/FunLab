@@ -242,55 +242,33 @@
         // Charger les jeux disponibles
         async function loadGames() {
             try {
-                const response = await fetch('/api/availability/rooms?game_id=1'); // Temporaire, il faut une API pour lister les jeux
+                const response = await fetch('/api/games');
+                const result = await response.json();
                 
-                // Pour l'instant, afficher des jeux statiques
-                const games = [
-                    {
-                        id: 1,
-                        name: 'Beat Saber VR',
-                        description: 'Jeu de rythme immersif en réalité virtuelle',
-                        duration: 30,
-                        min_players: 1,
-                        max_players: 2,
-                        price: 25,
-                        icon: 'bi-headset-vr'
-                    },
-                    {
-                        id: 2,
-                        name: 'Half-Life: Alyx VR',
-                        description: 'Aventure FPS en réalité virtuelle',
-                        duration: 60,
-                        min_players: 1,
-                        max_players: 2,
-                        price: 35,
-                        icon: 'bi-headset-vr'
-                    },
-                    {
-                        id: 3,
-                        name: 'Le Mystère du Manoir',
-                        description: 'Escape room - Résolvez le mystère',
-                        duration: 60,
-                        min_players: 4,
-                        max_players: 8,
-                        price: 120,
-                        icon: 'bi-door-closed'
-                    },
-                    {
-                        id: 5,
-                        name: 'Laser Game Classic',
-                        description: 'Partie de laser game classique',
-                        duration: 30,
-                        min_players: 4,
-                        max_players: 12,
-                        price: 15,
-                        icon: 'bi-lightning-charge'
-                    }
-                ];
+                if (result.status === 'success' && result.data.length > 0) {
+                    displayGames(result.data);
+                } else {
+                    // Fallback: afficher un message si aucun jeu n'est disponible
+                    document.getElementById('games-list').innerHTML = `
+                        <div class="col-12">
+                            <div class="alert alert-warning">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                Aucun jeu disponible pour le moment. Veuillez réessayer plus tard.
+                            </div>
+                        </div>
+                    `;
+                }
 
-                displayGames(games);
             } catch (error) {
-                console.error('Erreur:', error);
+                console.error('Erreur chargement jeux:', error);
+                document.getElementById('games-list').innerHTML = `
+                    <div class="col-12">
+                        <div class="alert alert-danger">
+                            <i class="bi bi-x-circle"></i>
+                            Erreur lors du chargement des jeux. Veuillez rafraîchir la page.
+                        </div>
+                    </div>
+                `;
             }
         }
 
@@ -299,34 +277,56 @@
             container.innerHTML = '';
 
             games.forEach(game => {
-                const gameCard = `
-                    <div class="game-option" onclick="selectGame(${game.id}, '${game.name}', ${game.min_players}, ${game.max_players}, ${game.price}, ${game.duration})">
-                        <div class="d-flex align-items-center">
-                            <i class="bi ${game.icon} fs-1 text-primary me-3"></i>
-                            <div class="flex-grow-1">
-                                <h4 class="mb-1">${game.name}</h4>
-                                <p class="text-muted mb-2">${game.description}</p>
-                                <div class="d-flex gap-3">
-                                    <span><i class="bi bi-clock"></i> ${game.duration} min</span>
-                                    <span><i class="bi bi-people"></i> ${game.min_players}-${game.max_players} joueurs</span>
-                                    <span><i class="bi bi-tag"></i> ${game.price} DT</span>
-                                </div>
+                // Icône par défaut basée sur le nom du jeu
+                let icon = 'bi-controller';
+                if (game.name.toLowerCase().includes('vr')) {
+                    icon = 'bi-headset-vr';
+                } else if (game.name.toLowerCase().includes('escape')) {
+                    icon = 'bi-door-closed';
+                }
+
+                const gameCard = document.createElement('div');
+                gameCard.className = 'col-md-4 mb-4';
+                gameCard.innerHTML = `
+                    <div class="card game-card h-100" onclick="selectGame(${game.id})">
+                        <div class="card-body text-center">
+                            <i class="${icon}" style="font-size: 3rem; color: var(--primary);"></i>
+                            <h5 class="card-title mt-3">${game.name}</h5>
+                            <p class="card-text text-muted">${game.description || ''}</p>
+                            <div class="game-info mt-3">
+                                <small class="d-block">
+                                    <i class="bi bi-clock"></i> ${game.duration_minutes} minutes
+                                </small>
+                                <small class="d-block">
+                                    <i class="bi bi-people"></i> ${game.min_players}-${game.max_players} joueurs
+                                </small>
+                                <strong class="d-block mt-2" style="font-size: 1.2rem; color: var(--primary);">
+                                    ${game.price} DT
+                                </strong>
                             </div>
-                            <i class="bi bi-arrow-right-circle fs-2 text-primary"></i>
                         </div>
                     </div>
                 `;
-                container.innerHTML += gameCard;
+                container.appendChild(gameCard);
             });
         }
 
-        function selectGame(gameId, gameName, minPlayers, maxPlayers, price, duration) {
+        function selectGame(gameId) {
+            // Récupérer les détails du jeu depuis l'API ou le DOM
+            const gameCard = event.currentTarget;
+            const gameName = gameCard.querySelector('.card-title').textContent;
+            const gamePrice = parseFloat(gameCard.querySelector('strong').textContent);
+            const durationText = gameCard.querySelector('.bi-clock').nextSibling.textContent.trim();
+            const duration = parseInt(durationText);
+            const playersText = gameCard.querySelector('.bi-people').nextSibling.textContent.trim();
+            const [minPlayers, maxPlayers] = playersText.split('-').map(p => parseInt(p));
+
             bookingData.game = {
                 id: gameId,
                 name: gameName,
                 min_players: minPlayers,
                 max_players: maxPlayers,
-                price: price,
+                price: gamePrice,
                 duration: duration
             };
 
