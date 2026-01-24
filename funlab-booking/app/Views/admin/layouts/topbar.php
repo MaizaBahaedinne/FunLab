@@ -5,14 +5,16 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h5 class="mb-0"><?= $pageTitle ?? 'Admin' ?></h5>
-                        <?php if (isset($breadcrumbs)): ?>
+                        <?php if (isset($breadcrumbs) && is_array($breadcrumbs)): ?>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb mb-0 small">
-                                <?php foreach ($breadcrumbs as $label => $url): ?>
-                                    <?php if ($url): ?>
-                                        <li class="breadcrumb-item"><a href="<?= $url ?>"><?= $label ?></a></li>
-                                    <?php else: ?>
-                                        <li class="breadcrumb-item active"><?= $label ?></li>
+                                <?php foreach ($breadcrumbs as $item): ?>
+                                    <?php if (is_array($item)): ?>
+                                        <?php if (!empty($item['url'])): ?>
+                                            <li class="breadcrumb-item"><a href="<?= $item['url'] ?>"><?= $item['title'] ?></a></li>
+                                        <?php else: ?>
+                                            <li class="breadcrumb-item active"><?= $item['title'] ?></li>
+                                        <?php endif; ?>
                                     <?php endif; ?>
                                 <?php endforeach; ?>
                             </ol>
