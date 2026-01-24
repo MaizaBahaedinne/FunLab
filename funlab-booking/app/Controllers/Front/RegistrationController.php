@@ -74,82 +74,115 @@ class RegistrationController extends BaseController
      */
     public function submit($token)
     {
-        // Récupérer la réservation
-        $booking = $this->bookingModel->where('registration_token', $token)->first();
+        try {
+            // Récupérer la réservation
+            $booking = $this->bookingModel->where('registration_token', $token)->first();
 
-        if (!$booking) {
+            if (!$booking) {
+                log_message('error', 'Registration: Token not found - ' . $token);
+                return $this->response
+                    ->setStatusCode(404)
+                    ->setContentType('application/json')
+                    ->setJSON([
+                        'status' => 'error',
+                        'message' => 'Lien invalide',
+                        'debug' => 'Token: ' . $token
+                    ]);
+            }
+
+            log_message('info', 'Registration: Booking found - ID: ' . $booking['id']);
+
+            // Vérifier si la réservation est encore valide
+            $bookingDateTime = strtotime($booking['booking_date'] . ' ' . $booking['end_time']);
+            if ($bookingDateTime < time()) {
+                return $this->response
+                    ->setContentType('application/json')
+                    ->setJSON([
+                        'status' => 'error',
+                        'message' => 'La session est terminée'
+                    ]);
+            }
+
+            // Valider les données
+            $firstName = trim($this->request->getPost('first_name'));
+            $lastName = trim($this->request->getPost('last_name'));
+            $email = trim($this->request->getPost('email'));
+            $phone = trim($this->request->getPost('phone'));
+
+            log_message('info', 'Registration: Data received - ' . $firstName . ' ' . $lastName);
+
+            if (empty($firstName) || empty($lastName)) {
+                return $this->response
+                    ->setContentType('application/json')
+                    ->setJSON([
+                        'status' => 'error',
+                        'message' => 'Le prénom et le nom sont requis'
+                    ]);
+            }
+
+            // Vérifier le nombre de participants
+            $currentCount = $this->participantModel->where('booking_id', $booking['id'])->countAllResults();
+            log_message('info', 'Registration: Current participants: ' . $currentCount . ' / ' . $booking['num_players']);
+            
+            if ($currentCount >= $booking['num_players']) {
+                return $this->response
+                    ->setContentType('application/json')
+                    ->setJSON([
+                        'status' => 'error',
+                        'message' => 'Le nombre maximum de participants est atteint'
+                    ]);
+            }
+
+            // Insérer le participant
+            $participantData = [
+                'booking_id' => $booking['id'],
+                'first_name' => $firstName,
+                'last_name' => $lastName,
+                'email' => $email ?: null,
+                'phone' => $phone ?: null,
+                'attendance_status' => 'registered'
+            ];
+
+            log_message('info', 'Registration: Inserting participant - ' . json_encode($participantData));
+
+            $participantId = $this->participantModel->insert($participantData);
+
+            if (!$participantId) {
+                $errors = $this->participantModel->errors();
+                log_message('error', 'Registration: Insert failed - ' . json_encode($errors));
+                
+                return $this->response
+                    ->setContentType('application/json')
+                    ->setJSON([
+                        'status' => 'error',
+                        'message' => 'Erreur lors de l\'inscription',
+                        'debug' => $errors,
+                        'sql_error' => $this->participantModel->db->error()
+                    ]);
+            }
+
+            log_message('info', 'Registration: Success - Participant ID: ' . $participantId);
+
             return $this->response
-                ->setStatusCode(404)
+                ->setContentType('application/json')
+                ->setJSON([
+                    'status' => 'success',
+                    'message' => 'Inscription réussie !',
+                    'participant_id' => $participantId
+                ]);
+
+        } catch (\Exception $e) {
+            log_message('error', 'Registration Exception: ' . $e->getMessage() . ' - ' . $e->getTraceAsString());
+            
+            return $this->response
                 ->setContentType('application/json')
                 ->setJSON([
                     'status' => 'error',
-                    'message' => 'Lien invalide'
+                    'message' => 'Erreur lors de l\'inscription',
+                    'debug' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
                 ]);
         }
-
-        // Vérifier si la réservation est encore valide
-        $bookingDateTime = strtotime($booking['booking_date'] . ' ' . $booking['end_time']);
-        if ($bookingDateTime < time()) {
-            return $this->response
-                ->setContentType('application/json')
-                ->setJSON([
-                    'status' => 'error',
-                    'message' => 'La session est terminée'
-                ]);
-        }
-
-        // Valider les données
-        $firstName = trim($this->request->getPost('first_name'));
-        $lastName = trim($this->request->getPost('last_name'));
-        $email = trim($this->request->getPost('email'));
-        $phone = trim($this->request->getPost('phone'));
-
-        if (empty($firstName) || empty($lastName)) {
-            return $this->response
-                ->setContentType('application/json')
-                ->setJSON([
-                    'status' => 'error',
-                    'message' => 'Le prénom et le nom sont requis'
-                ]);
-        }
-
-        // Vérifier le nombre de participants
-        $currentCount = $this->participantModel->where('booking_id', $booking['id'])->countAllResults();
-        if ($currentCount >= $booking['num_players']) {
-            return $this->response
-                ->setContentType('application/json')
-                ->setJSON([
-                    'status' => 'error',
-                    'message' => 'Le nombre maximum de participants est atteint'
-                ]);
-        }
-
-        // Insérer le participant
-        $participantId = $this->participantModel->insert([
-            'booking_id' => $booking['id'],
-            'first_name' => $firstName,
-            'last_name' => $lastName,
-            'email' => $email ?: null,
-            'phone' => $phone ?: null,
-            'attendance_status' => 'registered'
-        ]);
-
-        if (!$participantId) {
-            return $this->response
-                ->setContentType('application/json')
-                ->setJSON([
-                    'status' => 'error',
-                    'message' => 'Erreur lors de l\'inscription'
-                ]);
-        }
-
-        return $this->response
-            ->setContentType('application/json')
-            ->setJSON([
-                'status' => 'success',
-                'message' => 'Inscription réussie !',
-                'participant_id' => $participantId
-            ]);
     }
 
     /**
