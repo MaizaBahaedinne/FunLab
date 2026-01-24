@@ -39,10 +39,10 @@ class GamesController extends BaseController
     {
         $rules = [
             'name' => 'required|min_length[3]|max_length[255]',
-            'category' => 'required',
-            'duration' => 'required|integer|greater_than[0]',
-            'min_participants' => 'required|integer|greater_than[0]',
-            'max_participants' => 'required|integer|greater_than[0]',
+            'duration_minutes' => 'required|integer|greater_than[0]',
+            'min_players' => 'required|integer|greater_than[0]',
+            'max_players' => 'required|integer|greater_than[0]',
+            'price' => 'required|decimal',
         ];
 
         if (!$this->validate($rules)) {
@@ -51,16 +51,11 @@ class GamesController extends BaseController
 
         $data = [
             'name' => $this->request->getPost('name'),
-            'category' => $this->request->getPost('category'),
             'description' => $this->request->getPost('description'),
-            'duration' => $this->request->getPost('duration'),
-            'min_participants' => $this->request->getPost('min_participants'),
-            'max_participants' => $this->request->getPost('max_participants'),
-            'difficulty' => $this->request->getPost('difficulty'),
+            'duration_minutes' => $this->request->getPost('duration_minutes'),
+            'min_players' => $this->request->getPost('min_players'),
+            'max_players' => $this->request->getPost('max_players'),
             'price' => $this->request->getPost('price') ?: 0,
-            'price_per_person' => $this->request->getPost('price_per_person') ?: 0,
-            'deposit_required' => $this->request->getPost('deposit_required') ? 1 : 0,
-            'deposit_percentage' => $this->request->getPost('deposit_percentage') ?: 30,
             'status' => $this->request->getPost('status') === 'active' ? 'active' : 'inactive',
         ];
 
@@ -100,10 +95,10 @@ class GamesController extends BaseController
     {
         $rules = [
             'name' => 'required|min_length[3]|max_length[255]',
-            'category' => 'required',
-            'duration' => 'required|integer|greater_than[0]',
-            'min_participants' => 'required|integer|greater_than[0]',
-            'max_participants' => 'required|integer|greater_than[0]',
+            'duration_minutes' => 'required|integer|greater_than[0]',
+            'min_players' => 'required|integer|greater_than[0]',
+            'max_players' => 'required|integer|greater_than[0]',
+            'price' => 'required|decimal',
         ];
 
         if (!$this->validate($rules)) {
@@ -112,16 +107,11 @@ class GamesController extends BaseController
 
         $data = [
             'name' => $this->request->getPost('name'),
-            'category' => $this->request->getPost('category'),
             'description' => $this->request->getPost('description'),
-            'duration' => $this->request->getPost('duration'),
-            'min_participants' => $this->request->getPost('min_participants'),
-            'max_participants' => $this->request->getPost('max_participants'),
-            'difficulty' => $this->request->getPost('difficulty'),
+            'duration_minutes' => $this->request->getPost('duration_minutes'),
+            'min_players' => $this->request->getPost('min_players'),
+            'max_players' => $this->request->getPost('max_players'),
             'price' => $this->request->getPost('price') ?: 0,
-            'price_per_person' => $this->request->getPost('price_per_person') ?: 0,
-            'deposit_required' => $this->request->getPost('deposit_required') ? 1 : 0,
-            'deposit_percentage' => $this->request->getPost('deposit_percentage') ?: 30,
             'status' => $this->request->getPost('status') === 'active' ? 'active' : 'inactive',
         ];
 

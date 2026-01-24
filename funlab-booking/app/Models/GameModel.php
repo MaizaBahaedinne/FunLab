@@ -15,7 +15,7 @@ class GameModel extends Model
     protected $allowedFields    = [
         'name',
         'description',
-        'duration',
+        'duration_minutes',
         'min_players',
         'max_players',
         'price',

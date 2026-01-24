@@ -103,23 +103,10 @@
                     <!-- Informations générales -->
                     <div class="form-section">
                         <h5><i class="bi bi-info-circle"></i> Informations générales</h5>
-                        <div class="row">
-                            <div class="col-md-8 mb-3">
-                                <label for="name" class="form-label">Nom du jeu <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="name" name="name" 
-                                       value="<?= old('name') ?>" required>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="category" class="form-label">Catégorie <span class="text-danger">*</span></label>
-                                <select class="form-select" id="category" name="category" required>
-                                    <option value="">Sélectionner...</option>
-                                    <option value="Escape Game" <?= old('category') === 'Escape Game' ? 'selected' : '' ?>>Escape Game</option>
-                                    <option value="VR" <?= old('category') === 'VR' ? 'selected' : '' ?>>VR</option>
-                                    <option value="Laser Game" <?= old('category') === 'Laser Game' ? 'selected' : '' ?>>Laser Game</option>
-                                    <option value="Arcade" <?= old('category') === 'Arcade' ? 'selected' : '' ?>>Arcade</option>
-                                    <option value="Autre" <?= old('category') === 'Autre' ? 'selected' : '' ?>>Autre</option>
-                                </select>
-                            </div>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nom du jeu <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" name="name" 
+                                   value="<?= old('name') ?>" required>
                         </div>
 
                         <div class="mb-3">
@@ -134,70 +121,31 @@
                         <h5><i class="bi bi-gear"></i> Configuration du jeu</h5>
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label for="duration" class="form-label">Durée (minutes) <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" id="duration" name="duration" 
-                                       value="<?= old('duration', 60) ?>" min="15" max="300" required>
+                                <label for="duration_minutes" class="form-label">Durée (minutes) <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="duration_minutes" name="duration_minutes" 
+                                       value="<?= old('duration_minutes', 60) ?>" min="15" max="300" required>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="min_participants" class="form-label">Participants min <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" id="min_participants" name="min_participants" 
-                                       value="<?= old('min_participants', 2) ?>" min="1" max="20" required>
+                                <label for="min_players" class="form-label">Joueurs min <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="min_players" name="min_players" 
+                                       value="<?= old('min_players', 2) ?>" min="1" max="20" required>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="max_participants" class="form-label">Participants max <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" id="max_participants" name="max_participants" 
-                                       value="<?= old('max_participants', 6) ?>" min="1" max="50" required>
+                                <label for="max_players" class="form-label">Joueurs max <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="max_players" name="max_players" 
+                                       value="<?= old('max_players', 6) ?>" min="1" max="50" required>
                             </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="difficulty" class="form-label">Niveau de difficulté</label>
-                            <select class="form-select" id="difficulty" name="difficulty">
-                                <option value="">Non spécifié</option>
-                                <option value="Facile" <?= old('difficulty') === 'Facile' ? 'selected' : '' ?>>Facile</option>
-                                <option value="Moyen" <?= old('difficulty') === 'Moyen' ? 'selected' : '' ?>>Moyen</option>
-                                <option value="Difficile" <?= old('difficulty') === 'Difficile' ? 'selected' : '' ?>>Difficile</option>
-                                <option value="Expert" <?= old('difficulty') === 'Expert' ? 'selected' : '' ?>>Expert</option>
-                            </select>
                         </div>
                     </div>
 
                     <!-- Tarification -->
                     <div class="form-section">
                         <h5><i class="bi bi-currency-exchange"></i> Tarification</h5>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="price" class="form-label">Prix fixe (TND)</label>
-                                <input type="number" class="form-control" id="price" name="price" 
-                                       value="<?= old('price', 0) ?>" min="0" step="0.01">
-                                <div class="form-text">Prix fixe pour une session (0 = utiliser le prix par personne)</div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="price_per_person" class="form-label">Prix par personne (TND)</label>
-                                <input type="number" class="form-control" id="price_per_person" name="price_per_person" 
-                                       value="<?= old('price_per_person', 0) ?>" min="0" step="0.01">
-                                <div class="form-text">Prix variable selon le nombre de participants</div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="deposit_required" 
-                                           name="deposit_required" value="1" 
-                                           <?= old('deposit_required') ? 'checked' : '' ?>
-                                           onchange="toggleDeposit()">
-                                    <label class="form-check-label" for="deposit_required">
-                                        Acompte requis
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3" id="deposit-percentage-group" style="display: none;">
-                                <label for="deposit_percentage" class="form-label">Pourcentage d'acompte (%)</label>
-                                <input type="number" class="form-control" id="deposit_percentage" 
-                                       name="deposit_percentage" value="<?= old('deposit_percentage', 30) ?>" 
-                                       min="10" max="100">
-                            </div>
+                        <div class="mb-3">
+                            <label for="price" class="form-label">Prix (TND) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="price" name="price" 
+                                   value="<?= old('price', 0) ?>" min="0" step="0.01" required>
+                            <div class="form-text">Prix de la session</div>
                         </div>
                     </div>
 

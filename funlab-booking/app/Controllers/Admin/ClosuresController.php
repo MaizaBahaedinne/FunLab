@@ -28,7 +28,9 @@ class ClosuresController extends BaseController
 
     public function create()
     {
-        return view('admin/closures/create');
+        $roomModel = new \App\Models\RoomModel();
+        $data['rooms'] = $roomModel->where('status', 'active')->findAll();
+        return view('admin/closures/create', $data);
     }
 
     public function store()
@@ -64,6 +66,9 @@ class ClosuresController extends BaseController
         if (!$data['closure']) {
             return redirect()->to('admin/closures')->with('error', 'Fermeture introuvable');
         }
+        
+        $roomModel = new \App\Models\RoomModel();
+        $data['rooms'] = $roomModel->findAll();
         
         return view('admin/closures/edit', $data);
     }
