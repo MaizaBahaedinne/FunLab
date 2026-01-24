@@ -60,6 +60,9 @@
                     <a class="nav-link" href="<?= base_url('admin/scanner') ?>">
                         <i class="bi bi-qr-code-scan"></i> Scanner QR
                     </a>
+                    <a class="nav-link" href="<?= base_url('admin/settings') ?>">
+                        <i class="bi bi-gear"></i> Paramètres
+                    </a>
                     <hr class="bg-white">
                     <a class="nav-link" href="<?= base_url('auth/logout') ?>">
                         <i class="bi bi-box-arrow-right"></i> Déconnexion

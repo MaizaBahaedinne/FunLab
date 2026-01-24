@@ -130,6 +130,16 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'ad
     $routes->get('scanner', 'ScannerController::index');
     $routes->post('scanner/scan', 'ScannerController::scan');
     $routes->post('scanner/validate', 'ScannerController::validateTicket');
+    
+    // Paramètres et configuration
+    $routes->get('settings', 'SettingsController::index');
+    $routes->post('settings/save', 'SettingsController::save');
+    $routes->post('settings/upload-image', 'SettingsController::uploadImage');
+    $routes->post('settings/test-email', 'SettingsController::testEmail');
+    $routes->get('settings/users', 'SettingsController::users');
+    $routes->post('settings/create-user', 'SettingsController::createUser');
+    $routes->post('settings/update-user/(:num)', 'SettingsController::updateUser/$1');
+    $routes->get('settings/delete-user/(:num)', 'SettingsController::deleteUser/$1');
 });
 
 // ============================================================
