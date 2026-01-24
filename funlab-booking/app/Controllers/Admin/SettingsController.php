@@ -18,26 +18,76 @@ class SettingsController extends BaseController
     }
 
     /**
-     * Page principale des paramètres
+     * Page principale des paramètres - Rediriger vers général
      */
     public function index()
     {
-        $tab = $this->request->getGet('tab') ?? 'general';
+        return redirect()->to('/admin/settings/general');
+    }
 
+    /**
+     * Paramètres généraux
+     */
+    public function general()
+    {
         $data = [
-            'title' => 'Paramètres',
-            'activeTab' => $tab,
-            'settings' => [
-                'general' => $this->settingModel->getByCategory('general'),
-                'hours' => $this->settingModel->getByCategory('hours'),
-                'mail' => $this->settingModel->getByCategory('mail'),
-                'mail_template' => $this->settingModel->getByCategory('mail_template'),
-                'sms' => $this->settingModel->getByCategory('sms'),
-                'seo' => $this->settingModel->getByCategory('seo')
-            ]
+            'title' => 'Paramètres généraux',
+            'settings' => $this->settingModel->getByCategory('general')
         ];
 
-        return view('admin/settings/index', $data);
+        return view('admin/settings/general', $data);
+    }
+
+    /**
+     * Horaires de travail
+     */
+    public function hours()
+    {
+        $data = [
+            'title' => 'Horaires de travail',
+            'settings' => $this->settingModel->getByCategory('hours')
+        ];
+
+        return view('admin/settings/hours', $data);
+    }
+
+    /**
+     * Configuration email
+     */
+    public function mail()
+    {
+        $data = [
+            'title' => 'Configuration Email',
+            'settings' => $this->settingModel->getByCategory('mail')
+        ];
+
+        return view('admin/settings/mail', $data);
+    }
+
+    /**
+     * Configuration SMS
+     */
+    public function sms()
+    {
+        $data = [
+            'title' => 'Configuration SMS',
+            'settings' => $this->settingModel->getByCategory('sms')
+        ];
+
+        return view('admin/settings/sms', $data);
+    }
+
+    /**
+     * Paramètres SEO
+     */
+    public function seo()
+    {
+        $data = [
+            'title' => 'Référencement SEO',
+            'settings' => $this->settingModel->getByCategory('seo')
+        ];
+
+        return view('admin/settings/seo', $data);
     }
 
     /**
@@ -66,8 +116,96 @@ class SettingsController extends BaseController
             $this->settingModel->setSetting($key, $value, $type, $category);
         }
 
-        return redirect()->to('/admin/settings?tab=' . $category)
+        return redirect()->to('/admin/settings/' . $category)
             ->with('success', 'Paramètres sauvegardés avec succès');
+    }
+
+    /**
+     * Gestion des rôles et permissions
+     */
+    public function roles()
+    {
+        $data = [
+            'title' => 'Gestion des rôles et permissions',
+            'roles' => [
+                [
+                    'name' => 'admin',
+                    'label' => 'Administrateur',
+                    'description' => 'Accès complet à toutes les fonctionnalités'
+                ],
+                [
+                    'name' => 'staff',
+                    'label' => 'Staff',
+                    'description' => 'Accès aux réservations et scanner'
+                ],
+                [
+                    'name' => 'user',
+                    'label' => 'Utilisateur',
+                    'description' => 'Accès client standard'
+                ]
+            ],
+            'modules' => [
+                'dashboard' => 'Tableau de bord',
+                'bookings' => 'Réservations',
+                'games' => 'Jeux',
+                'rooms' => 'Salles',
+                'closures' => 'Fermetures',
+                'scanner' => 'Scanner QR',
+                'settings' => 'Paramètres',
+                'users' => 'Utilisateurs'
+            ],
+            'permissions' => $this->getRolePermissions()
+        ];
+
+        return view('admin/settings/roles', $data);
+    }
+
+    /**
+     * Récupérer les permissions par rôle
+     */
+    private function getRolePermissions()
+    {
+        return [
+            'admin' => [
+                'dashboard' => ['view', 'create', 'edit', 'delete'],
+                'bookings' => ['view', 'create', 'edit', 'delete'],
+                'games' => ['view', 'create', 'edit', 'delete'],
+                'rooms' => ['view', 'create', 'edit', 'delete'],
+                'closures' => ['view', 'create', 'edit', 'delete'],
+                'scanner' => ['view', 'scan'],
+                'settings' => ['view', 'edit'],
+                'users' => ['view', 'create', 'edit', 'delete']
+            ],
+            'staff' => [
+                'dashboard' => ['view'],
+                'bookings' => ['view', 'edit'],
+                'games' => ['view'],
+                'rooms' => ['view'],
+                'closures' => ['view'],
+                'scanner' => ['view', 'scan'],
+                'settings' => [],
+                'users' => []
+            ],
+            'user' => [
+                'dashboard' => [],
+                'bookings' => ['view'],
+                'games' => ['view'],
+                'rooms' => ['view'],
+                'closures' => [],
+                'scanner' => [],
+                'settings' => [],
+                'users' => []
+            ]
+        ];
+    }
+
+    /**
+     * Mettre à jour les permissions d'un rôle
+     */
+    public function updateRolePermissions()
+    {
+        // TODO: Implémenter la sauvegarde des permissions dans la base de données
+        return redirect()->back()->with('success', 'Permissions mises à jour');
     }
 
     /**

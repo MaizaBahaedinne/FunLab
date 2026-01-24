@@ -133,13 +133,20 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'ad
     
     // Paramètres et configuration
     $routes->get('settings', 'SettingsController::index');
+    $routes->get('settings/general', 'SettingsController::general');
+    $routes->get('settings/hours', 'SettingsController::hours');
+    $routes->get('settings/mail', 'SettingsController::mail');
+    $routes->get('settings/sms', 'SettingsController::sms');
+    $routes->get('settings/seo', 'SettingsController::seo');
+    $routes->get('settings/users', 'SettingsController::users');
+    $routes->get('settings/roles', 'SettingsController::roles');
     $routes->post('settings/save', 'SettingsController::save');
     $routes->post('settings/upload-image', 'SettingsController::uploadImage');
     $routes->post('settings/test-email', 'SettingsController::testEmail');
-    $routes->get('settings/users', 'SettingsController::users');
     $routes->post('settings/create-user', 'SettingsController::createUser');
     $routes->post('settings/update-user/(:num)', 'SettingsController::updateUser/$1');
     $routes->get('settings/delete-user/(:num)', 'SettingsController::deleteUser/$1');
+    $routes->post('settings/update-role-permissions', 'SettingsController::updateRolePermissions');
 });
 
 // ============================================================
