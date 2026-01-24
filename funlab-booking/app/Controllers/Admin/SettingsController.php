@@ -91,6 +91,19 @@ class SettingsController extends BaseController
     }
 
     /**
+     * Configuration OAuth (Google, Facebook)
+     */
+    public function oauth()
+    {
+        $data = [
+            'title' => 'Authentification OAuth',
+            'settings' => $this->settingModel->getByCategory('oauth')
+        ];
+
+        return view('admin/settings/oauth', $data);
+    }
+
+    /**
      * Sauvegarder les paramètres
      */
     public function save()

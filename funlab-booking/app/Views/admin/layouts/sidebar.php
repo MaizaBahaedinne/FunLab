@@ -87,6 +87,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-oauth' ? 'text-white' : '' ?>" 
+                               href="<?= base_url('admin/settings/oauth') ?>">
+                                <i class="bi bi-shield-lock"></i> Authentification OAuth
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-users' ? 'text-white' : '' ?>" 
                                href="<?= base_url('admin/settings/users') ?>">
                                 <i class="bi bi-person"></i> Utilisateurs
