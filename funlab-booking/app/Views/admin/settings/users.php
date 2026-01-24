@@ -51,9 +51,22 @@
                             </thead>
                             <tbody>
                                 <?php foreach ($users as $user): ?>
+                                    <?php 
+                                    // Gérer les différents formats de nom
+                                    $userName = '';
+                                    if (!empty($user['name'])) {
+                                        $userName = $user['name'];
+                                    } elseif (!empty($user['first_name']) || !empty($user['last_name'])) {
+                                        $userName = trim(($user['first_name'] ?? '') . ' ' . ($user['last_name'] ?? ''));
+                                    } elseif (!empty($user['username'])) {
+                                        $userName = $user['username'];
+                                    } else {
+                                        $userName = $user['email'];
+                                    }
+                                    ?>
                                     <tr>
                                         <td><?= $user['id'] ?></td>
-                                        <td><?= esc($user['name']) ?></td>
+                                        <td><?= esc($userName) ?></td>
                                         <td><?= esc($user['email']) ?></td>
                                         <td>
                                             <span class="badge bg-<?= $user['role'] === 'admin' ? 'danger' : ($user['role'] === 'staff' ? 'warning' : 'secondary') ?>">
@@ -90,7 +103,7 @@
                                                         <div class="mb-3">
                                                             <label class="form-label">Nom</label>
                                                             <input type="text" class="form-control" name="name" 
-                                                                value="<?= esc($user['name']) ?>" required>
+                                                                value="<?= esc($userName) ?>" required>
                                                         </div>
                                                         <div class="mb-3">
                                                             <label class="form-label">Email</label>
