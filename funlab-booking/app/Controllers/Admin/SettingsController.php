@@ -352,16 +352,27 @@ class SettingsController extends BaseController
 
         // Configurer l'email avec les paramètres de la base de données
         $config = [
-            'protocol'    => $settings['mail_protocol'] ?? 'mail',
-            'SMTPHost'    => $settings['mail_smtp_host'] ?? '',
-            'SMTPPort'    => $settings['mail_smtp_port'] ?? 587,
-            'SMTPUser'    => $settings['mail_smtp_user'] ?? '',
-            'SMTPPass'    => $settings['mail_smtp_pass'] ?? '',
-            'SMTPCrypto'  => $settings['mail_smtp_crypto'] ?? 'tls',
-            'mailType'    => 'html',
-            'charset'     => 'utf-8',
-            'newline'     => "\r\n"
+            'protocol'     => $settings['mail_protocol'] ?? 'mail',
+            'SMTPHost'     => $settings['mail_smtp_host'] ?? '',
+            'SMTPPort'     => (int)($settings['mail_smtp_port'] ?? 587),
+            'SMTPUser'     => $settings['mail_smtp_user'] ?? '',
+            'SMTPPass'     => $settings['mail_smtp_pass'] ?? '',
+            'SMTPCrypto'   => $settings['mail_smtp_crypto'] ?? 'tls',
+            'SMTPAuth'     => true,
+            'mailType'     => 'html',
+            'charset'      => 'utf-8',
+            'newline'      => "\r\n",
+            'SMTPTimeout'  => 30,
+            'validation'   => true,
+            'wordWrap'     => true
         ];
+
+        // Si port 465, SSL sans STARTTLS
+        if ($config['SMTPPort'] == 465) {
+            $config['SMTPCrypto'] = 'ssl';
+        } elseif ($config['SMTPPort'] == 587) {
+            $config['SMTPCrypto'] = 'tls';
+        }
 
         $email = \Config\Services::email($config);
         
@@ -394,17 +405,27 @@ class SettingsController extends BaseController
         } else {
             $debugInfo = $email->printDebugger(['headers', 'subject', 'body']);
             
+            // Informations de configuration pour le debug
+            $configInfo = "Config: " . $config['protocol'] . " | " . 
+                         $config['SMTPHost'] . ":" . $config['SMTPPort'] . " | " . 
+                         $config['SMTPCrypto'];
+            
             // Extraire l'erreur principale
             $errorMessage = 'Configuration incorrecte';
-            if (strpos($debugInfo, 'SMTP Error') !== false) {
-                $errorMessage = 'Erreur SMTP : Vérifiez le serveur, port, identifiants et cryptage';
-            } elseif (strpos($debugInfo, 'authentication failed') !== false) {
-                $errorMessage = 'Authentification échouée : Vérifiez l\'utilisateur et le mot de passe SMTP';
-            } elseif (strpos($debugInfo, 'Connection refused') !== false) {
-                $errorMessage = 'Connexion refusée : Vérifiez le serveur SMTP et le port';
+            if (strpos($debugInfo, 'fsockopen') !== false || strpos($debugInfo, 'Connection') !== false) {
+                $errorMessage = 'Impossible de se connecter au serveur SMTP. Vérifiez le serveur et le port';
+            } elseif (strpos($debugInfo, 'authentication failed') !== false || strpos($debugInfo, 'Username and Password') !== false) {
+                $errorMessage = 'Authentification échouée. Vérifiez l\'utilisateur et le mot de passe';
+            } elseif (strpos($debugInfo, 'STARTTLS') !== false) {
+                $errorMessage = 'Erreur TLS/SSL. Essayez de changer le cryptage (TLS↔SSL)';
             }
             
-            return redirect()->back()->with('error', '❌ ' . $errorMessage . '<br><small>Détails: ' . substr(strip_tags($debugInfo), 0, 200) . '...</small>');
+            return redirect()->back()->with('error', 
+                '❌ ' . $errorMessage . 
+                '<br><small>' . $configInfo . '</small>' .
+                '<br><details><summary>Détails techniques</summary><pre style="font-size:10px;max-height:200px;overflow:auto;">' . 
+                esc($debugInfo) . '</pre></details>'
+            );
         }
     }
 }

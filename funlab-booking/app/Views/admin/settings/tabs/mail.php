@@ -1,6 +1,34 @@
 <form action="/admin/settings/save" method="POST">
     <input type="hidden" name="category" value="mail">
 
+    <div class="card mb-3">
+        <div class="card-header">
+            <h6 class="mb-0"><i class="bi bi-info-circle"></i> Diagnostic</h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <small class="text-muted">Extension OpenSSL:</small>
+                    <span class="badge bg-<?= extension_loaded('openssl') ? 'success' : 'danger' ?>">
+                        <?= extension_loaded('openssl') ? '✓ Installée' : '✗ Manquante' ?>
+                    </span>
+                </div>
+                <div class="col-md-4">
+                    <small class="text-muted">fonction fsockopen:</small>
+                    <span class="badge bg-<?= function_exists('fsockopen') ? 'success' : 'danger' ?>">
+                        <?= function_exists('fsockopen') ? '✓ Disponible' : '✗ Désactivée' ?>
+                    </span>
+                </div>
+                <div class="col-md-4">
+                    <small class="text-muted">allow_url_fopen:</small>
+                    <span class="badge bg-<?= ini_get('allow_url_fopen') ? 'success' : 'warning' ?>">
+                        <?= ini_get('allow_url_fopen') ? '✓ Activé' : '⚠ Désactivé' ?>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5><i class="bi bi-envelope"></i> Configuration Email</h5>
