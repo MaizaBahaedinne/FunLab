@@ -9,15 +9,20 @@ $breadcrumbs = ['Admin' => base_url('admin'), 'Param\u00e8tres' => base_url('adm
 <?= view('admin/layouts/sidebar', compact('activeMenu')) ?>
 <?= view('admin/layouts/topbar', compact('pageTitle', 'breadcrumbs')) ?>
 
-            <div class="container-fluid p-4">
-                <?php if (session()->getFlashdata('success')): ?>
-                    <div class="alert alert-success alert-dismissible fade show">
-                        <?= session()->getFlashdata('success') ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                <?php endif; ?>
+            <?php if (session()->getFlashdata('success')): ?>
+                <div class="alert alert-success alert-dismissible fade show">
+                    <?= session()->getFlashdata('success') ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <?php endif; ?>
 
-                <?= view('admin/settings/tabs/mail', ['settings' => $settings]) ?>
-            </div>
+            <?php if (session()->getFlashdata('error')): ?>
+                <div class="alert alert-danger alert-dismissible fade show">
+                    <?= session()->getFlashdata('error') ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <?php endif; ?>
+
+            <?= view('admin/settings/tabs/mail', ['settings' => $settings]) ?>
 
 <?= view('admin/layouts/footer') ?>

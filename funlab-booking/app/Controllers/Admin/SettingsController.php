@@ -341,22 +341,60 @@ class SettingsController extends BaseController
      */
     public function testEmail()
     {
-        $email = \Config\Services::email();
-        
         $testEmail = $this->request->getPost('test_email');
         
         if (!$testEmail) {
             return redirect()->back()->with('error', 'Email de test requis');
         }
 
+        // Charger les paramètres email depuis la base de données
+        $settings = $this->settingModel->getByCategory('mail');
+
+        // Configurer l'email avec les paramètres de la base de données
+        $config = [
+            'protocol'    => $settings['mail_protocol'] ?? 'mail',
+            'SMTPHost'    => $settings['mail_smtp_host'] ?? '',
+            'SMTPPort'    => $settings['mail_smtp_port'] ?? 587,
+            'SMTPUser'    => $settings['mail_smtp_user'] ?? '',
+            'SMTPPass'    => $settings['mail_smtp_pass'] ?? '',
+            'SMTPCrypto'  => $settings['mail_smtp_crypto'] ?? 'tls',
+            'mailType'    => 'html',
+            'charset'     => 'utf-8',
+            'newline'     => "\r\n"
+        ];
+
+        $email = \Config\Services::email($config);
+        
+        $email->setFrom(
+            $settings['mail_from_email'] ?? 'noreply@funlab.tn',
+            $settings['mail_from_name'] ?? 'FunLab'
+        );
         $email->setTo($testEmail);
         $email->setSubject('Test de configuration email - FunLab');
-        $email->setMessage('Ceci est un email de test. Si vous recevez ce message, la configuration email fonctionne correctement.');
+        
+        $message = '
+        <html>
+        <body style="font-family: Arial, sans-serif; padding: 20px;">
+            <h2 style="color: #667eea;">✅ Test de configuration email</h2>
+            <p>Ceci est un email de test envoyé depuis FunLab.</p>
+            <p>Si vous recevez ce message, cela signifie que la configuration email fonctionne correctement.</p>
+            <hr>
+            <p style="color: #666; font-size: 12px;">
+                Envoyé le ' . date('d/m/Y à H:i:s') . '<br>
+                Depuis: ' . ($settings['mail_from_email'] ?? 'noreply@funlab.tn') . '
+            </p>
+        </body>
+        </html>
+        ';
+        
+        $email->setMessage($message);
 
         if ($email->send()) {
-            return redirect()->back()->with('success', 'Email de test envoyé avec succès');
+            return redirect()->back()->with('success', '✅ Email de test envoyé avec succès à ' . $testEmail);
         } else {
-            return redirect()->back()->with('error', 'Erreur lors de l\'envoi: ' . $email->printDebugger());
+            $error = $email->printDebugger(['headers']);
+            log_message('error', 'Email test failed: ' . $error);
+            return redirect()->back()->with('error', '❌ Erreur lors de l\'envoi de l\'email. Vérifiez les logs pour plus de détails.');
         }
     }
 }
