@@ -4,14 +4,17 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
 use App\Models\RoomModel;
+use App\Models\BookingModel;
 
 class RoomsController extends BaseController
 {
     protected $roomModel;
+    protected $bookingModel;
 
     public function __construct()
     {
         $this->roomModel = new RoomModel();
+        $this->bookingModel = new BookingModel();
     }
 
     public function index()
@@ -94,8 +97,18 @@ class RoomsController extends BaseController
     {
         if ($this->request->isAJAX()) {
             try {
+                // Check if room has bookings
+                $bookingsCount = $this->bookingModel->where('room_id', $id)->countAllResults();
+                
+                if ($bookingsCount > 0) {
+                    return $this->response->setJSON([
+                        'success' => false, 
+                        'message' => "Impossible de supprimer cette salle : {$bookingsCount} réservation(s) y sont associées. Veuillez d'abord supprimer ou réassigner ces réservations."
+                    ]);
+                }
+                
                 if ($this->roomModel->delete($id)) {
-                    return $this->response->setJSON(['success' => true, 'message' => 'Salle supprimée']);
+                    return $this->response->setJSON(['success' => true, 'message' => 'Salle supprimée avec succès']);
                 }
                 return $this->response->setJSON(['success' => false, 'message' => 'Erreur lors de la suppression']);
             } catch (\Exception $e) {

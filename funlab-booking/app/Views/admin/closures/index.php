@@ -140,15 +140,15 @@
                     <?php else: ?>
                         <?php foreach ($closures as $closure): ?>
                             <?php
-                            $startDate = strtotime($closure['start_date'] . ' ' . ($closure['start_time'] ?? '00:00:00'));
-                            $endDate = strtotime($closure['end_date'] . ' ' . ($closure['end_time'] ?? '23:59:59'));
+                            $startDate = strtotime(($closure['start_date'] ?? date('Y-m-d')) . ' ' . ($closure['start_time'] ?? '00:00:00'));
+                            $endDate = strtotime(($closure['end_date'] ?? date('Y-m-d')) . ' ' . ($closure['end_time'] ?? '23:59:59'));
                             $now = time();
                             $isActive = $now >= $startDate && $now <= $endDate;
                             $isPast = $now > $endDate;
                             $isUpcoming = $now < $startDate;
                             ?>
                             <div class="col-md-6 mb-4 closure-item" 
-                                 data-type="<?= $closure['type'] ?>"
+                                 data-type="<?= $closure['type'] ?? 'full_day' ?>"
                                  data-status="<?= $isPast ? 'past' : ($isActive ? 'active' : 'upcoming') ?>">
                                 <div class="card closure-card">
                                     <div class="card-body">
@@ -158,8 +158,8 @@
                                                 <?= esc($closure['reason'] ?? 'Fermeture') ?>
                                             </h5>
                                             <div>
-                                                <span class="badge badge-type bg-<?= $closure['type'] === 'full_day' ? 'danger' : 'warning' ?>">
-                                                    <?= $closure['type'] === 'full_day' ? 'Journée complète' : 'Partielle' ?>
+                                                <span class="badge badge-type bg-<?= ($closure['type'] ?? 'full_day') === 'full_day' ? 'danger' : 'warning' ?>">
+                                                    <?= ($closure['type'] ?? 'full_day') === 'full_day' ? 'Journée complète' : 'Partielle' ?>
                                                 </span>
                                                 <?php if ($isActive): ?>
                                                     <span class="badge bg-success ms-1">En cours</span>
@@ -174,28 +174,26 @@
                                         <div class="mb-3">
                                             <div class="d-flex align-items-center mb-2">
                                                 <i class="bi bi-calendar3 text-muted me-2"></i>
-                                                <strong>Du <?= date('d/m/Y', strtotime($closure['start_date'])) ?></strong>
-                                                <?php if ($closure['type'] === 'partial' && $closure['start_time']): ?>
+                                                <strong>Du <?= isset($closure['start_date']) ? date('d/m/Y', strtotime($closure['start_date'])) : 'N/A' ?></strong>
+                                                <?php if (($closure['type'] ?? '') === 'partial' && !empty($closure['start_time'])): ?>
                                                     à <?= date('H:i', strtotime($closure['start_time'])) ?>
                                                 <?php endif; ?>
                                             </div>
                                             <div class="d-flex align-items-center">
                                                 <i class="bi bi-calendar-check text-muted me-2"></i>
-                                                <strong>Au <?= date('d/m/Y', strtotime($closure['end_date'])) ?></strong>
-                                                <?php if ($closure['type'] === 'partial' && $closure['end_time']): ?>
+                                                <strong>Au <?= isset($closure['end_date']) ? date('d/m/Y', strtotime($closure['end_date'])) : 'N/A' ?></strong>
+                                                <?php if (($closure['type'] ?? '') === 'partial' && !empty($closure['end_time'])): ?>
                                                     à <?= date('H:i', strtotime($closure['end_time'])) ?>
                                                 <?php endif; ?>
                                             </div>
                                         </div>
 
-                                        <?php if (isset($closure['room_name'])): ?>
-                                            <div class="mb-3">
-                                                <span class="badge bg-info">
-                                                    <i class="bi bi-door-open"></i>
-                                                    <?= $closure['room_id'] ? esc($closure['room_name']) : 'Toutes les salles' ?>
-                                                </span>
-                                            </div>
-                                        <?php endif; ?>
+                                        <div class="mb-3">
+                                            <span class="badge bg-info">
+                                                <i class="bi bi-door-open"></i>
+                                                <?= !empty($closure['room_name']) ? esc($closure['room_name']) : 'Toutes les salles' ?>
+                                            </span>
+                                        </div>
 
                                         <?php if (!empty($closure['description'])): ?>
                                             <p class="card-text text-muted small">

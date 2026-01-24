@@ -18,7 +18,9 @@ class ClosureModel extends Model
         'end_date',
         'start_time',
         'end_time',
+        'type',
         'reason',
+        'description',
         'is_recurring',
         'recurring_pattern'
     ];

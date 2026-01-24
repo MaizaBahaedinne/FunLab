@@ -16,7 +16,13 @@ class ClosuresController extends BaseController
 
     public function index()
     {
-        $data['closures'] = $this->closureModel->findAll();
+        // Get closures with room information
+        $builder = $this->closureModel->builder();
+        $builder->select('closures.*, rooms.name as room_name')
+                ->join('rooms', 'rooms.id = closures.room_id', 'left')
+                ->orderBy('closures.start_date', 'DESC');
+        
+        $data['closures'] = $builder->get()->getResultArray();
         return view('admin/closures/index', $data);
     }
 

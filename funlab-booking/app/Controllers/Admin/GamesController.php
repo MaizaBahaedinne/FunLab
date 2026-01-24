@@ -6,18 +6,21 @@ use App\Controllers\BaseController;
 use App\Models\GameModel;
 use App\Models\RoomModel;
 use App\Models\RoomGameModel;
+use App\Models\BookingModel;
 
 class GamesController extends BaseController
 {
     protected $gameModel;
     protected $roomModel;
     protected $roomGameModel;
+    protected $bookingModel;
 
     public function __construct()
     {
         $this->gameModel = new GameModel();
         $this->roomModel = new RoomModel();
         $this->roomGameModel = new RoomGameModel();
+        $this->bookingModel = new BookingModel();
     }
 
     public function index()
@@ -143,11 +146,21 @@ class GamesController extends BaseController
     {
         if ($this->request->isAJAX()) {
             try {
+                // Check if game has bookings
+                $bookingsCount = $this->bookingModel->where('game_id', $id)->countAllResults();
+                
+                if ($bookingsCount > 0) {
+                    return $this->response->setJSON([
+                        'success' => false, 
+                        'message' => "Impossible de supprimer ce jeu : {$bookingsCount} réservation(s) y sont associées. Veuillez d'abord supprimer ces réservations."
+                    ]);
+                }
+                
                 // Delete room associations first
                 $this->roomGameModel->where('game_id', $id)->delete();
                 
                 if ($this->gameModel->delete($id)) {
-                    return $this->response->setJSON(['success' => true, 'message' => 'Jeu supprimé']);
+                    return $this->response->setJSON(['success' => true, 'message' => 'Jeu supprimé avec succès']);
                 }
                 return $this->response->setJSON(['success' => false, 'message' => 'Erreur lors de la suppression']);
             } catch (\Exception $e) {
