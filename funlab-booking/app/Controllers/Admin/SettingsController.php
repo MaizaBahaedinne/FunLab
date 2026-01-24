@@ -350,13 +350,16 @@ class SettingsController extends BaseController
         // Charger les paramètres email depuis la base de données
         $settings = $this->settingModel->getByCategory('mail');
 
+        // S'assurer que le mot de passe est bien une chaîne
+        $smtpPass = isset($settings['mail_smtp_pass']) ? trim($settings['mail_smtp_pass']) : '';
+
         // Configurer l'email avec les paramètres de la base de données
         $config = [
             'protocol'     => $settings['mail_protocol'] ?? 'mail',
             'SMTPHost'     => $settings['mail_smtp_host'] ?? '',
             'SMTPPort'     => (int)($settings['mail_smtp_port'] ?? 587),
             'SMTPUser'     => $settings['mail_smtp_user'] ?? '',
-            'SMTPPass'     => $settings['mail_smtp_pass'] ?? '',
+            'SMTPPass'     => $smtpPass,
             'SMTPCrypto'   => $settings['mail_smtp_crypto'] ?? 'tls',
             'SMTPAuth'     => true,
             'mailType'     => 'html',
