@@ -78,19 +78,24 @@ class RegistrationController extends BaseController
         $booking = $this->bookingModel->where('registration_token', $token)->first();
 
         if (!$booking) {
-            return $this->response->setJSON([
-                'status' => 'error',
-                'message' => 'Lien invalide'
-            ]);
+            return $this->response
+                ->setStatusCode(404)
+                ->setContentType('application/json')
+                ->setJSON([
+                    'status' => 'error',
+                    'message' => 'Lien invalide'
+                ]);
         }
 
         // Vérifier si la réservation est encore valide
         $bookingDateTime = strtotime($booking['booking_date'] . ' ' . $booking['end_time']);
         if ($bookingDateTime < time()) {
-            return $this->response->setJSON([
-                'status' => 'error',
-                'message' => 'La session est terminée'
-            ]);
+            return $this->response
+                ->setContentType('application/json')
+                ->setJSON([
+                    'status' => 'error',
+                    'message' => 'La session est terminée'
+                ]);
         }
 
         // Valider les données
@@ -100,19 +105,23 @@ class RegistrationController extends BaseController
         $phone = trim($this->request->getPost('phone'));
 
         if (empty($firstName) || empty($lastName)) {
-            return $this->response->setJSON([
-                'status' => 'error',
-                'message' => 'Le prénom et le nom sont requis'
-            ]);
+            return $this->response
+                ->setContentType('application/json')
+                ->setJSON([
+                    'status' => 'error',
+                    'message' => 'Le prénom et le nom sont requis'
+                ]);
         }
 
         // Vérifier le nombre de participants
         $currentCount = $this->participantModel->where('booking_id', $booking['id'])->countAllResults();
         if ($currentCount >= $booking['num_players']) {
-            return $this->response->setJSON([
-                'status' => 'error',
-                'message' => 'Le nombre maximum de participants est atteint'
-            ]);
+            return $this->response
+                ->setContentType('application/json')
+                ->setJSON([
+                    'status' => 'error',
+                    'message' => 'Le nombre maximum de participants est atteint'
+                ]);
         }
 
         // Insérer le participant
@@ -126,17 +135,21 @@ class RegistrationController extends BaseController
         ]);
 
         if (!$participantId) {
-            return $this->response->setJSON([
-                'status' => 'error',
-                'message' => 'Erreur lors de l\'inscription'
-            ]);
+            return $this->response
+                ->setContentType('application/json')
+                ->setJSON([
+                    'status' => 'error',
+                    'message' => 'Erreur lors de l\'inscription'
+                ]);
         }
 
-        return $this->response->setJSON([
-            'status' => 'success',
-            'message' => 'Inscription réussie !',
-            'participant_id' => $participantId
-        ]);
+        return $this->response
+            ->setContentType('application/json')
+            ->setJSON([
+                'status' => 'success',
+                'message' => 'Inscription réussie !',
+                'participant_id' => $participantId
+            ]);
     }
 
     /**
@@ -147,21 +160,25 @@ class RegistrationController extends BaseController
         $booking = $this->bookingModel->where('registration_token', $token)->first();
 
         if (!$booking) {
-            return $this->response->setJSON([
-                'status' => 'error',
-                'participants' => []
-            ]);
+            return $this->response
+                ->setContentType('application/json')
+                ->setJSON([
+                    'status' => 'error',
+                    'participants' => []
+                ]);
         }
 
         $participants = $this->participantModel
             ->where('booking_id', $booking['id'])
             ->findAll();
 
-        return $this->response->setJSON([
-            'status' => 'success',
-            'participants' => $participants,
-            'total' => count($participants),
-            'max' => $booking['num_players']
-        ]);
+        return $this->response
+            ->setContentType('application/json')
+            ->setJSON([
+                'status' => 'success',
+                'participants' => $participants,
+                'total' => count($participants),
+                'max' => $booking['num_players']
+            ]);
     }
 }
