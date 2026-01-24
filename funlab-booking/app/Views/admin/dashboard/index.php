@@ -178,7 +178,7 @@ $additionalStyles = '
 <?php
 $additionalJS = <<<'JS'
 <script>
-        const API_BASE_URL = '/api';
+        const API_BASE_URL = '<?= base_url() ?>';
         let bookingsChart, gamesChart;
 
         // Initialisation
@@ -234,7 +234,7 @@ $additionalJS = <<<'JS'
 
         async function loadRecentBookings() {
             try {
-                const response = await fetch(`${API_BASE_URL}/../admin/dashboard/stats`);
+                const response = await fetch(`${API_BASE_URL}/admin/dashboard/stats`);
                 const result = await response.json();
                 
                 if (result.status === 'success') {

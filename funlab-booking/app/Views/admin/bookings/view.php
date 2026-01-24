@@ -35,13 +35,7 @@ $additionalStyles = '
 <?= view('admin/layouts/sidebar', compact('activeMenu')) ?>
 <?= view('admin/layouts/topbar', compact('pageTitle', 'breadcrumbs')) ?>
 
-        <div class="flex-grow-1 p-4">
-            <div class="container-fluid">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h2>Réservation #<?= esc($booking['id']) ?></h2>
-                        <p class="text-muted mb-0">Référence: <?= esc($booking['reference_number'] ?? 'N/A') ?></p>
-                    </div>
+                <div class="mb-4">
                     <a href="<?= base_url('admin/bookings') ?>" class="btn btn-outline-secondary">
                         <i class="bi bi-arrow-left"></i> Retour
                     </a>
@@ -389,9 +383,6 @@ $additionalStyles = '
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Modal Ajouter Participant -->
     <div class="modal fade" id="addParticipantModal" tabindex="-1">
