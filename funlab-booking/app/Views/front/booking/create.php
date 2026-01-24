@@ -69,6 +69,30 @@
             margin: 20px auto;
             display: block;
         }
+        .payment-method {
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid #e0e0e0;
+        }
+        .payment-method:hover {
+            border-color: #667eea;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .payment-method.selected {
+            border-color: #667eea;
+            background-color: #f0f4ff;
+        }
+        .game-card {
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid #e0e0e0;
+        }
+        .game-card:hover {
+            border-color: #667eea;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
@@ -101,6 +125,10 @@
                 <div>Vos informations</div>
             </div>
             <div class="step" id="step4-indicator">
+                <i class="bi bi-credit-card fs-3"></i>
+                <div>Paiement</div>
+            </div>
+            <div class="step" id="step5-indicator">
                 <i class="bi bi-check-circle fs-3"></i>
                 <div>Confirmation</div>
             </div>
@@ -171,15 +199,70 @@
                             <button type="button" class="btn btn-secondary" onclick="previousStep()">
                                 <i class="bi bi-arrow-left"></i> Retour
                             </button>
-                            <button type="submit" class="btn btn-primary flex-grow-1">
-                                <i class="bi bi-check-circle"></i> Confirmer la réservation
+                            <button type="button" class="btn btn-primary flex-grow-1" onclick="proceedToPayment()">
+                                <i class="bi bi-arrow-right"></i> Continuer vers le paiement
                             </button>
                         </div>
                     </form>
                 </div>
 
-                <!-- ÉTAPE 4 : Confirmation -->
+                <!-- ÉTAPE 4 : Paiement -->
                 <div id="step4" class="booking-step" style="display: none;">
+                    <h2 class="mb-4">4. Mode de paiement</h2>
+                    
+                    <div class="alert alert-info mb-4">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Montant total à payer : <span id="payment-total">0</span> DT</strong>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="card payment-method" onclick="selectPaymentMethod('card')">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-credit-card fs-1 text-primary"></i>
+                                    <h5 class="mt-3">Carte bancaire</h5>
+                                    <p class="text-muted mb-0">Paiement sécurisé en ligne</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <div class="card payment-method" onclick="selectPaymentMethod('cash')">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-cash-stack fs-1 text-success"></i>
+                                    <h5 class="mt-3">Sur place</h5>
+                                    <p class="text-muted mb-0">Espèces ou carte sur place</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Code promo -->
+                    <div class="card mt-3">
+                        <div class="card-body">
+                            <h6 class="card-title">Vous avez un code promo ?</h6>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="promo-code" placeholder="Entrez votre code">
+                                <button class="btn btn-outline-primary" type="button" onclick="applyPromoCode()">
+                                    <i class="bi bi-tag"></i> Appliquer
+                                </button>
+                            </div>
+                            <div id="promo-result" class="mt-2"></div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="button" class="btn btn-secondary" onclick="previousStep()">
+                            <i class="bi bi-arrow-left"></i> Retour
+                        </button>
+                        <button type="button" class="btn btn-primary flex-grow-1" id="confirm-payment-btn" disabled>
+                            <i class="bi bi-check-circle"></i> Confirmer la réservation
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ÉTAPE 5 : Confirmation -->
+                <div id="step5" class="booking-step" style="display: none;">
                     <div class="text-center">
                         <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
                         <h2 class="mt-3">Réservation confirmée !</h2>
@@ -229,14 +312,21 @@
             game: null,
             room: null,
             date: null,
-            slot: null
+            slot: null,
+            user_id: <?= isset($user) ? $user['id'] : 'null' ?>,
+            payment_method: null,
+            promo_code: null
         };
+
+        // Données utilisateur si connecté
+        const userData = <?= isset($user) ? json_encode($user) : 'null' ?>;
 
         // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
             loadGames();
             setupDatePicker();
             setupForm();
+            prefillUserData();
         });
 
         // Charger les jeux disponibles
@@ -341,6 +431,24 @@
             dateInput.value = today;
 
             dateInput.addEventListener('change', loadAvailableSlots);
+            
+            // Charger les créneaux automatiquement après sélection du jeu
+            // (sera appelé dans selectGame via nextStep qui déclenche l'étape 2)
+        }
+
+        function prefillUserData() {
+            if (userData) {
+                // Pré-remplir les champs client avec les données utilisateur
+                document.getElementById('customer-name').value = userData.name || '';
+                document.getElementById('customer-email').value = userData.email || '';
+                document.getElementById('customer-phone').value = userData.phone || '';
+                
+                // Rendre les champs en lecture seule si c'est un compte vérifié
+                if (userData.email) {
+                    document.getElementById('customer-email').setAttribute('readonly', true);
+                    document.getElementById('customer-email').classList.add('bg-light');
+                }
+            }
         }
 
         async function loadAvailableSlots() {
@@ -411,16 +519,95 @@
         }
 
         function setupForm() {
-            document.getElementById('booking-form').addEventListener('submit', async (e) => {
-                e.preventDefault();
+            // Bouton de confirmation dans l'étape paiement
+            document.getElementById('confirm-payment-btn').addEventListener('click', async () => {
                 await createBooking();
             });
 
             document.getElementById('num-players').addEventListener('input', updateSummary);
         }
 
+        function proceedToPayment() {
+            // Valider le formulaire d'informations
+            const name = document.getElementById('customer-name').value.trim();
+            const email = document.getElementById('customer-email').value.trim();
+            const phone = document.getElementById('customer-phone').value.trim();
+            const numPlayers = parseInt(document.getElementById('num-players').value);
+
+            if (!name || !email || !phone) {
+                alert('Veuillez remplir tous les champs obligatoires');
+                return;
+            }
+
+            if (numPlayers < bookingData.game.min_players || numPlayers > bookingData.game.max_players) {
+                alert(`Le nombre de joueurs doit être entre ${bookingData.game.min_players} et ${bookingData.game.max_players}`);
+                return;
+            }
+
+            // Afficher le montant total dans l'étape paiement
+            const totalPrice = bookingData.game.price * numPlayers;
+            document.getElementById('payment-total').textContent = totalPrice.toFixed(2);
+
+            nextStep();
+        }
+
+        function selectPaymentMethod(method) {
+            bookingData.payment_method = method;
+
+            // Mettre à jour les styles
+            document.querySelectorAll('.payment-method').forEach(el => {
+                el.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+
+            // Activer le bouton de confirmation
+            document.getElementById('confirm-payment-btn').disabled = false;
+        }
+
+        async function applyPromoCode() {
+            const code = document.getElementById('promo-code').value.trim();
+            const resultDiv = document.getElementById('promo-result');
+
+            if (!code) {
+                resultDiv.innerHTML = '<div class="alert alert-warning">Veuillez entrer un code</div>';
+                return;
+            }
+
+            resultDiv.innerHTML = '<div class="spinner-border spinner-border-sm"></div>';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/payment/validate-promo`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code: code })
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    bookingData.promo_code = code;
+                    const discount = result.data.discount_amount || 0;
+                    resultDiv.innerHTML = `<div class="alert alert-success">
+                        <i class="bi bi-check-circle"></i> Code appliqué ! Réduction de ${discount} DT
+                    </div>`;
+                    
+                    // Mettre à jour le montant total
+                    const numPlayers = parseInt(document.getElementById('num-players').value);
+                    const totalPrice = (bookingData.game.price * numPlayers) - discount;
+                    document.getElementById('payment-total').textContent = totalPrice.toFixed(2);
+                } else {
+                    resultDiv.innerHTML = `<div class="alert alert-danger">
+                        <i class="bi bi-x-circle"></i> ${result.message || 'Code invalide'}
+                    </div>`;
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                resultDiv.innerHTML = '<div class="alert alert-danger">Erreur lors de la vérification</div>';
+            }
+        }
+
         async function createBooking() {
-            const submitBtn = document.querySelector('#booking-form button[type="submit"]');
+            const submitBtn = document.getElementById('confirm-payment-btn');
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Création...';
 
@@ -434,8 +621,19 @@
                 customer_email: document.getElementById('customer-email').value,
                 customer_phone: document.getElementById('customer-phone').value,
                 num_players: parseInt(document.getElementById('num-players').value),
-                notes: document.getElementById('booking-notes').value
+                notes: document.getElementById('booking-notes').value,
+                payment_method: bookingData.payment_method
             };
+
+            // Ajouter user_id si l'utilisateur est connecté
+            if (bookingData.user_id) {
+                bookingPayload.user_id = bookingData.user_id;
+            }
+
+            // Ajouter le code promo si appliqué
+            if (bookingData.promo_code) {
+                bookingPayload.promo_code = bookingData.promo_code;
+            }
 
             try {
                 const response = await fetch(`${API_BASE_URL}/booking/create`, {
@@ -544,6 +742,11 @@
             
             document.getElementById(`step${currentStep}`).style.display = 'block';
             document.getElementById(`step${currentStep}-indicator`).classList.add('active');
+
+            // Charger les créneaux automatiquement quand on arrive à l'étape 2
+            if (currentStep === 2 && bookingData.game) {
+                loadAvailableSlots();
+            }
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }

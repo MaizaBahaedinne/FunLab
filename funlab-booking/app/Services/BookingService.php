@@ -119,6 +119,16 @@ class BookingService
                 'notes' => $data['notes'] ?? null
             ];
 
+            // Ajouter user_id si fourni (relation avec le compte utilisateur)
+            if (isset($data['user_id']) && $data['user_id']) {
+                $bookingData['user_id'] = $data['user_id'];
+            }
+
+            // Ajouter payment_method si fourni
+            if (isset($data['payment_method'])) {
+                $bookingData['payment_method'] = $data['payment_method'];
+            }
+
             // ÉTAPE 6 : Démarrer une transaction
             $db->transStart();
 

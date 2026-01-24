@@ -13,6 +13,7 @@ class BookingModel extends Model
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
+        'user_id',
         'room_id',
         'game_id',
         'booking_date',
@@ -23,6 +24,7 @@ class BookingModel extends Model
         'customer_phone',
         'num_players',
         'total_price',
+        'payment_method',
         'status',
         'confirmation_code',
         'qr_code',
