@@ -65,7 +65,9 @@ class SettingModel extends Model
      */
     public function setSetting($key, $value, $type = 'text', $category = 'general')
     {
-        $setting = $this->where('key', $key)->first();
+        $setting = $this->where('key', $key)
+                        ->where('category', $category)
+                        ->first();
 
         // Encoder selon le type
         if ($type === 'json') {

@@ -99,17 +99,27 @@ class SettingsController extends BaseController
             $data = $this->request->getPost();
             unset($data['csrf_test_name']); // Retirer le token CSRF
 
+            $updated = 0;
             foreach ($data as $key => $value) {
                 // Déterminer le type selon le champ
                 $type = 'text';
                 if (strpos($key, 'hours') !== false || strpos($key, 'description') !== false) {
                     $type = 'textarea';
                 }
-                $this->settingModel->setSetting($key, $value, $type, 'footer');
+                
+                $result = $this->settingModel->setSetting($key, $value, $type, 'footer');
+                if ($result) {
+                    $updated++;
+                }
             }
 
-            return redirect()->to('/admin/settings/footer')
-                           ->with('success', 'Configuration du footer mise à jour avec succès');
+            if ($updated > 0) {
+                return redirect()->to('/admin/settings/footer')
+                               ->with('success', "Configuration du footer mise à jour avec succès ($updated champs modifiés)");
+            } else {
+                return redirect()->to('/admin/settings/footer')
+                               ->with('error', 'Aucune modification effectuée');
+            }
         }
 
         $data = [
