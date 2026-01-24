@@ -101,7 +101,10 @@ class SettingsController extends BaseController
 
             foreach ($data as $key => $value) {
                 // Déterminer le type selon le champ
-                $type = (strpos($key, 'hours') !== false) ? 'textarea' : 'text';
+                $type = 'text';
+                if (strpos($key, 'hours') !== false || strpos($key, 'description') !== false) {
+                    $type = 'textarea';
+                }
                 $this->settingModel->setSetting($key, $value, $type, 'footer');
             }
 

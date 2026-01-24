@@ -11,6 +11,8 @@ $hours = $footerSettings['footer_hours'] ?? '';
 $facebook = $footerSettings['footer_facebook'] ?? '';
 $instagram = $footerSettings['footer_instagram'] ?? '';
 $twitter = $footerSettings['footer_twitter'] ?? '';
+$tiktok = $footerSettings['footer_tiktok'] ?? '';
+$whatsapp = $footerSettings['footer_whatsapp'] ?? '';
 $copyright = $footerSettings['footer_copyright'] ?? '© {year} FunLab Tunisie. Tous droits réservés.';
 $copyright = str_replace('{year}', date('Y'), $copyright);
 ?>
@@ -22,24 +24,34 @@ $copyright = str_replace('{year}', date('Y'), $copyright);
                 <div class="col-md-4 mb-3">
                     <h5><i class="bi bi-joystick"></i> <?= esc($companyName) ?></h5>
                     <?php if ($description): ?>
-                        <p><?= esc($description) ?></p>
+                        <p><?= nl2br(esc($description)) ?></p>
                     <?php endif; ?>
                     
-                    <?php if ($facebook || $instagram || $twitter): ?>
+                    <?php if ($facebook || $instagram || $twitter || $tiktok || $whatsapp): ?>
                     <div class="mt-3">
                         <?php if ($facebook): ?>
-                            <a href="<?= esc($facebook) ?>" target="_blank" class="text-white me-3">
-                                <i class="bi bi-facebook"></i>
+                            <a href="<?= esc($facebook) ?>" target="_blank" class="text-white me-3" title="Facebook">
+                                <i class="bi bi-facebook fs-5"></i>
                             </a>
                         <?php endif; ?>
                         <?php if ($instagram): ?>
-                            <a href="<?= esc($instagram) ?>" target="_blank" class="text-white me-3">
-                                <i class="bi bi-instagram"></i>
+                            <a href="<?= esc($instagram) ?>" target="_blank" class="text-white me-3" title="Instagram">
+                                <i class="bi bi-instagram fs-5"></i>
                             </a>
                         <?php endif; ?>
                         <?php if ($twitter): ?>
-                            <a href="<?= esc($twitter) ?>" target="_blank" class="text-white me-3">
-                                <i class="bi bi-twitter"></i>
+                            <a href="<?= esc($twitter) ?>" target="_blank" class="text-white me-3" title="Twitter">
+                                <i class="bi bi-twitter fs-5"></i>
+                            </a>
+                        <?php endif; ?>
+                        <?php if ($tiktok): ?>
+                            <a href="<?= esc($tiktok) ?>" target="_blank" class="text-white me-3" title="TikTok">
+                                <i class="bi bi-tiktok fs-5"></i>
+                            </a>
+                        <?php endif; ?>
+                        <?php if ($whatsapp): ?>
+                            <a href="https://wa.me/<?= preg_replace('/[^0-9+]/', '', esc($whatsapp)) ?>" target="_blank" class="text-white me-3" title="WhatsApp">
+                                <i class="bi bi-whatsapp fs-5"></i>
                             </a>
                         <?php endif; ?>
                     </div>

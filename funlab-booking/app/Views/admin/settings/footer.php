@@ -49,9 +49,8 @@ $breadcrumbs = [
 
                     <div class="mb-3">
                         <label class="form-label">Description</label>
-                        <input type="text" name="footer_description" class="form-control" 
-                               value="<?= esc($settings['footer_description'] ?? '') ?>">
-                        <small class="text-muted">Courte description affichée dans le footer</small>
+                        <textarea name="footer_description" class="form-control" rows="3"><?= esc($settings['footer_description'] ?? '') ?></textarea>
+                        <small class="text-muted">Description affichée dans le footer</small>
                     </div>
                 </div>
 
@@ -113,6 +112,25 @@ $breadcrumbs = [
                         <input type="url" name="footer_twitter" class="form-control" 
                                value="<?= esc($settings['footer_twitter'] ?? '') ?>" 
                                placeholder="https://twitter.com/...">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="bi bi-tiktok"></i> TikTok
+                        </label>
+                        <input type="url" name="footer_tiktok" class="form-control" 
+                               value="<?= esc($settings['footer_tiktok'] ?? '') ?>" 
+                               placeholder="https://tiktok.com/@...">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="bi bi-whatsapp text-success"></i> WhatsApp
+                        </label>
+                        <input type="text" name="footer_whatsapp" class="form-control" 
+                               value="<?= esc($settings['footer_whatsapp'] ?? '') ?>" 
+                               placeholder="+216 XX XXX XXX">
+                        <small class="text-muted">Numéro de téléphone WhatsApp avec indicatif pays</small>
                     </div>
                 </div>
 
