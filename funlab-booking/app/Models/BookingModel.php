@@ -28,6 +28,7 @@ class BookingModel extends Model
         'status',
         'confirmation_code',
         'qr_code',
+        'registration_token',
         'notes'
     ];
 

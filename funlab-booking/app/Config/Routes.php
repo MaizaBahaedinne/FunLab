@@ -45,6 +45,13 @@ $routes->group('booking', ['namespace' => 'App\Controllers\Front'], function($ro
     $routes->get('confirm/(:num)', 'BookingController::confirm/$1');
 });
 
+// Auto-inscription participants (PUBLIC - Sans authentification)
+$routes->group('register', ['namespace' => 'App\Controllers\Front'], function($routes) {
+    $routes->get('(:any)', 'RegistrationController::index/$1');
+    $routes->post('(:any)/submit', 'RegistrationController::submit/$1');
+    $routes->get('(:any)/participants', 'RegistrationController::participants/$1');
+});
+
 // Calendrier
 $routes->get('calendar', 'Front\CalendarController::index');
 

@@ -102,6 +102,9 @@ class BookingService
             // ÉTAPE 4 : Générer le code de confirmation unique
             $confirmationCode = $this->generateConfirmationCode();
 
+            // ÉTAPE 4.5 : Générer le token d'inscription unique
+            $registrationToken = bin2hex(random_bytes(32));
+
             // ÉTAPE 5 : Préparer les données de la réservation
             $bookingData = [
                 'room_id' => $data['room_id'],
@@ -116,6 +119,7 @@ class BookingService
                 'total_price' => $totalPrice,
                 'status' => 'pending', // pending jusqu'à confirmation de paiement
                 'confirmation_code' => $confirmationCode,
+                'registration_token' => $registrationToken,
                 'notes' => $data['notes'] ?? null
             ];
 

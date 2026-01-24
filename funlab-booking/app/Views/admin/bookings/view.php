@@ -374,10 +374,33 @@
                             </form>
                         </div>
 
-                        <!-- QR Code -->
+                        <!-- QR Code Inscription -->
+                        <?php if (!empty($booking['registration_token'])): ?>
+                        <div class="detail-card text-center">
+                            <h5><i class="bi bi-qr-code-scan"></i> QR Code d'Inscription</h5>
+                            <hr>
+                            <?php 
+                            $registrationUrl = base_url('register/' . $booking['registration_token']);
+                            $qrCodeUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' . urlencode($registrationUrl);
+                            ?>
+                            <img src="<?= $qrCodeUrl ?>" alt="QR Code Inscription" class="img-fluid mb-3" style="max-width: 250px;">
+                            <p class="small text-muted mb-2">Scannez pour vous inscrire</p>
+                            <div class="input-group input-group-sm">
+                                <input type="text" class="form-control" value="<?= $registrationUrl ?>" id="registration-link" readonly>
+                                <button class="btn btn-outline-secondary" onclick="copyLink()">
+                                    <i class="bi bi-clipboard"></i>
+                                </button>
+                            </div>
+                            <small class="text-danger d-block mt-2">
+                                <i class="bi bi-clock"></i> Expire à la fin de la session
+                            </small>
+                        </div>
+                        <?php endif; ?>
+
+                        <!-- QR Code Ticket -->
                         <?php if (!empty($booking['qr_code'])): ?>
                         <div class="detail-card text-center">
-                            <h5><i class="bi bi-qr-code"></i> QR Code</h5>
+                            <h5><i class="bi bi-qr-code"></i> QR Code Ticket</h5>
                             <hr>
                             <img src="<?= esc($booking['qr_code']) ?>" alt="QR Code" class="img-fluid" style="max-width: 200px;">
                         </div>
@@ -449,5 +472,20 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function copyLink() {
+            const input = document.getElementById('registration-link');
+            input.select();
+            document.execCommand('copy');
+            
+            const btn = event.target.closest('button');
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="bi bi-check"></i>';
+            
+            setTimeout(() => {
+                btn.innerHTML = originalHtml;
+            }, 2000);
+        }
+    </script>
 </body>
 </html>
