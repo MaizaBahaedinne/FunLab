@@ -326,31 +326,31 @@
 
                 <dl class="row">
                     <dt class="col-sm-4">Client</dt>
-                    <dd class="col-sm-8">${booking.customer_name}</dd>
+                    <dd class="col-sm-8">${booking.customer_name || 'N/A'}</dd>
 
                     <dt class="col-sm-4">Email</dt>
-                    <dd class="col-sm-8">${booking.customer_email}</dd>
+                    <dd class="col-sm-8">${booking.customer_email || 'N/A'}</dd>
 
                     <dt class="col-sm-4">Téléphone</dt>
-                    <dd class="col-sm-8">${booking.customer_phone}</dd>
+                    <dd class="col-sm-8">${booking.customer_phone || 'N/A'}</dd>
 
                     <dt class="col-sm-4">Jeu</dt>
-                    <dd class="col-sm-8">${booking.game_name}</dd>
+                    <dd class="col-sm-8">${booking.game_name || 'N/A'}</dd>
 
                     <dt class="col-sm-4">Salle</dt>
-                    <dd class="col-sm-8">${booking.room_name}</dd>
+                    <dd class="col-sm-8">${booking.room_name || 'N/A'}</dd>
 
                     <dt class="col-sm-4">Date</dt>
-                    <dd class="col-sm-8">${formatDate(booking.booking_date)}</dd>
+                    <dd class="col-sm-8">${booking.booking_date ? formatDate(booking.booking_date) : 'N/A'}</dd>
 
                     <dt class="col-sm-4">Horaire</dt>
-                    <dd class="col-sm-8">${booking.start_time.substring(0,5)} - ${booking.end_time.substring(0,5)}</dd>
+                    <dd class="col-sm-8">${booking.start_time ? booking.start_time.substring(0,5) : 'N/A'} - ${booking.end_time ? booking.end_time.substring(0,5) : 'N/A'}</dd>
 
                     <dt class="col-sm-4">Nombre de joueurs</dt>
-                    <dd class="col-sm-8">${booking.num_players}</dd>
+                    <dd class="col-sm-8">${booking.num_players || 0}</dd>
 
                     <dt class="col-sm-4">Prix total</dt>
-                    <dd class="col-sm-8"><strong>${booking.total_price} DT</strong></dd>
+                    <dd class="col-sm-8"><strong>${booking.total_price || 0} DT</strong></dd>
 
                     ${booking.notes ? `
                     <dt class="col-sm-4">Notes</dt>
