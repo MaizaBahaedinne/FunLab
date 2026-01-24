@@ -392,9 +392,19 @@ class SettingsController extends BaseController
         if ($email->send()) {
             return redirect()->back()->with('success', '✅ Email de test envoyé avec succès à ' . $testEmail);
         } else {
-            $error = $email->printDebugger(['headers']);
-            log_message('error', 'Email test failed: ' . $error);
-            return redirect()->back()->with('error', '❌ Erreur lors de l\'envoi de l\'email. Vérifiez les logs pour plus de détails.');
+            $debugInfo = $email->printDebugger(['headers', 'subject', 'body']);
+            
+            // Extraire l'erreur principale
+            $errorMessage = 'Configuration incorrecte';
+            if (strpos($debugInfo, 'SMTP Error') !== false) {
+                $errorMessage = 'Erreur SMTP : Vérifiez le serveur, port, identifiants et cryptage';
+            } elseif (strpos($debugInfo, 'authentication failed') !== false) {
+                $errorMessage = 'Authentification échouée : Vérifiez l\'utilisateur et le mot de passe SMTP';
+            } elseif (strpos($debugInfo, 'Connection refused') !== false) {
+                $errorMessage = 'Connexion refusée : Vérifiez le serveur SMTP et le port';
+            }
+            
+            return redirect()->back()->with('error', '❌ ' . $errorMessage . '<br><small>Détails: ' . substr(strip_tags($debugInfo), 0, 200) . '...</small>');
         }
     }
 }
