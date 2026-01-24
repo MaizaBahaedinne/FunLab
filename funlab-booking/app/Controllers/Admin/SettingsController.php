@@ -95,11 +95,18 @@ class SettingsController extends BaseController
      */
     public function footer()
     {
-        if ($this->request->getMethod() === 'post') {
+        // Vérifier si c'est une soumission POST
+        if ($this->request->getMethod() === 'post' || $_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = $this->request->getPost();
             
+            // Si pas de données POST, afficher un message
+            if (empty($data)) {
+                return redirect()->to('/admin/settings/footer')
+                               ->with('error', 'Aucune donnée reçue du formulaire');
+            }
+            
             // Debug : écrire dans les logs
-            log_message('info', 'Footer POST data: ' . print_r($data, true));
+            log_message('info', 'Footer POST data received: ' . count($data) . ' fields');
             
             unset($data['csrf_test_name']); // Retirer le token CSRF
 
@@ -107,31 +114,35 @@ class SettingsController extends BaseController
             $errors = [];
             
             foreach ($data as $key => $value) {
+                // Ignorer les champs vides qui ne sont pas des strings
+                if (!is_string($key)) continue;
+                
                 // Déterminer le type selon le champ
                 $type = 'text';
                 if (strpos($key, 'hours') !== false || strpos($key, 'description') !== false) {
                     $type = 'textarea';
                 }
                 
-                log_message('info', "Updating $key = $value (type: $type, category: footer)");
-                
-                $result = $this->settingModel->setSetting($key, $value, $type, 'footer');
-                
-                if ($result) {
-                    $updated++;
-                } else {
-                    $errors[] = $key;
+                try {
+                    $result = $this->settingModel->setSetting($key, $value, $type, 'footer');
+                    
+                    if ($result) {
+                        $updated++;
+                    } else {
+                        $errors[] = $key;
+                    }
+                } catch (\Exception $e) {
+                    log_message('error', 'Error updating ' . $key . ': ' . $e->getMessage());
+                    $errors[] = $key . ' (error)';
                 }
             }
-
-            log_message('info', "Footer update complete: $updated updated, errors: " . implode(', ', $errors));
 
             if ($updated > 0) {
                 return redirect()->to('/admin/settings/footer')
                                ->with('success', "Configuration du footer mise à jour avec succès ($updated champs modifiés)");
             } else {
                 return redirect()->to('/admin/settings/footer')
-                               ->with('error', 'Aucune modification effectuée. Champs en erreur: ' . implode(', ', $errors));
+                               ->with('error', 'Aucune modification effectuée. Erreurs: ' . implode(', ', $errors));
             }
         }
 

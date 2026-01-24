@@ -34,8 +34,11 @@ $breadcrumbs = [
             </h5>
         </div>
         <div class="card-body">
-            <form action="<?= base_url('admin/settings/footer') ?>" method="post">
+            <form action="<?= base_url('admin/settings/footer') ?>" method="POST" id="footerForm">
                 <?= csrf_field() ?>
+                
+                <!-- Debug info -->
+                <input type="hidden" name="form_submitted" value="1">
 
                 <!-- Informations de l'entreprise -->
                 <div class="mb-4">
