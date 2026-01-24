@@ -32,6 +32,11 @@ $routes->group('auth', function($routes) {
     $routes->get('facebook/callback', 'SocialAuthController::handleFacebookCallback');
 });
 
+// Route de déconnexion directe (alias)
+$routes->get('logout', 'AuthController::logout');
+$routes->get('login', 'AuthController::login');
+$routes->get('register', 'AuthController::register');
+
 // ============================================================
 // ROUTES FRONT-END
 // ============================================================
