@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\UserModel;
+use App\Models\SettingModel;
 
 /**
  * Controller pour l'authentification via OAuth (Google, Facebook)
@@ -13,10 +14,12 @@ use App\Models\UserModel;
 class SocialAuthController extends BaseController
 {
     protected $userModel;
+    protected $settingModel;
 
     public function __construct()
     {
         $this->userModel = new UserModel();
+        $this->settingModel = new SettingModel();
     }
 
     /**
@@ -24,6 +27,12 @@ class SocialAuthController extends BaseController
      */
     public function redirectToGoogle()
     {
+        // Vérifier si Google OAuth est activé
+        $settings = $this->settingModel->getByCategory('oauth');
+        if (($settings['oauth_google_enabled'] ?? '0') !== '1') {
+            return redirect()->to('/auth/login')->with('error', 'Authentification Google désactivée');
+        }
+
         $provider = $this->getGoogleProvider();
         
         $authUrl = $provider->getAuthorizationUrl([
@@ -89,6 +98,12 @@ class SocialAuthController extends BaseController
      */
     public function redirectToFacebook()
     {
+        // Vérifier si Facebook OAuth est activé
+        $settings = $this->settingModel->getByCategory('oauth');
+        if (($settings['oauth_facebook_enabled'] ?? '0') !== '1') {
+            return redirect()->to('/auth/login')->with('error', 'Authentification Facebook désactivée');
+        }
+
         $provider = $this->getFacebookProvider();
         
         $authUrl = $provider->getAuthorizationUrl([
@@ -148,21 +163,25 @@ class SocialAuthController extends BaseController
             return redirect()->to('/auth/login')->with('error', 'Erreur lors de la connexion avec Facebook');
         }
     }
-
-    /**
-     * Crée le provider Google OAuth
-     */
-    protected function getGoogleProvider()
-    {
+$settings = $this->settingModel->getByCategory('oauth');
+        
         return new \League\OAuth2\Client\Provider\Google([
-            'clientId'     => getenv('GOOGLE_CLIENT_ID'),
-            'clientSecret' => getenv('GOOGLE_CLIENT_SECRET'),
+            'clientId'     => $settings['oauth_google_client_id'] ?? getenv('GOOGLE_CLIENT_ID'),
+            'clientSecret' => $settings['oauth_google_client_secret'] ?? getenv('GOOGLE_CLIENT_SECRET'),
             'redirectUri'  => base_url('auth/google/callback'),
         ]);
     }
 
     /**
      * Crée le provider Facebook OAuth
+     */
+    protected function getFacebookProvider()
+    {
+        $settings = $this->settingModel->getByCategory('oauth');
+        
+        return new \League\OAuth2\Client\Provider\Facebook([
+            'clientId'     => $settings['oauth_facebook_app_id'] ?? getenv('FACEBOOK_APP_ID'),
+            'clientSecret' => $settings['oauth_facebook_app_secret'] ??ook OAuth
      */
     protected function getFacebookProvider()
     {

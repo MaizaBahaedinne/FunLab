@@ -3,14 +3,17 @@
 namespace App\Controllers;
 
 use App\Models\UserModel;
+use App\Models\SettingModel;
 
 class AuthController extends BaseController
 {
     protected $userModel;
+    protected $settingModel;
 
     public function __construct()
     {
         $this->userModel = new UserModel();
+        $this->settingModel = new SettingModel();
     }
 
     /**
@@ -22,7 +25,15 @@ class AuthController extends BaseController
             return redirect()->to('/account');
         }
 
-        return view('auth/login');
+        // Charger les paramètres OAuth
+        $settings = $this->settingModel->getByCategory('oauth');
+        
+        $data = [
+            'googleEnabled' => ($settings['oauth_google_enabled'] ?? '0') === '1',
+            'facebookEnabled' => ($settings['oauth_facebook_enabled'] ?? '0') === '1'
+        ];
+
+        return view('auth/login', $data);
     }
 
     /**
@@ -93,7 +104,15 @@ class AuthController extends BaseController
             return redirect()->to('/account');
         }
 
-        return view('auth/register');
+        // Charger les paramètres OAuth
+        $settings = $this->settingModel->getByCategory('oauth');
+        
+        $data = [
+            'googleEnabled' => ($settings['oauth_google_enabled'] ?? '0') === '1',
+            'facebookEnabled' => ($settings['oauth_facebook_enabled'] ?? '0') === '1'
+        ];
+
+        return view('auth/register', $data);
     }
 
     /**

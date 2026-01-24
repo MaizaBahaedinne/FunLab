@@ -109,17 +109,23 @@
                 <?php endif; ?>
 
                 <!-- Boutons OAuth -->
-                <a href="<?= base_url('auth/google') ?>" class="btn social-btn google-btn">
-                    <i class="bi bi-google"></i> S'inscrire avec Google
-                </a>
+                <?php if ($googleEnabled || $facebookEnabled): ?>
+                    <?php if ($googleEnabled): ?>
+                    <a href="<?= base_url('auth/google') ?>" class="btn social-btn google-btn">
+                        <i class="bi bi-google"></i> S'inscrire avec Google
+                    </a>
+                    <?php endif; ?>
 
-                <a href="<?= base_url('auth/facebook') ?>" class="btn social-btn facebook-btn">
-                    <i class="bi bi-facebook"></i> S'inscrire avec Facebook
-                </a>
+                    <?php if ($facebookEnabled): ?>
+                    <a href="<?= base_url('auth/facebook') ?>" class="btn social-btn facebook-btn">
+                        <i class="bi bi-facebook"></i> S'inscrire avec Facebook
+                    </a>
+                    <?php endif; ?>
 
-                <div class="divider">
-                    <span>OU</span>
-                </div>
+                    <div class="divider">
+                        <span>OU</span>
+                    </div>
+                <?php endif; ?>
 
                 <!-- Formulaire d'inscription -->
                 <form action="<?= base_url('auth/register') ?>" method="POST">
