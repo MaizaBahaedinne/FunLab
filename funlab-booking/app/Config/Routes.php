@@ -143,6 +143,8 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'ad
     $routes->get('settings/mail', 'SettingsController::mail');
     $routes->get('settings/sms', 'SettingsController::sms');
     $routes->get('settings/seo', 'SettingsController::seo');
+    $routes->get('settings/footer', 'SettingsController::footer');
+    $routes->post('settings/footer', 'SettingsController::footer');
     $routes->get('settings/oauth', 'SettingsController::oauth');
     $routes->get('settings/users', 'SettingsController::users');
     $routes->get('settings/roles', 'SettingsController::roles');
