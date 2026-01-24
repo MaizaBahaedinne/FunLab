@@ -35,11 +35,11 @@ class GameModel extends Model
 
     // Validation
     protected $validationRules      = [
-        'name'        => 'required|min_length[3]|max_length[255]',
-        'duration'    => 'required|integer|greater_than[0]',
-        'min_players' => 'required|integer|greater_than[0]',
-        'max_players' => 'required|integer|greater_than[0]',
-        'price'       => 'required|decimal',
+        'name'             => 'required|min_length[3]|max_length[255]',
+        'duration_minutes' => 'required|integer|greater_than[0]',
+        'min_players'      => 'required|integer|greater_than[0]',
+        'max_players'      => 'required|integer|greater_than[0]',
+        'price'            => 'permit_empty|decimal',
     ];
     protected $validationMessages   = [];
     protected $skipValidation       = false;
