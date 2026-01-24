@@ -195,6 +195,33 @@
                             <textarea class="form-control" id="booking-notes" rows="3" placeholder="Anniversaire, demandes spéciales..."></textarea>
                         </div>
 
+                        <!-- Option de création de compte -->
+                        <?php if (!isset($user)): ?>
+                        <div class="card bg-light mb-3">
+                            <div class="card-body">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="create-account" onchange="togglePasswordFields()">
+                                    <label class="form-check-label" for="create-account">
+                                        <strong>Créer un compte pour accéder à mes réservations</strong>
+                                    </label>
+                                </div>
+                                <div id="password-fields" style="display: none;" class="mt-3">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-2">
+                                            <label class="form-label">Mot de passe *</label>
+                                            <input type="password" class="form-control" id="account-password" minlength="6">
+                                            <small class="text-muted">Minimum 6 caractères</small>
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <label class="form-label">Confirmer le mot de passe *</label>
+                                            <input type="password" class="form-control" id="account-password-confirm" minlength="6">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+
                         <div class="d-flex gap-2">
                             <button type="button" class="btn btn-secondary" onclick="previousStep()">
                                 <i class="bi bi-arrow-left"></i> Retour
@@ -451,6 +478,25 @@
             }
         }
 
+        function togglePasswordFields() {
+            const checkbox = document.getElementById('create-account');
+            const passwordFields = document.getElementById('password-fields');
+            const passwordInput = document.getElementById('account-password');
+            const passwordConfirm = document.getElementById('account-password-confirm');
+            
+            if (checkbox && checkbox.checked) {
+                passwordFields.style.display = 'block';
+                passwordInput.setAttribute('required', 'required');
+                passwordConfirm.setAttribute('required', 'required');
+            } else {
+                passwordFields.style.display = 'none';
+                passwordInput.removeAttribute('required');
+                passwordConfirm.removeAttribute('required');
+                passwordInput.value = '';
+                passwordConfirm.value = '';
+            }
+        }
+
         async function loadAvailableSlots() {
             const date = document.getElementById('booking-date').value;
             const gameId = bookingData.game.id;
@@ -544,6 +590,27 @@
                 return;
             }
 
+            // Valider la création de compte si demandée
+            const createAccountCheckbox = document.getElementById('create-account');
+            if (createAccountCheckbox && createAccountCheckbox.checked) {
+                const password = document.getElementById('account-password').value;
+                const passwordConfirm = document.getElementById('account-password-confirm').value;
+
+                if (!password || password.length < 6) {
+                    alert('Le mot de passe doit contenir au moins 6 caractères');
+                    return;
+                }
+
+                if (password !== passwordConfirm) {
+                    alert('Les mots de passe ne correspondent pas');
+                    return;
+                }
+
+                // Stocker le mot de passe pour création du compte
+                bookingData.create_account = true;
+                bookingData.account_password = password;
+            }
+
             // Afficher le montant total dans l'étape paiement
             const totalPrice = bookingData.game.price * numPlayers;
             document.getElementById('payment-total').textContent = totalPrice.toFixed(2);
@@ -633,6 +700,12 @@
             // Ajouter le code promo si appliqué
             if (bookingData.promo_code) {
                 bookingPayload.promo_code = bookingData.promo_code;
+            }
+
+            // Ajouter les données de création de compte si demandé
+            if (bookingData.create_account && bookingData.account_password) {
+                bookingPayload.create_account = true;
+                bookingPayload.account_password = bookingData.account_password;
             }
 
             try {

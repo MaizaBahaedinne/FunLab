@@ -10,10 +10,10 @@ class BookingController extends BaseController
     {
         $data = [];
         
-        // Vérifier si l'utilisateur est connecté
-        if (session()->has('user_id')) {
+        // Vérifier si l'utilisateur est connecté (session utilise 'userId' en camelCase)
+        if (session()->has('userId')) {
             $userModel = model('UserModel');
-            $user = $userModel->find(session()->get('user_id'));
+            $user = $userModel->find(session()->get('userId'));
             
             if ($user) {
                 $data['user'] = [

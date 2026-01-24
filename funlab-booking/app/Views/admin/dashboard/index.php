@@ -248,9 +248,10 @@
             
             loadDashboardData();
             initCharts();
+            loadRecentBookings();
             
             // Rafraîchir les données toutes les 30 secondes
-            setInterval(loadDashboardData, 30000);
+            setInterval(loadRecentBookings, 30000);
         });
 
         function updateTime() {
@@ -258,26 +259,6 @@
             document.getElementById('current-time').textContent = 
                 now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
         }
-
-        async function loadDashboardData() {
-            try {
-                // Charger les stats du scanner
-                const statsResponse = await fetch(`${API_BASE_URL}/scan/stats`);
-                const statsResult = await statsResponse.json();
-
-                if (statsResult.status === 'success') {
-                    updateStats(statsResult.data.stats);
-                    displayUpcomingBookings(statsResult.data.upcoming_bookings);
-                }
-
-                // Charger les réservations récentes
-                await loadRecentBookings();
-
-            } catch (error) {
-                console.error('Erreur chargement dashboard:', error);
-            }
-        }
-
         function updateStats(stats) {
             document.getElementById('stat-today').textContent = stats.total_bookings || 0;
             document.getElementById('stat-active').textContent = stats.in_progress || 0;
@@ -314,16 +295,81 @@
 
         async function loadRecentBookings() {
             try {
-                // Pour l'instant, afficher un message
-                const container = document.getElementById('recent-bookings');
+                const response = await fetch(`${API_BASE_URL}/../admin/dashboard/stats`);
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    updateStats(result.data);
+                    displayRecentBookings(result.data.recentBookings);
+                    updateCharts(result.data);
+                }
+            } catch (error) {
+                console.error('Erreur chargement statistiques:', error);
+            }
+        }
+
+        function updateStats(data) {
+            document.getElementById('stat-today').textContent = data.today || 0;
+            document.getElementById('stat-active').textContent = data.active || 0;
+            document.getElementById('stat-completed').textContent = data.completed || 0;
+            document.getElementById('stat-revenue').textContent = data.revenue || 0;
+        }
+
+        function displayRecentBookings(bookings) {
+            const container = document.getElementById('recent-bookings');
+            
+            if (!bookings || bookings.length === 0) {
                 container.innerHTML = '<p class="text-muted text-center py-4">Aucune réservation récente</p>';
                 document.getElementById('recent-count').textContent = '0';
+                return;
+            }
 
-                // TODO: Créer un endpoint API pour récupérer les réservations récentes
-                // const response = await fetch(`${API_BASE_URL}/bookings/recent?limit=10`);
-                
-            } catch (error) {
-                console.error('Erreur chargement réservations récentes:', error);
+            document.getElementById('recent-count').textContent = bookings.length;
+
+            const statusClasses = {
+                'pending': 'status-pending',
+                'confirmed': 'status-confirmed',
+                'in_progress': 'status-confirmed',
+                'completed': 'status-completed',
+                'cancelled': 'status-cancelled'
+            };
+
+            const statusLabels = {
+                'pending': 'En attente',
+                'confirmed': 'Confirmé',
+                'in_progress': 'En cours',
+                'completed': 'Terminé',
+                'cancelled': 'Annulé'
+            };
+
+            container.innerHTML = bookings.map(b => `
+                <div class="recent-booking ${statusClasses[b.status] || 'status-confirmed'} mb-3">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <strong>${b.customer_name}</strong>
+                            <br><small class="text-muted">${b.game_name}</small>
+                            <br><small><i class="bi bi-clock"></i> ${b.start_time ? b.start_time.substring(0,5) : 'N/A'}</small>
+                            <br><small class="badge bg-secondary">${statusLabels[b.status]}</small>
+                        </div>
+                        <span class="badge bg-success">${b.num_players || 0} joueurs</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateCharts(data) {
+            // Mettre à jour le graphique des réservations
+            if (bookingsChart && data.last7Days) {
+                bookingsChart.data.labels = data.last7Days.map(d => d.date);
+                bookingsChart.data.datasets[0].data = data.last7Days.map(d => d.count);
+                bookingsChart.update();
+            }
+
+            // Mettre à jour le graphique des jeux
+            if (gamesChart && data.gamesStats && data.gamesStats.length > 0) {
+                gamesChart.data.labels = data.gamesStats.map(g => g.name);
+                gamesChart.data.datasets[0].data = data.gamesStats.map(g => g.count);
+                gamesChart.update();
             }
         }
 
@@ -333,10 +379,10 @@
             bookingsChart = new Chart(ctx1, {
                 type: 'line',
                 data: {
-                    labels: getLast7Days(),
+                    labels: [],
                     datasets: [{
                         label: 'Réservations',
-                        data: [5, 8, 12, 7, 15, 10, 8],
+                        data: [],
                         borderColor: '#667eea',
                         backgroundColor: 'rgba(102, 126, 234, 0.1)',
                         tension: 0.4,
@@ -367,9 +413,9 @@
             gamesChart = new Chart(ctx2, {
                 type: 'doughnut',
                 data: {
-                    labels: ['VR Games', 'Escape Room', 'Laser Game'],
+                    labels: [],
                     datasets: [{
-                        data: [45, 30, 25],
+                        data: [],
                         backgroundColor: [
                             '#667eea',
                             '#764ba2',

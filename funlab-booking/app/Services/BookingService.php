@@ -122,6 +122,38 @@ class BookingService
             // Ajouter user_id si fourni (relation avec le compte utilisateur)
             if (isset($data['user_id']) && $data['user_id']) {
                 $bookingData['user_id'] = $data['user_id'];
+            } elseif (isset($data['create_account']) && $data['create_account'] && isset($data['account_password'])) {
+                // Créer un compte utilisateur automatiquement pendant la réservation
+                $userModel = model('UserModel');
+                
+                // Vérifier si l'email existe déjà
+                $existingUser = $userModel->where('email', $data['customer_email'])->first();
+                
+                if (!$existingUser) {
+                    // Séparer le nom complet en prénom et nom
+                    $nameParts = explode(' ', $data['customer_name'], 2);
+                    $firstName = $nameParts[0];
+                    $lastName = isset($nameParts[1]) ? $nameParts[1] : '';
+                    
+                    $userId = $userModel->insert([
+                        'email' => $data['customer_email'],
+                        'password' => password_hash($data['account_password'], PASSWORD_DEFAULT),
+                        'first_name' => $firstName,
+                        'last_name' => $lastName,
+                        'phone' => $data['customer_phone'],
+                        'role' => 'customer',
+                        'auth_provider' => 'native',
+                        'email_verified' => 0,
+                        'is_active' => 1
+                    ]);
+                    
+                    if ($userId) {
+                        $bookingData['user_id'] = $userId;
+                    }
+                } else {
+                    // L'utilisateur existe déjà, lier la réservation à ce compte
+                    $bookingData['user_id'] = $existingUser['id'];
+                }
             }
 
             // Ajouter payment_method si fourni
