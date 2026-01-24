@@ -39,7 +39,7 @@ class SettingModel extends Model
     /**
      * Récupérer une valeur de configuration par clé
      */
-    public function get($key, $default = null)
+    public function getSetting($key, $default = null)
     {
         $setting = $this->where('key', $key)->first();
         
@@ -63,7 +63,7 @@ class SettingModel extends Model
     /**
      * Définir une valeur de configuration
      */
-    public function set($key, $value, $type = 'text', $category = 'general')
+    public function setSetting($key, $value, $type = 'text', $category = 'general')
     {
         $setting = $this->where('key', $key)->first();
 
@@ -99,7 +99,7 @@ class SettingModel extends Model
         $result = [];
 
         foreach ($settings as $setting) {
-            $result[$setting['key']] = $this->get($setting['key']);
+            $result[$setting['key']] = $this->getSetting($setting['key']);
         }
 
         return $result;

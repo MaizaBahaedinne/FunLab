@@ -63,7 +63,7 @@ class SettingsController extends BaseController
                 $type = 'number';
             }
 
-            $this->settingModel->set($key, $value, $type, $category);
+            $this->settingModel->setSetting($key, $value, $type, $category);
         }
 
         return redirect()->to('/admin/settings?tab=' . $category)
@@ -100,7 +100,7 @@ class SettingsController extends BaseController
 
         // Sauvegarder dans les paramètres
         $path = '/uploads/settings/' . $newName;
-        $this->settingModel->set($key, $path, 'image', $category);
+        $this->settingModel->setSetting($key, $path, 'image', $category);
 
         return $this->response->setJSON([
             'status' => 'success',
