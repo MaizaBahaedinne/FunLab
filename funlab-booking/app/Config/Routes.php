@@ -131,7 +131,7 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function($routes) 
     $routes->post('booking/cancel/(:num)', 'BookingApi::cancel/$1');
     $routes->post('booking/confirm/(:num)', 'BookingApi::confirm/$1');
     $routes->post('booking/complete/(:num)', 'BookingApi::complete/$1');
-    $routes->get('booking/(:num)', 'BookingApi::get/$1');
+    $routes->get('booking/(:num)', 'BookingApi::show/$1');
     $routes->get('booking/customer', 'BookingApi::customer');
     $routes->options('booking/(:any)', 'BookingApi::options');
     

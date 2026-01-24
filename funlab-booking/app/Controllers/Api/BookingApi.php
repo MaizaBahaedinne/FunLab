@@ -168,6 +168,39 @@ class BookingApi extends ResourceController
     }
 
     /**
+     * Récupère les détails d'une réservation (méthode REST standard)
+     * 
+     * Endpoint : GET /api/booking/{id}
+     * 
+     * @param int $id
+     * @return \CodeIgniter\HTTP\ResponseInterface
+     */
+    public function show($id = null)
+    {
+        try {
+            if (!$id || !is_numeric($id)) {
+                return $this->failValidationErrors('ID de réservation invalide');
+            }
+
+            $details = $this->bookingService->getBookingDetails((int) $id);
+
+            if ($details) {
+                return $this->respond([
+                    'status' => 'success',
+                    'data' => $details
+                ]);
+            } else {
+                return $this->failNotFound('Réservation introuvable');
+            }
+
+        } catch (\Exception $e) {
+            log_message('error', 'Erreur API Booking/show : ' . $e->getMessage());
+            
+            return $this->failServerError('Une erreur est survenue');
+        }
+    }
+
+    /**
      * Récupère les détails d'une réservation
      * 
      * Endpoint : GET /api/booking/{id}
