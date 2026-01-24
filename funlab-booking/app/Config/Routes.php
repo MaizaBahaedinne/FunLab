@@ -127,6 +127,7 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function($routes) 
     $routes->options('availability/(:any)', 'AvailabilityApi::options');
     
     // API Réservations (Phase 2 - BookingService)
+    $routes->get('booking', 'BookingApi::index'); // Liste toutes les réservations
     $routes->post('booking/create', 'BookingApi::create');
     $routes->post('booking/cancel/(:num)', 'BookingApi::cancel/$1');
     $routes->post('booking/confirm/(:num)', 'BookingApi::confirm/$1');
@@ -134,6 +135,10 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function($routes) 
     $routes->get('booking/(:num)', 'BookingApi::show/$1');
     $routes->get('booking/customer', 'BookingApi::customer');
     $routes->options('booking/(:any)', 'BookingApi::options');
+    
+    // API Jeux
+    $routes->get('games', 'GamesApi::index');
+    $routes->options('games', 'GamesApi::options');
     
     // API Scanner
     $routes->post('scan/validate', 'ScanApi::validate');

@@ -29,6 +29,75 @@ class BookingApi extends ResourceController
     }
 
     /**
+     * Récupère toutes les réservations avec filtres optionnels
+     * 
+     * Endpoint : GET /api/booking
+     * 
+     * Query params :
+     * - status: Filtrer par statut (pending, confirmed, cancelled, completed)
+     * - room_id: Filtrer par salle
+     * - game_id: Filtrer par jeu
+     * - start: Date de début (YYYY-MM-DD) pour le calendrier
+     * - end: Date de fin (YYYY-MM-DD) pour le calendrier
+     * 
+     * @return \CodeIgniter\HTTP\ResponseInterface
+     */
+    public function index()
+    {
+        try {
+            $bookingModel = model('BookingModel');
+            $builder = $bookingModel->builder();
+            
+            // SELECT avec JOINs pour récupérer les noms
+            $builder->select('bookings.*, 
+                             games.name as game_name, 
+                             rooms.name as room_name')
+                    ->join('games', 'games.id = bookings.game_id', 'left')
+                    ->join('rooms', 'rooms.id = bookings.room_id', 'left');
+            
+            // Filtres
+            $status = $this->request->getGet('status');
+            if ($status) {
+                $builder->where('bookings.status', $status);
+            }
+            
+            $roomId = $this->request->getGet('room_id');
+            if ($roomId) {
+                $builder->where('bookings.room_id', $roomId);
+            }
+            
+            $gameId = $this->request->getGet('game_id');
+            if ($gameId) {
+                $builder->where('bookings.game_id', $gameId);
+            }
+            
+            // Filtres de date pour le calendrier
+            $start = $this->request->getGet('start');
+            $end = $this->request->getGet('end');
+            if ($start && $end) {
+                $builder->where('bookings.booking_date >=', $start);
+                $builder->where('bookings.booking_date <=', $end);
+            }
+            
+            // Trier par date et heure
+            $builder->orderBy('bookings.booking_date', 'ASC');
+            $builder->orderBy('bookings.start_time', 'ASC');
+            
+            $bookings = $builder->get()->getResultArray();
+            
+            return $this->respond([
+                'status' => 'success',
+                'data' => $bookings,
+                'count' => count($bookings)
+            ]);
+            
+        } catch (\Exception $e) {
+            log_message('error', 'Erreur API Booking/index : ' . $e->getMessage());
+            return $this->failServerError('Erreur lors de la récupération des réservations');
+        }
+    }
+
+    /**
      * Crée une nouvelle réservation
      * 
      * Endpoint : POST /api/booking/create

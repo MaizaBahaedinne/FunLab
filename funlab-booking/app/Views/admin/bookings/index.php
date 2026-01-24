@@ -196,6 +196,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             initCalendar();
             setupFilters();
+            loadFilterOptions();
         });
 
         function initCalendar() {
@@ -226,46 +227,99 @@
 
         async function loadBookings(fetchInfo, successCallback, failureCallback) {
             try {
-                // Pour l'instant, données de démo
-                // TODO: Créer un endpoint API pour récupérer toutes les réservations
-                const demoEvents = [
-                    {
-                        id: '1',
-                        title: 'VR - Ahmed Ben Ali',
-                        start: '2026-01-23T14:00:00',
-                        end: '2026-01-23T15:00:00',
-                        backgroundColor: '#28a745',
-                        borderColor: '#28a745',
-                        extendedProps: {
-                            status: 'confirmed',
-                            room: 'Salle VR 1',
-                            customer: 'Ahmed Ben Ali',
-                            players: 2,
-                            description: '2 joueurs - Beat Saber VR'
-                        }
-                    },
-                    {
-                        id: '2',
-                        title: 'Escape Room - Sarah Mansour',
-                        start: '2026-01-23T16:00:00',
-                        end: '2026-01-23T17:00:00',
-                        backgroundColor: '#667eea',
-                        borderColor: '#667eea',
-                        extendedProps: {
-                            status: 'confirmed',
-                            room: 'Salle Escape 1',
-                            customer: 'Sarah Mansour',
-                            players: 6,
-                            description: '6 joueurs - Le Mystère du Manoir'
-                        }
-                    }
-                ];
+                // Construire l'URL avec les paramètres de filtrage
+                const params = new URLSearchParams({
+                    start: fetchInfo.startStr.split('T')[0],
+                    end: fetchInfo.endStr.split('T')[0]
+                });
+                
+                // Ajouter les filtres actifs
+                if (currentFilters.status) {
+                    params.append('status', currentFilters.status);
+                }
+                if (currentFilters.room) {
+                    params.append('room_id', currentFilters.room);
+                }
+                if (currentFilters.game) {
+                    params.append('game_id', currentFilters.game);
+                }
 
-                successCallback(demoEvents);
+                const response = await fetch(`${API_BASE_URL}/booking?${params}`);
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    // Transformer les réservations en événements FullCalendar
+                    const events = result.data.map(booking => {
+                        // Couleurs selon le statut
+                        const statusColors = {
+                            'pending': '#ffc107',      // Jaune
+                            'confirmed': '#28a745',    // Vert
+                            'in_progress': '#17a2b8',  // Bleu
+                            'completed': '#6c757d',    // Gris
+                            'cancelled': '#dc3545'     // Rouge
+                        };
+
+                        return {
+                            id: booking.id,
+                            title: `${booking.game_name || 'Jeu'} - ${booking.customer_name}`,
+                            start: `${booking.booking_date}T${booking.start_time}`,
+                            end: `${booking.booking_date}T${booking.end_time}`,
+                            backgroundColor: statusColors[booking.status] || '#667eea',
+                            borderColor: statusColors[booking.status] || '#667eea',
+                            extendedProps: {
+                                status: booking.status,
+                                room: booking.room_name,
+                                customer: booking.customer_name,
+                                players: booking.num_players,
+                                price: booking.total_price,
+                                description: `${booking.num_players} joueurs - ${booking.room_name} - ${booking.total_price} DT`
+                            }
+                        };
+                    });
+
+                    successCallback(events);
+                } else {
+                    console.error('Erreur API:', result.message);
+                    failureCallback(new Error(result.message));
+                }
 
             } catch (error) {
                 console.error('Erreur chargement réservations:', error);
                 failureCallback(error);
+            }
+        }
+
+        async function loadFilterOptions() {
+            try {
+                // Charger les salles
+                const roomsResponse = await fetch(`${API_BASE_URL}/availability/rooms`);
+                const roomsResult = await roomsResponse.json();
+                
+                if (roomsResult.status === 'success') {
+                    const roomSelect = document.getElementById('filter-room');
+                    roomsResult.data.forEach(room => {
+                        const option = document.createElement('option');
+                        option.value = room.id;
+                        option.textContent = room.name;
+                        roomSelect.appendChild(option);
+                    });
+                }
+
+                // Charger les jeux
+                const gamesResponse = await fetch(`${API_BASE_URL}/games`);
+                const gamesResult = await gamesResponse.json();
+                
+                if (gamesResult.status === 'success') {
+                    const gameSelect = document.getElementById('filter-game');
+                    gamesResult.data.forEach(game => {
+                        const option = document.createElement('option');
+                        option.value = game.id;
+                        option.textContent = game.name;
+                        gameSelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Erreur chargement filtres:', error);
             }
         }
 
