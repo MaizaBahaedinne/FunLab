@@ -109,7 +109,9 @@ class RegistrationController extends BaseController
             $email = trim($this->request->getPost('email'));
             $phone = trim($this->request->getPost('phone'));
 
-            log_message('info', 'Registration: Data received - ' . $firstName . ' ' . $lastName);
+            $fullName = $firstName . ' ' . $lastName;
+
+            log_message('info', 'Registration: Data received - ' . $fullName);
 
             if (empty($firstName) || empty($lastName)) {
                 return $this->response
@@ -139,8 +141,7 @@ class RegistrationController extends BaseController
                 'first_name' => $firstName,
                 'last_name' => $lastName,
                 'email' => $email ?: null,
-                'phone' => $phone ?: null,
-                'attendance_status' => 'registered'
+                'phone' => $phone ?: null
             ];
 
             log_message('info', 'Registration: Inserting participant - ' . json_encode($participantData));
