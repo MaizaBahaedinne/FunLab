@@ -14,10 +14,14 @@ class ParticipantModel extends Model
     protected $protectFields    = true;
     protected $allowedFields    = [
         'booking_id',
+        'team_id',
+        'first_name',
+        'last_name',
         'name',
         'email',
         'phone',
         'age',
+        'attendance_status',
         'checked_in',
         'checked_in_at'
     ];

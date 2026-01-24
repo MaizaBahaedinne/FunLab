@@ -97,6 +97,14 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'ad
     $routes->get('bookings/cancel/(:num)', 'BookingsController::cancel/$1');
     $routes->get('bookings/delete/(:num)', 'BookingsController::delete/$1');
     
+    // Gestion des équipes
+    $routes->get('teams/manage/(:num)', 'TeamsController::manage/$1'); // Booking ID
+    $routes->post('teams/create', 'TeamsController::create');
+    $routes->post('teams/update/(:num)', 'TeamsController::update/$1');
+    $routes->post('teams/delete/(:num)', 'TeamsController::delete/$1');
+    $routes->post('teams/assign-participant', 'TeamsController::assignParticipant');
+    $routes->post('teams/reorder', 'TeamsController::reorder');
+    
     // Gestion des participants
     $routes->get('participants', 'ParticipantsController::index');
     $routes->get('participants/view/(:num)', 'ParticipantsController::view/$1');

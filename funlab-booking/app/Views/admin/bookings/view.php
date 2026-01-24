@@ -204,9 +204,14 @@
                         <div class="detail-card">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h5><i class="bi bi-people-fill"></i> Participants (<?= count($participants) ?>)</h5>
-                                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addParticipantModal">
-                                    <i class="bi bi-plus-circle"></i> Ajouter
-                                </button>
+                                <div>
+                                    <a href="<?= base_url('admin/teams/manage/' . $booking['id']) ?>" class="btn btn-sm btn-info me-2">
+                                        <i class="bi bi-diagram-3"></i> Gérer Équipes
+                                    </a>
+                                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addParticipantModal">
+                                        <i class="bi bi-plus-circle"></i> Ajouter
+                                    </button>
+                                </div>
                             </div>
 
                             <?php if (empty($participants)): ?>
