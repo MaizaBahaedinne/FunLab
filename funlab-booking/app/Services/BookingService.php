@@ -426,23 +426,33 @@ class BookingService
      */
     public function getBookingDetails(int $bookingId): ?array
     {
-        $booking = $this->bookingModel->find($bookingId);
+        // Récupérer les détails avec JOINs pour avoir toutes les données nécessaires
+        $builder = $this->bookingModel->builder();
+        $booking = $builder
+            ->select('bookings.*, 
+                     games.name as game_name, 
+                     games.duration_minutes,
+                     rooms.name as room_name,
+                     CONCAT(users.first_name, " ", users.last_name) as customer_name,
+                     users.email as customer_email,
+                     users.phone as customer_phone')
+            ->join('games', 'games.id = bookings.game_id', 'left')
+            ->join('rooms', 'rooms.id = bookings.room_id', 'left')
+            ->join('users', 'users.id = bookings.user_id', 'left')
+            ->where('bookings.id', $bookingId)
+            ->get()
+            ->getRowArray();
         
         if (!$booking) {
             return null;
         }
 
-        // Ajouter les détails de la salle et du jeu
-        $room = $this->roomModel->find($booking['room_id']);
-        $game = $this->gameModel->find($booking['game_id']);
+        // Récupérer les participants si nécessaire
         $participants = $this->participantModel->where('booking_id', $bookingId)->findAll();
+        $booking['participants'] = $participants;
+        $booking['participants_count'] = count($participants);
 
-        return [
-            'booking' => $booking,
-            'room' => $room,
-            'game' => $game,
-            'participants' => $participants
-        ];
+        return $booking;
     }
 
     /**
