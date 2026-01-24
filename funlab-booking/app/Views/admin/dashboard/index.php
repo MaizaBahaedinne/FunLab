@@ -234,16 +234,31 @@ $additionalJS = <<<'JS'
 
         async function loadRecentBookings() {
             try {
+                console.log('Chargement stats depuis:', `${API_BASE_URL}/admin/dashboard/stats`);
                 const response = await fetch(`${API_BASE_URL}/admin/dashboard/stats`);
+                
+                if (!response.ok) {
+                    console.error('Erreur HTTP:', response.status, response.statusText);
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
                 const result = await response.json();
+                console.log('Données reçues:', result);
                 
                 if (result.status === 'success') {
                     updateStats(result.data);
                     displayRecentBookings(result.data.recentBookings);
                     updateCharts(result.data);
+                } else {
+                    console.error('Erreur API:', result.message);
                 }
             } catch (error) {
                 console.error('Erreur chargement statistiques:', error);
+                // Afficher un message d'erreur à l'utilisateur
+                document.getElementById('stat-today').textContent = 'Erreur';
+                document.getElementById('stat-active').textContent = 'Erreur';
+                document.getElementById('stat-completed').textContent = 'Erreur';
+                document.getElementById('stat-revenue').textContent = 'Erreur';
             }
         }
 
