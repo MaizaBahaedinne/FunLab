@@ -1,59 +1,10 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FunLab Tunisie - Centre d'Activités Indoor</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <style>
-        .hero-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 100px 0;
-        }
-        .game-card {
-            transition: transform 0.3s;
-            height: 100%;
-        }
-        .game-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-        .feature-icon {
-            font-size: 3rem;
-            color: #667eea;
-        }
-    </style>
-</head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="<?= base_url('/') ?>">
-                <i class="bi bi-joystick"></i> FunLab Tunisie
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="<?= base_url('/') ?>">Accueil</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url('booking') ?>">Réserver</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url('account') ?>">Mon Compte</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url('admin') ?>">Admin</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+<?php
+$title = 'FunLab Tunisie - Centre d\'Activités Indoor';
+$activeMenu = 'home';
+?>
+
+<?= view('front/layouts/header', compact('title')) ?>
+<?= view('front/layouts/navbar', compact('activeMenu')) ?>
 
     <!-- Hero Section -->
     <section class="hero-section text-center">
@@ -169,36 +120,4 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white py-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5>FunLab Tunisie</h5>
-                    <p>Centre d'activités indoor premium</p>
-                </div>
-                <div class="col-md-4">
-                    <h5>Contact</h5>
-                    <p>
-                        <i class="bi bi-envelope"></i> contact@funlab.tn<br>
-                        <i class="bi bi-telephone"></i> +216 70 123 456
-                    </p>
-                </div>
-                <div class="col-md-4">
-                    <h5>Horaires</h5>
-                    <p>
-                        Lundi - Dimanche<br>
-                        09:00 - 22:00
-                    </p>
-                </div>
-            </div>
-            <hr class="my-3">
-            <div class="text-center">
-                <p class="mb-0">&copy; 2026 FunLab Tunisie. Tous droits réservés.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<?= view('front/layouts/footer') ?>
