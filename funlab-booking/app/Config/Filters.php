@@ -86,10 +86,6 @@ class Filters extends BaseFilters
             // 'secureheaders',
         ],
     ];
-            // 'honeypot',
-            // 'secureheaders',
-        ],
-    ];
 
     /**
      * List of filter aliases that works on a
