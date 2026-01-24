@@ -50,6 +50,7 @@
                         <label class="form-label">Port SMTP</label>
                         <input type="number" class="form-control" name="settings[mail_smtp_port]" 
                             value="<?= esc($settings['mail_smtp_port'] ?? '587') ?>">
+                        <div class="form-text">587 pour TLS, 465 pour SSL</div>
                     </div>
                 </div>
             </div>
@@ -72,10 +73,11 @@
                 <div class="col-md-4">
                     <div class="mb-3">
                         <label class="form-label">Cryptage</label>
-                        <select class="form-select" name="settings[mail_smtp_crypto]">
-                            <option value="tls" <?= ($settings['mail_smtp_crypto'] ?? 'tls') === 'tls' ? 'selected' : '' ?>>TLS</option>
-                            <option value="ssl" <?= ($settings['mail_smtp_crypto'] ?? '') === 'ssl' ? 'selected' : '' ?>>SSL</option>
+                        <select class="form-select" name="settings[mail_smtp_crypto]" id="mail_smtp_crypto">
+                            <option value="tls" <?= ($settings['mail_smtp_crypto'] ?? 'tls') === 'tls' ? 'selected' : '' ?>>TLS (port 587)</option>
+                            <option value="ssl" <?= ($settings['mail_smtp_crypto'] ?? '') === 'ssl' ? 'selected' : '' ?>>SSL (port 465)</option>
                         </select>
+                        <div class="form-text">TLS pour port 587, SSL pour port 465</div>
                     </div>
                 </div>
             </div>
