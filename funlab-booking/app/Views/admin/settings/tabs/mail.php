@@ -6,7 +6,7 @@
             <h6 class="mb-0"><i class="bi bi-info-circle"></i> Diagnostic</h6>
         </div>
         <div class="card-body">
-            <div class="row">
+            <div class="row mb-3">
                 <div class="col-md-4">
                     <small class="text-muted">Extension OpenSSL:</small>
                     <span class="badge bg-<?= extension_loaded('openssl') ? 'success' : 'danger' ?>">
@@ -25,6 +25,19 @@
                         <?= ini_get('allow_url_fopen') ? '✓ Activé' : '⚠ Désactivé' ?>
                     </span>
                 </div>
+            </div>
+            
+            <div class="alert alert-info mb-0">
+                <strong><i class="bi bi-lightbulb"></i> Si vous n'êtes pas reçu les emails :</strong>
+                <ul class="mb-0 mt-2">
+                    <li>Vérifiez le dossier <strong>Spam/Indésirables</strong></li>
+                    <li>Attendez 5-10 minutes (délai de livraison)</li>
+                    <li>Configurez les enregistrements DNS : <strong>SPF, DKIM, DMARC</strong> sur votre domaine</li>
+                    <li>Ajoutez ces enregistrements DNS dans cPanel :
+                        <pre class="mt-2 mb-0 p-2 bg-light border rounded"><small>Type TXT | Nom: @ | Valeur: v=spf1 a mx ip4:<?= $_SERVER['SERVER_ADDR'] ?? 'VOTRE_IP' ?> ~all
+Type TXT | Nom: _dmarc | Valeur: v=DMARC1; p=none; rua=mailto:<?= $settings['mail_from_email'] ?? 'admin@domain.com' ?></small></pre>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
