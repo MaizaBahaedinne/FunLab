@@ -56,6 +56,9 @@ class GamesController extends BaseController
             'min_players' => $this->request->getPost('min_players'),
             'max_players' => $this->request->getPost('max_players'),
             'price' => $this->request->getPost('price') ?: 0,
+            'price_per_person' => $this->request->getPost('price_per_person') ?: null,
+            'deposit_required' => $this->request->getPost('deposit_required') ? 1 : 0,
+            'deposit_percentage' => $this->request->getPost('deposit_percentage') ?: 30,
             'status' => $this->request->getPost('status') === 'active' ? 'active' : 'inactive',
         ];
 
@@ -74,7 +77,11 @@ class GamesController extends BaseController
             return redirect()->to('admin/games')->with('success', 'Jeu créé avec succès');
         }
 
-        return redirect()->back()->withInput()->with('error', 'Erreur lors de la création du jeu');
+        // Afficher les erreurs du modèle
+        $errors = $this->gameModel->errors();
+        $errorMessage = !empty($errors) ? implode(', ', $errors) : 'Erreur lors de la création du jeu';
+        
+        return redirect()->back()->withInput()->with('error', $errorMessage);
     }
 
     public function edit($id)
