@@ -59,7 +59,6 @@ class Filters extends BaseFilters
         'after' => [
             'pagecache',   // Web Page Caching
             'performance', // Performance Metrics
-            'toolbar',     // Debug Toolbar
         ],
     ];
 
@@ -83,6 +82,10 @@ class Filters extends BaseFilters
                 'register/*',
                 'api/*'
             ]],
+            // 'honeypot',
+            // 'secureheaders',
+        ],
+    ];
             // 'honeypot',
             // 'secureheaders',
         ],
