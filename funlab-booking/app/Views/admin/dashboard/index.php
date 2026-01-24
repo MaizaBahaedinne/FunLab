@@ -176,9 +176,8 @@ $additionalStyles = '
                 </div>
 
 <?php
-$additionalJS = <<<JS
-<script>
-        const API_BASE_URL = '<?= base_url() ?>';
+$additionalJS = '<script>
+        const API_BASE_URL = \'' . base_url() . '\';
         let bookingsChart, gamesChart;
 
         // Initialisation
@@ -395,8 +394,7 @@ $additionalJS = <<<JS
             
             return days;
         }
-    </script>
-JS;
+    </script>';
 ?>
 
 <?= view('admin/layouts/footer', compact('additionalJS')) ?>
