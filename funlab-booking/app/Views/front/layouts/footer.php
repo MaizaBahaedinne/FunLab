@@ -7,7 +7,6 @@ $description = $footerSettings['footer_description'] ?? 'Centre d\'activités in
 $address = $footerSettings['footer_address'] ?? '';
 $email = $footerSettings['footer_email'] ?? '';
 $phone = $footerSettings['footer_phone'] ?? '';
-$hours = $footerSettings['footer_hours'] ?? '';
 $facebook = $footerSettings['footer_facebook'] ?? '';
 $instagram = $footerSettings['footer_instagram'] ?? '';
 $twitter = $footerSettings['footer_twitter'] ?? '';
@@ -15,6 +14,48 @@ $tiktok = $footerSettings['footer_tiktok'] ?? '';
 $whatsapp = $footerSettings['footer_whatsapp'] ?? '';
 $copyright = $footerSettings['footer_copyright'] ?? '© {year} FunLab Tunisie. Tous droits réservés.';
 $copyright = str_replace('{year}', date('Y'), $copyright);
+
+// Charger les horaires d'ouverture depuis settings/hours
+$hoursSettings = $settingModel->getByCategory('hours');
+$daysMap = [
+    'monday' => 'Lundi',
+    'tuesday' => 'Mardi',
+    'wednesday' => 'Mercredi',
+    'thursday' => 'Jeudi',
+    'friday' => 'Vendredi',
+    'saturday' => 'Samedi',
+    'sunday' => 'Dimanche'
+];
+
+$hoursDisplay = '';
+$groupedHours = [];
+
+foreach ($daysMap as $dayKey => $dayLabel) {
+    $settingKey = 'business_hours_' . $dayKey;
+    if (isset($hoursSettings[$settingKey])) {
+        $hours = json_decode($hoursSettings[$settingKey], true);
+        if ($hours && $hours['enabled']) {
+            $timeRange = $hours['open'] . ' - ' . $hours['close'];
+            if (!isset($groupedHours[$timeRange])) {
+                $groupedHours[$timeRange] = [];
+            }
+            $groupedHours[$timeRange][] = $dayLabel;
+        }
+    }
+}
+
+// Construire l'affichage groupé
+foreach ($groupedHours as $timeRange => $days) {
+    if (count($days) > 1) {
+        $hoursDisplay .= $days[0] . ' - ' . end($days) . ': ' . $timeRange . '<br>';
+    } else {
+        $hoursDisplay .= $days[0] . ': ' . $timeRange . '<br>';
+    }
+}
+
+if (empty($hoursDisplay)) {
+    $hoursDisplay = 'Lundi - Dimanche<br>09:00 - 22:00';
+}
 ?>
 
     <!-- Footer -->
@@ -74,10 +115,8 @@ $copyright = str_replace('{year}', date('Y'), $copyright);
                 </div>
                 
                 <div class="col-md-4 mb-3">
-                    <?php if ($hours): ?>
                     <h5>Horaires</h5>
-                    <p><?= $hours ?></p>
-                    <?php endif; ?>
+                    <p><?= $hoursDisplay ?></p>
                     
                     <h6 class="mt-3">Liens Utiles</h6>
                     <ul class="list-unstyled">
