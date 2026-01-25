@@ -14,6 +14,52 @@ $tiktok = $footerSettings['footer_tiktok'] ?? '';
 $whatsapp = $footerSettings['footer_whatsapp'] ?? '';
 $copyright = $footerSettings['footer_copyright'] ?? '© {year} FunLab Tunisie. Tous droits réservés.';
 $copyright = str_replace('{year}', date('Y'), $copyright);
+
+// Charger les horaires d'ouverture depuis settings/hours
+$hoursSettings = $settingModel->getByCategory('hours');
+$daysMap = [
+    'monday' => 'Lundi',
+    'tuesday' => 'Mardi',
+    'wednesday' => 'Mercredi',
+    'thursday' => 'Jeudi',
+    'friday' => 'Vendredi',
+    'saturday' => 'Samedi',
+    'sunday' => 'Dimanche'
+];
+
+$hoursDisplay = '';
+$groupedHours = [];
+
+foreach ($daysMap as $dayKey => $dayLabel) {
+    $settingKey = 'business_hours_' . $dayKey;
+    if (isset($hoursSettings[$settingKey])) {
+        // Décoder seulement si c'est une string
+        $hours = is_string($hoursSettings[$settingKey]) 
+            ? json_decode($hoursSettings[$settingKey], true) 
+            : $hoursSettings[$settingKey];
+            
+        if ($hours && isset($hours['enabled']) && $hours['enabled']) {
+            $timeRange = $hours['open'] . ' - ' . $hours['close'];
+            if (!isset($groupedHours[$timeRange])) {
+                $groupedHours[$timeRange] = [];
+            }
+            $groupedHours[$timeRange][] = $dayLabel;
+        }
+    }
+}
+
+// Construire l'affichage groupé
+foreach ($groupedHours as $timeRange => $days) {
+    if (count($days) > 1) {
+        $hoursDisplay .= $days[0] . ' - ' . end($days) . ': ' . $timeRange . '<br>';
+    } else {
+        $hoursDisplay .= $days[0] . ': ' . $timeRange . '<br>';
+    }
+}
+
+if (empty($hoursDisplay)) {
+    $hoursDisplay = 'Lundi - Dimanche<br>09:00 - 22:00';
+}
 ?>
 
     <!-- Footer -->
