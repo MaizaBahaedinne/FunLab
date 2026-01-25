@@ -133,8 +133,12 @@
                                 <i class="bi bi-layout-text-sidebar-reverse"></i> Footer
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-seo' ? 'text-white' : '' ?>" 
+                        <li class="nav-item">                            <a class="nav-link text-white-50 <?= (\$activeMenu ?? '') === 'settings-contact' ? 'text-white' : '' ?>" 
+                               href="<?= base_url('admin/settings/contact') ?>">
+                                <i class="bi bi-envelope"></i> Contact
+                            </a>
+                        </li>
+                        <li class="nav-item">                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-seo' ? 'text-white' : '' ?>" 
                                href="<?= base_url('admin/settings/seo') ?>">
                                 <i class="bi bi-search"></i> SEO
                             </a>

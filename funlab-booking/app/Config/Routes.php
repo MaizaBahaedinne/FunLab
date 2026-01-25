@@ -44,6 +44,8 @@ $routes->get('/', 'Front\HomeController::index');
 $routes->get('about', 'Front\AboutController::index');
 $routes->get('games', 'Front\GamesController::index');
 $routes->get('games/(:num)', 'Front\GamesController::view/$1');
+$routes->get('contact', 'Front\ContactController::index');
+$routes->post('contact/send', 'Front\ContactController::send');
 
 // Réservation client
 $routes->group('booking', ['namespace' => 'App\Controllers\Front'], function($routes) {
@@ -158,6 +160,8 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'ad
     $routes->post('settings/footer', 'SettingsController::footer');
     $routes->get('settings/about', 'SettingsController::about');
     $routes->post('settings/about', 'SettingsController::about');
+    $routes->get('settings/contact', 'SettingsController::contact');
+    $routes->post('settings/contact', 'SettingsController::contact');
     $routes->get('settings/oauth', 'SettingsController::oauth');
     $routes->get('settings/users', 'SettingsController::users');
     $routes->get('settings/roles', 'SettingsController::roles');

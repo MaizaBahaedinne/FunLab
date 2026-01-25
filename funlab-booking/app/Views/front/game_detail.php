@@ -1,0 +1,486 @@
+<?php
+$additionalStyles = <<<CSS
+<style>
+.game-detail-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 40px 0;
+    margin-bottom: 50px;
+}
+
+.breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.breadcrumb-item a {
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+}
+
+.breadcrumb-item.active {
+    color: white;
+}
+
+.game-image-container {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    margin-bottom: 30px;
+}
+
+.game-main-image {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+}
+
+.game-placeholder-image {
+    width: 100%;
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-size: 8rem;
+}
+
+.category-badge {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.9);
+}
+
+.game-info-card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 100px;
+}
+
+.game-price {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 10px;
+}
+
+.game-price-label {
+    color: #718096;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+.game-specs {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin: 25px 0;
+    padding: 25px 0;
+    border-top: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.spec-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.spec-icon {
+    font-size: 1.5rem;
+    color: #667eea;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f7fafc;
+    border-radius: 10px;
+}
+
+.spec-content {
+    flex: 1;
+}
+
+.spec-label {
+    font-size: 0.75rem;
+    color: #718096;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.spec-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.btn-book-now {
+    width: 100%;
+    padding: 18px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-book-now:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+}
+
+.share-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.share-button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.share-button:hover {
+    transform: translateY(-2px);
+    color: white;
+}
+
+.share-facebook {
+    background: #1877f2;
+}
+
+.share-twitter {
+    background: #1da1f2;
+}
+
+.share-whatsapp {
+    background: #25d366;
+}
+
+.share-linkedin {
+    background: #0a66c2;
+}
+
+.game-description-section {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.section-title i {
+    color: #667eea;
+}
+
+.game-description {
+    color: #4a5568;
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.feature-item {
+    background: #f7fafc;
+    padding: 20px;
+    border-radius: 15px;
+    display: flex;
+    align-items: start;
+    gap: 15px;
+}
+
+.feature-icon {
+    font-size: 2rem;
+    color: #667eea;
+}
+
+.feature-content h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 5px;
+}
+
+.feature-content p {
+    color: #718096;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.related-games {
+    margin-top: 60px;
+}
+
+.alert-deposit {
+    background: #fef5e7;
+    border-left: 4px solid #f39c12;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+</style>
+CSS;
+?>
+
+<?= view('front/layouts/header', array_merge(compact('title', 'additionalStyles'), [
+    'metaTitle' => $metaTitle ?? '',
+    'metaDescription' => $metaDescription ?? '',
+    'metaKeywords' => $metaKeywords ?? '',
+    'canonicalUrl' => $canonicalUrl ?? '',
+    'ogType' => $ogType ?? '',
+    'ogUrl' => $ogUrl ?? '',
+    'ogTitle' => $ogTitle ?? '',
+    'ogDescription' => $ogDescription ?? '',
+    'ogImage' => $ogImage ?? '',
+    'twitterUrl' => $twitterUrl ?? '',
+    'twitterTitle' => $twitterTitle ?? '',
+    'twitterDescription' => $twitterDescription ?? '',
+    'twitterImage' => $twitterImage ?? ''
+])) ?>
+<?= view('front/layouts/navbar', compact('activeMenu')) ?>
+
+<!-- Hero with Breadcrumb -->
+<section class="game-detail-hero">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="<?= base_url('/') ?>">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="<?= base_url('games') ?>">Jeux</a></li>
+                <li class="breadcrumb-item active"><?= esc($game['name']) ?></li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<!-- Game Detail -->
+<section class="pb-5">
+    <div class="container">
+        <div class="row">
+            <!-- Left Column - Images & Description -->
+            <div class="col-lg-7">
+                <!-- Main Image -->
+                <div class="game-image-container">
+                    <?php if (!empty($game['image'])): ?>
+                        <img src="<?= base_url('uploads/games/' . esc($game['image'])) ?>" 
+                             alt="<?= esc($game['name']) ?>"
+                             class="game-main-image">
+                    <?php else: ?>
+                        <div class="game-placeholder-image">
+                            <i class="<?= esc($game['category_icon'] ?? 'bi-controller') ?>"></i>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($game['category_name'])): ?>
+                        <div class="category-badge" style="color: <?= esc($game['category_color']) ?>">
+                            <i class="<?= esc($game['category_icon']) ?>"></i>
+                            <?= esc($game['category_name']) ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Description -->
+                <div class="game-description-section">
+                    <h2 class="section-title">
+                        <i class="bi bi-info-circle"></i>
+                        Description
+                    </h2>
+                    <div class="game-description">
+                        <?php if (!empty($game['description'])): ?>
+                            <?= nl2br(esc($game['description'])) ?>
+                        <?php else: ?>
+                            <p>Découvrez <strong><?= esc($game['name']) ?></strong>, une expérience unique chez FunLab Tunisie !</p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <!-- Features -->
+                <div class="game-description-section">
+                    <h2 class="section-title">
+                        <i class="bi bi-star"></i>
+                        Points Forts
+                    </h2>
+                    <div class="features-grid">
+                        <div class="feature-item">
+                            <i class="bi bi-people feature-icon"></i>
+                            <div class="feature-content">
+                                <h4>Équipe</h4>
+                                <p><?= $game['min_players'] ?>-<?= $game['max_players'] ?> joueurs</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <i class="bi bi-clock feature-icon"></i>
+                            <div class="feature-content">
+                                <h4>Durée</h4>
+                                <p><?= $game['duration_minutes'] ?> minutes</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <i class="bi bi-shield-check feature-icon"></i>
+                            <div class="feature-content">
+                                <h4>Sécurité</h4>
+                                <p>Équipement supervisé</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <i class="bi bi-trophy feature-icon"></i>
+                            <div class="feature-content">
+                                <h4>Expérience</h4>
+                                <p>Tous niveaux</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Booking Info -->
+            <div class="col-lg-5">
+                <div class="game-info-card">
+                    <h1 class="h2 mb-3"><?= esc($game['name']) ?></h1>
+                    
+                    <div class="game-price">
+                        <?= number_format($game['price'], 2) ?> TND
+                    </div>
+                    <div class="game-price-label">
+                        <?php if ($game['price_per_person']): ?>
+                            Prix par personne
+                        <?php else: ?>
+                            Prix par session
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Specs -->
+                    <div class="game-specs">
+                        <div class="spec-item">
+                            <div class="spec-icon">
+                                <i class="bi bi-clock"></i>
+                            </div>
+                            <div class="spec-content">
+                                <div class="spec-label">Durée</div>
+                                <div class="spec-value"><?= $game['duration_minutes'] ?> min</div>
+                            </div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-icon">
+                                <i class="bi bi-people"></i>
+                            </div>
+                            <div class="spec-content">
+                                <div class="spec-label">Joueurs</div>
+                                <div class="spec-value"><?= $game['min_players'] ?>-<?= $game['max_players'] ?></div>
+                            </div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-icon">
+                                <i class="bi bi-star"></i>
+                            </div>
+                            <div class="spec-content">
+                                <div class="spec-label">Statut</div>
+                                <div class="spec-value">Disponible</div>
+                            </div>
+                        </div>
+                        <div class="spec-item">
+                            <div class="spec-icon">
+                                <i class="bi bi-tag"></i>
+                            </div>
+                            <div class="spec-content">
+                                <div class="spec-label">Catégorie</div>
+                                <div class="spec-value"><?= esc($game['category_name'] ?? 'Jeu') ?></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Book Button -->
+                    <a href="<?= base_url('booking?game=' . $game['id']) ?>" class="btn btn-book-now">
+                        <i class="bi bi-calendar-check"></i>
+                        Réserver Maintenant
+                    </a>
+
+                    <?php if ($game['deposit_required']): ?>
+                        <div class="alert-deposit">
+                            <i class="bi bi-info-circle"></i>
+                            Acompte requis : <?= $game['deposit_percentage'] ?>% du prix total
+                        </div>
+                    <?php endif; ?>
+
+                    <!-- Share Buttons -->
+                    <div class="share-buttons">
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=<?= urlencode($shareUrl ?? current_url()) ?>" 
+                           target="_blank" 
+                           class="share-button share-facebook"
+                           title="Partager sur Facebook">
+                            <i class="bi bi-facebook"></i>
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?url=<?= urlencode($shareUrl ?? current_url()) ?>&text=<?= urlencode($shareTitle ?? '') ?>" 
+                           target="_blank" 
+                           class="share-button share-twitter"
+                           title="Partager sur Twitter">
+                            <i class="bi bi-twitter"></i>
+                        </a>
+                        <a href="https://wa.me/?text=<?= urlencode(($shareTitle ?? '') . ' - ' . ($shareUrl ?? current_url())) ?>" 
+                           target="_blank" 
+                           class="share-button share-whatsapp"
+                           title="Partager sur WhatsApp">
+                            <i class="bi bi-whatsapp"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url=<?= urlencode($shareUrl ?? current_url()) ?>" 
+                           target="_blank" 
+                           class="share-button share-linkedin"
+                           title="Partager sur LinkedIn">
+                            <i class="bi bi-linkedin"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<?= view('front/layouts/footer') ?>

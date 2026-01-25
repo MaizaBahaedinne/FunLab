@@ -204,6 +204,11 @@ CSS;
                                            class="btn btn-book-game">
                                             <i class="bi bi-calendar-check"></i> Réserver Maintenant
                                         </a>
+                                        
+                                        <a href="<?= base_url('games/' . $game['id']) ?>" 
+                                           class="btn btn-outline-primary w-100 mt-2">
+                                            <i class="bi bi-eye"></i> Voir Détails
+                                        </a>
                                     </div>
                                 </div>
                             </div>

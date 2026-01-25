@@ -78,10 +78,44 @@ class GamesController extends BaseController
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Jeu non trouvé');
         }
 
+        // Préparer les données SEO
+        $gameUrl = base_url('games/' . $game['id']);
+        $gameImage = !empty($game['image']) 
+            ? base_url('uploads/games/' . $game['image']) 
+            : base_url('assets/images/game-default.jpg');
+        
+        $metaDescription = !empty($game['description']) 
+            ? mb_substr(strip_tags($game['description']), 0, 160) 
+            : "Découvrez {$game['name']} chez FunLab Tunisie. Réservez dès maintenant !";
+
         $data = [
-            'title' => esc($game['name']),
+            'title' => esc($game['name']) . ' - FunLab Tunisie',
             'activeMenu' => 'games',
-            'game' => $game
+            'game' => $game,
+            
+            // SEO Meta Tags
+            'metaTitle' => esc($game['name']) . ' - FunLab Tunisie',
+            'metaDescription' => $metaDescription,
+            'metaKeywords' => esc($game['name']) . ', ' . ($game['category_name'] ?? '') . ', funlab tunisie, réservation, jeu',
+            'canonicalUrl' => $gameUrl,
+            
+            // Open Graph
+            'ogType' => 'product',
+            'ogUrl' => $gameUrl,
+            'ogTitle' => esc($game['name']) . ' - FunLab Tunisie',
+            'ogDescription' => $metaDescription,
+            'ogImage' => $gameImage,
+            
+            // Twitter Card
+            'twitterUrl' => $gameUrl,
+            'twitterTitle' => esc($game['name']) . ' - FunLab Tunisie',
+            'twitterDescription' => $metaDescription,
+            'twitterImage' => $gameImage,
+            
+            // Partage social
+            'shareUrl' => $gameUrl,
+            'shareTitle' => esc($game['name']),
+            'shareDescription' => $metaDescription
         ];
 
         return view('front/game_detail', $data);

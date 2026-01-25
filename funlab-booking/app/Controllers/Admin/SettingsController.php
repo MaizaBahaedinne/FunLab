@@ -203,6 +203,58 @@ class SettingsController extends BaseController
     }
 
     /**
+     * Configuration de la page Contact
+     */
+    public function contact()
+    {
+        if ($this->request->getMethod() === 'post' || $_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = $this->request->getPost();
+            
+            if (empty($data)) {
+                return redirect()->to('/admin/settings/contact')
+                               ->with('error', 'Aucune donnée reçue du formulaire');
+            }
+            
+            unset($data['csrf_test_name']);
+
+            $updated = 0;
+            foreach ($data as $key => $value) {
+                if (!is_string($key)) continue;
+                
+                // Déterminer le type selon le champ
+                $type = 'text';
+                if (strpos($key, 'text') !== false || strpos($key, 'embed') !== false) {
+                    $type = 'textarea';
+                }
+                
+                try {
+                    $result = $this->settingModel->setSetting($key, $value, $type, 'contact');
+                    if ($result) {
+                        $updated++;
+                    }
+                } catch (\Exception $e) {
+                    log_message('error', 'Error updating ' . $key . ': ' . $e->getMessage());
+                }
+            }
+
+            if ($updated > 0) {
+                return redirect()->to('/admin/settings/contact')
+                               ->with('success', "Page Contact mise à jour avec succès ($updated champs modifiés)");
+            } else {
+                return redirect()->to('/admin/settings/contact')
+                               ->with('error', 'Aucune modification effectuée');
+            }
+        }
+
+        $data = [
+            'title' => 'Configuration Page Contact',
+            'settings' => $this->settingModel->getByCategory('contact')
+        ];
+
+        return view('admin/settings/contact', $data);
+    }
+
+    /**
      * Configuration OAuth (Google, Facebook)
      */
     public function oauth()
