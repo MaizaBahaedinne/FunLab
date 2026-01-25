@@ -220,8 +220,23 @@ class SettingsController extends BaseController
             $updated = 0;
             $errors = [];
             
+            // Charger les paramètres existants pour comparaison
+            $existingSettings = [];
+            $currentSettings = $this->settingModel->getByCategory('contact');
+            foreach ($currentSettings as $setting) {
+                if (is_array($setting) && isset($setting['key']) && isset($setting['value'])) {
+                    $existingSettings[$setting['key']] = $setting['value'];
+                }
+            }
+            
             foreach ($data as $key => $value) {
                 if (!is_string($key)) continue;
+                
+                // Vérifier si la valeur a réellement changé
+                $oldValue = $existingSettings[$key] ?? null;
+                if ($oldValue === $value) {
+                    continue; // Pas de changement, on saute
+                }
                 
                 // Déterminer le type selon le champ
                 $type = 'text';
@@ -235,7 +250,7 @@ class SettingsController extends BaseController
                     $result = $this->settingModel->setSetting($key, $value, $type, 'contact');
                     if ($result) {
                         $updated++;
-                        log_message('info', "Updated setting: $key = " . substr($value, 0, 50));
+                        log_message('info', "Updated setting: $key (changed from '" . substr($oldValue ?? '', 0, 30) . "' to '" . substr($value, 0, 30) . "')");
                     } else {
                         $errors[] = $key;
                         log_message('error', "Failed to update setting: $key");
@@ -255,7 +270,7 @@ class SettingsController extends BaseController
                                ->with('success', $message);
             } else {
                 return redirect()->to('/admin/settings/contact')
-                               ->with('error', 'Aucune modification effectuée. Erreurs: ' . implode(', ', $errors));
+                               ->with('info', 'Aucune modification détectée');
             }
         }
 
