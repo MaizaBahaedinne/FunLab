@@ -238,7 +238,7 @@ class SettingsController extends BaseController
                 
                 // Vérifier si la valeur a réellement changé
                 if ($oldValue === $newValue) {
-                    log_message('debug', "Skipping unchanged setting: $key");
+                    log_message('debug', "Skipping unchanged setting: $key (both are: '{$oldValue}')");
                     continue; // Pas de changement, on saute
                 }
                 
@@ -251,10 +251,10 @@ class SettingsController extends BaseController
                 }
                 
                 try {
-                    $result = $this->settingModel->setSetting($key, $value, $type, 'contact');
+                    $result = $this->settingModel->setSetting($key, $newValue, $type, 'contact');
                     if ($result) {
                         $updated++;
-                        log_message('info', "Updated setting: $key (changed from '" . substr($oldValue, 0, 30) . "...' to '" . substr($newValue, 0, 30) . "...')");
+                        log_message('info', "Updated setting: $key (changed from '{$oldValue}' to '{$newValue}')");
                     } else {
                         $errors[] = $key;
                         log_message('error', "Failed to update setting: $key");
