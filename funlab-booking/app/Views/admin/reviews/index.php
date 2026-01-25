@@ -3,13 +3,62 @@ $title = 'Gestion des Avis';
 $pageTitle = 'Gestion des Avis';
 $activeMenu = 'reviews';
 $breadcrumbs = ['Admin' => base_url('admin'), 'Avis' => null];
+$additionalStyles = '
+    .stat-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+        border-left: 4px solid;
+    }
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .stat-card.pending { border-left-color: #ffc107; }
+    .stat-card.approved { border-left-color: #28a745; }
+    .stat-card.total { border-left-color: #667eea; }
+    
+    .filter-btn {
+        border-radius: 20px;
+        padding: 8px 20px;
+        font-weight: 500;
+        transition: all 0.3s;
+    }
+    .filter-btn.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-color: #667eea;
+        color: white !important;
+    }
+    
+    .review-card {
+        transition: transform 0.2s;
+        border-left: 3px solid transparent;
+    }
+    .review-card:hover {
+        transform: translateX(5px);
+        box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    .review-card.pending { border-left-color: #ffc107; background: #fff9e6; }
+    .review-card.approved { border-left-color: #28a745; }
+    
+    .rating-stars i {
+        font-size: 1.1rem;
+    }
+    
+    .action-btn {
+        padding: 5px 10px;
+        border-radius: 5px;
+        transition: all 0.2s;
+    }
+    .action-btn:hover {
+        transform: scale(1.1);
+    }
+';
 ?>
 
-<?= view('admin/layouts/header', compact('title')) ?>
+<?= view('admin/layouts/header', compact('title', 'additionalStyles')) ?>
 <?= view('admin/layouts/sidebar', compact('activeMenu')) ?>
 <?= view('admin/layouts/topbar', compact('pageTitle', 'breadcrumbs')) ?>
 
-<div class="container-fluid">
+<div class="container-fluid p-4">
     <!-- Flash Messages -->
     <?php if (session()->getFlashdata('success')): ?>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -28,46 +77,52 @@ $breadcrumbs = ['Admin' => base_url('admin'), 'Avis' => null];
     <?php endif; ?>
 
     <!-- Stats Cards -->
-    <div class="row mb-4">
+    <div class="row g-3 mb-4">
         <div class="col-md-4">
-            <div class="card border-warning">
+            <div class="card stat-card pending h-100 border-0 shadow-sm">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="text-muted mb-1">En attente</h6>
-                            <h3 class="mb-0">
+                            <p class="text-muted mb-1 small text-uppercase fw-semibold">En attente</p>
+                            <h2 class="mb-0 fw-bold">
                                 <?= count(array_filter($reviews, function($r) { return $r['is_approved'] == 0; })) ?>
-                            </h3>
+                            </h2>
                         </div>
-                        <i class="bi bi-clock-history fs-1 text-warning"></i>
+                        <div class="bg-warning bg-opacity-10 p-3 rounded-circle">
+                            <i class="bi bi-clock-history fs-1 text-warning"></i>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card border-success">
+            <div class="card stat-card approved h-100 border-0 shadow-sm">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="text-muted mb-1">Approuvés</h6>
-                            <h3 class="mb-0">
+                            <p class="text-muted mb-1 small text-uppercase fw-semibold">Approuvés</p>
+                            <h2 class="mb-0 fw-bold">
                                 <?= count(array_filter($reviews, function($r) { return $r['is_approved'] == 1; })) ?>
-                            </h3>
+                            </h2>
                         </div>
-                        <i class="bi bi-check-circle fs-1 text-success"></i>
+                        <div class="bg-success bg-opacity-10 p-3 rounded-circle">
+                            <i class="bi bi-check-circle fs-1 text-success"></i>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card border-primary">
+            <div class="card stat-card total h-100 border-0 shadow-sm">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="text-muted mb-1">Total</h6>
-                            <h3 class="mb-0"><?= count($reviews) ?></h3>
+                            <p class="text-muted mb-1 small text-uppercase fw-semibold">Total</p>
+                            <h2 class="mb-0 fw-bold"><?= count($reviews) ?></h2>
                         </div>
-                        <i class="bi bi-chat-quote fs-1 text-primary"></i>
+                        <div class="bg-primary bg-opacity-10 p-3 rounded-circle">
+                            <i class="bi bi-chat-quote fs-1" style="color: #667eea;"></i>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -75,18 +130,20 @@ $breadcrumbs = ['Admin' => base_url('admin'), 'Avis' => null];
     </div>
 
     <!-- Filters -->
-    <div class="card mb-4">
+    <div class="card border-0 shadow-sm mb-4">
         <div class="card-body">
-            <div class="btn-group" role="group">
-                <button type="button" class="btn btn-outline-primary active" onclick="filterReviews('all')">
-                    Tous (<?= count($reviews) ?>)
-                </button>
-                <button type="button" class="btn btn-outline-warning" onclick="filterReviews('pending')">
-                    En attente (<?= count(array_filter($reviews, function($r) { return $r['is_approved'] == 0; })) ?>)
-                </button>
-                <button type="button" class="btn btn-outline-success" onclick="filterReviews('approved')">
-                    Approuvés (<?= count(array_filter($reviews, function($r) { return $r['is_approved'] == 1; })) ?>)
-                </button>
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-outline-primary filter-btn active" onclick="filterReviews('all')">
+                        <i class="bi bi-grid me-1"></i> Tous (<?= count($reviews) ?>)
+                    </button>
+                    <button type="button" class="btn btn-outline-warning filter-btn" onclick="filterReviews('pending')">
+                        <i class="bi bi-clock me-1"></i> En attente (<?= count(array_filter($reviews, function($r) { return $r['is_approved'] == 0; })) ?>)
+                    </button>
+                    <button type="button" class="btn btn-outline-success filter-btn" onclick="filterReviews('approved')">
+                        <i class="bi bi-check-circle me-1"></i> Approuvés (<?= count(array_filter($reviews, function($r) { return $r['is_approved'] == 1; })) ?>)
+                    </button>
+                </div>
             </div>
         </div>
     </div>
