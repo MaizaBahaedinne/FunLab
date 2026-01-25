@@ -27,6 +27,11 @@
                     <i class="bi bi-grid"></i> Catégories
                 </a>
                 
+                <a class="nav-link text-white <?= ($activeMenu ?? '') === 'reviews' ? 'active bg-primary rounded' : '' ?>" 
+                   href="<?= base_url('admin/reviews') ?>">
+                    <i class="bi bi-star"></i> Avis
+                </a>
+                
                 <a class="nav-link text-white <?= ($activeMenu ?? '') === 'rooms' ? 'active bg-primary rounded' : '' ?>" 
                    href="<?= base_url('admin/rooms') ?>">
                     <i class="bi bi-door-closed"></i> Salles

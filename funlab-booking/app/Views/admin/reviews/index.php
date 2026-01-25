@@ -1,14 +1,15 @@
-<?= $this->extend('layouts/admin') ?>
+<?php
+$title = 'Gestion des Avis';
+$pageTitle = 'Gestion des Avis';
+$activeMenu = 'reviews';
+$breadcrumbs = ['Admin' => base_url('admin'), 'Avis' => null];
+?>
 
-<?= $this->section('content') ?>
+<?= view('admin/layouts/header', compact('title')) ?>
+<?= view('admin/layouts/sidebar', compact('activeMenu')) ?>
+<?= view('admin/layouts/topbar', compact('pageTitle', 'breadcrumbs')) ?>
+
 <div class="container-fluid">
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">
-            <i class="bi bi-star-fill text-warning"></i> Gestion des Avis
-        </h1>
-    </div>
-
     <!-- Flash Messages -->
     <?php if (session()->getFlashdata('success')): ?>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -262,4 +263,6 @@ function filterReviews(status) {
 }
 </script>
 
-<?= $this->endSection() ?>
+</div> <!-- .container-fluid -->
+
+<?= view('admin/layouts/footer') ?>
