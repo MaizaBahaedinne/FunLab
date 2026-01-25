@@ -12,7 +12,9 @@ $breadcrumbs = [
 $contactSettings = [];
 if (isset($settings) && is_array($settings)) {
     foreach ($settings as $setting) {
-        $contactSettings[$setting['key']] = $setting['value'];
+        if (is_array($setting) && isset($setting['key']) && isset($setting['value'])) {
+            $contactSettings[$setting['key']] = $setting['value'];
+        }
     }
 }
 ?>
