@@ -23,16 +23,24 @@ class ContactController extends BaseController
         $contactSettings = [];
         $settings = $this->settingModel->getByCategory('contact');
         
-        foreach ($settings as $setting) {
-            $contactSettings[$setting['key']] = $setting['value'];
+        if (!empty($settings) && is_array($settings)) {
+            foreach ($settings as $setting) {
+                if (isset($setting['key']) && isset($setting['value'])) {
+                    $contactSettings[$setting['key']] = $setting['value'];
+                }
+            }
         }
 
         // Charger les horaires si pas de texte personnalisé
         if (empty($contactSettings['contact_hours_text'])) {
             $hoursSettings = $this->settingModel->getByCategory('hours');
             $hours = [];
-            foreach ($hoursSettings as $setting) {
-                $hours[$setting['key']] = $setting['value'];
+            if (!empty($hoursSettings) && is_array($hoursSettings)) {
+                foreach ($hoursSettings as $setting) {
+                    if (isset($setting['key']) && isset($setting['value'])) {
+                        $hours[$setting['key']] = $setting['value'];
+                    }
+                }
             }
             $contactSettings['hours'] = $hours;
         }
@@ -109,10 +117,12 @@ class ContactController extends BaseController
         // Récupérer l'email de destination depuis les paramètres
         $contactSettings = $this->settingModel->getByCategory('contact');
         $toEmail = '';
-        foreach ($contactSettings as $setting) {
-            if ($setting['key'] === 'contact_receive_email') {
-                $toEmail = $setting['value'];
-                break;
+        if (!empty($contactSettings) && is_array($contactSettings)) {
+            foreach ($contactSettings as $setting) {
+                if (isset($setting['key']) && $setting['key'] === 'contact_receive_email' && isset($setting['value'])) {
+                    $toEmail = $setting['value'];
+                    break;
+                }
             }
         }
 
