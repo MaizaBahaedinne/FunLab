@@ -48,6 +48,10 @@ $routes->post('games/(:num)/review', 'Front\GamesController::submitReview/$1');
 $routes->get('contact', 'Front\ContactController::index');
 $routes->post('contact/send', 'Front\ContactController::send');
 
+// Routes de test pour les bots sociaux
+$routes->get('social-bot-test', 'Front\SocialBotTestController::index');
+$routes->get('og-test', 'Front\SocialBotTestController::ogTest');
+
 // Réservation client
 $routes->group('booking', ['namespace' => 'App\Controllers\Front'], function($routes) {
     $routes->get('/', 'BookingController::index');

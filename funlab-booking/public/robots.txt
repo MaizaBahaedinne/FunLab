@@ -1,2 +1,38 @@
+# Robots.txt - FunLab Tunisie
+
+# Autoriser tous les robots par défaut
 User-agent: *
-Disallow: 
+Disallow: /admin/
+Disallow: /api/v1/payment/
+Allow: /
+
+# Autoriser explicitement les bots des réseaux sociaux
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Facebot
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: Slackbot
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+User-agent: Discordbot
+Allow: /
+
+User-agent: Pinterestbot
+Allow: /
+
+# Sitemap
+Sitemap: https://funlab.faltaagency.com/sitemap.xml

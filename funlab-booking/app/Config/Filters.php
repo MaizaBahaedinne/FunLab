@@ -36,6 +36,7 @@ class Filters extends BaseFilters
         'performance'   => PerformanceMetrics::class,
         'adminAuth'     => \App\Filters\AdminAuth::class,
         'auth'          => \App\Filters\Auth::class,
+        'allowSocialBots' => \App\Filters\AllowSocialBots::class,
     ];
 
     /**
@@ -73,6 +74,7 @@ class Filters extends BaseFilters
      */
     public array $globals = [
         'before' => [
+            'allowSocialBots', // Autoriser les bots des réseaux sociaux
             // 'honeypot',
             // 'csrf',
             // 'invalidchars',
