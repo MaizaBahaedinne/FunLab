@@ -44,17 +44,17 @@
                 
                 <hr class="border-secondary my-3">
                 
-                <!-- Paramètres avec sous-menu -->
-                <a class="nav-link text-white <?= (str_starts_with($activeMenu ?? '', 'settings')) ? 'active bg-primary rounded' : '' ?>" 
+                <!-- Configuration Système -->
+                <a class="nav-link text-white <?= (str_starts_with($activeMenu ?? '', 'settings-')) && in_array($activeMenu, ['settings-general', 'settings-hours', 'settings-oauth']) ? 'active bg-primary rounded' : '' ?>" 
                    data-bs-toggle="collapse" 
-                   href="#settingsMenu" 
+                   href="#configMenu" 
                    role="button" 
-                   aria-expanded="<?= (str_starts_with($activeMenu ?? '', 'settings')) ? 'true' : 'false' ?>"
-                   aria-controls="settingsMenu">
-                    <i class="bi bi-gear"></i> Paramètres
+                   aria-expanded="<?= (str_starts_with($activeMenu ?? '', 'settings-')) && in_array($activeMenu, ['settings-general', 'settings-hours', 'settings-oauth']) ? 'true' : 'false' ?>"
+                   aria-controls="configMenu">
+                    <i class="bi bi-gear"></i> Configuration
                     <i class="bi bi-chevron-down float-end"></i>
                 </a>
-                <div class="collapse <?= (str_starts_with($activeMenu ?? '', 'settings')) ? 'show' : '' ?>" id="settingsMenu">
+                <div class="collapse <?= (str_starts_with($activeMenu ?? '', 'settings-')) && in_array($activeMenu, ['settings-general', 'settings-hours', 'settings-oauth']) ? 'show' : '' ?>" id="configMenu">
                     <ul class="nav flex-column ms-3">
                         <li class="nav-item">
                             <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-general' ? 'text-white' : '' ?>" 
@@ -69,6 +69,27 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-oauth' ? 'text-white' : '' ?>" 
+                               href="<?= base_url('admin/settings/oauth') ?>">
+                                <i class="bi bi-shield-lock"></i> OAuth
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Communications -->
+                <a class="nav-link text-white <?= in_array($activeMenu ?? '', ['settings-mail', 'settings-sms']) ? 'active bg-primary rounded' : '' ?>" 
+                   data-bs-toggle="collapse" 
+                   href="#commsMenu" 
+                   role="button" 
+                   aria-expanded="<?= in_array($activeMenu ?? '', ['settings-mail', 'settings-sms']) ? 'true' : 'false' ?>"
+                   aria-controls="commsMenu">
+                    <i class="bi bi-chat-dots"></i> Communications
+                    <i class="bi bi-chevron-down float-end"></i>
+                </a>
+                <div class="collapse <?= in_array($activeMenu ?? '', ['settings-mail', 'settings-sms']) ? 'show' : '' ?>" id="commsMenu">
+                    <ul class="nav flex-column ms-3">
+                        <li class="nav-item">
                             <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-mail' ? 'text-white' : '' ?>" 
                                href="<?= base_url('admin/settings/mail') ?>">
                                 <i class="bi bi-envelope"></i> Email
@@ -80,10 +101,25 @@
                                 <i class="bi bi-phone"></i> SMS
                             </a>
                         </li>
+                    </ul>
+                </div>
+                
+                <!-- Pages & Contenu -->
+                <a class="nav-link text-white <?= in_array($activeMenu ?? '', ['settings-about', 'settings-footer', 'settings-seo']) ? 'active bg-primary rounded' : '' ?>" 
+                   data-bs-toggle="collapse" 
+                   href="#contentMenu" 
+                   role="button" 
+                   aria-expanded="<?= in_array($activeMenu ?? '', ['settings-about', 'settings-footer', 'settings-seo']) ? 'true' : 'false' ?>"
+                   aria-controls="contentMenu">
+                    <i class="bi bi-file-earmark-text"></i> Pages & Contenu
+                    <i class="bi bi-chevron-down float-end"></i>
+                </a>
+                <div class="collapse <?= in_array($activeMenu ?? '', ['settings-about', 'settings-footer', 'settings-seo']) ? 'show' : '' ?>" id="contentMenu">
+                    <ul class="nav flex-column ms-3">
                         <li class="nav-item">
-                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-seo' ? 'text-white' : '' ?>" 
-                               href="<?= base_url('admin/settings/seo') ?>">
-                                <i class="bi bi-search"></i> SEO
+                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-about' ? 'text-white' : '' ?>" 
+                               href="<?= base_url('admin/settings/about') ?>">
+                                <i class="bi bi-info-circle"></i> À Propos
                             </a>
                         </li>
                         <li class="nav-item">
@@ -93,21 +129,30 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-about' ? 'text-white' : '' ?>" 
-                               href="<?= base_url('admin/settings/about') ?>">
-                                <i class="bi bi-info-circle"></i> Page À Propos
+                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-seo' ? 'text-white' : '' ?>" 
+                               href="<?= base_url('admin/settings/seo') ?>">
+                                <i class="bi bi-search"></i> SEO
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-oauth' ? 'text-white' : '' ?>" 
-                               href="<?= base_url('admin/settings/oauth') ?>">
-                                <i class="bi bi-shield-lock"></i> Authentification OAuth
-                            </a>
-                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Utilisateurs & Permissions -->
+                <a class="nav-link text-white <?= in_array($activeMenu ?? '', ['settings-users', 'settings-roles']) ? 'active bg-primary rounded' : '' ?>" 
+                   data-bs-toggle="collapse" 
+                   href="#usersMenu" 
+                   role="button" 
+                   aria-expanded="<?= in_array($activeMenu ?? '', ['settings-users', 'settings-roles']) ? 'true' : 'false' ?>"
+                   aria-controls="usersMenu">
+                    <i class="bi bi-person-gear"></i> Utilisateurs
+                    <i class="bi bi-chevron-down float-end"></i>
+                </a>
+                <div class="collapse <?= in_array($activeMenu ?? '', ['settings-users', 'settings-roles']) ? 'show' : '' ?>" id="usersMenu">
+                    <ul class="nav flex-column ms-3">
                         <li class="nav-item">
                             <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-users' ? 'text-white' : '' ?>" 
                                href="<?= base_url('admin/settings/users') ?>">
-                                <i class="bi bi-person"></i> Utilisateurs
+                                <i class="bi bi-person"></i> Gestion
                             </a>
                         </li>
                         <li class="nav-item">
