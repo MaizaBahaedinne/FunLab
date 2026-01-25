@@ -210,6 +210,8 @@ class SettingsController extends BaseController
         if ($this->request->getMethod() === 'post' || $_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = $this->request->getPost();
             
+            log_message('info', 'Contact form POST data received: ' . json_encode($data));
+            
             if (empty($data)) {
                 return redirect()->to('/admin/settings/contact')
                                ->with('error', 'Aucune donnée reçue du formulaire');
@@ -228,6 +230,8 @@ class SettingsController extends BaseController
                     $existingSettings[$setting['key']] = $setting['value'];
                 }
             }
+            
+            log_message('info', 'Existing settings loaded: ' . json_encode($existingSettings));
             
             foreach ($data as $key => $value) {
                 if (!is_string($key)) continue;
