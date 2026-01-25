@@ -267,6 +267,195 @@ $additionalStyles = <<<CSS
     border-radius: 10px;
     margin-top: 20px;
 }
+
+/* Hero Section Modern Redesign */
+.game-detail-hero-top {
+    position: relative;
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    margin-bottom: 50px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.game-detail-hero-top::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,165.3C1248,171,1344,149,1392,138.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+    background-size: cover;
+    opacity: 0.3;
+}
+
+.game-detail-hero-top::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%);
+}
+
+.game-hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: white;
+    padding: 80px 0;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.game-hero-category {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 28px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 50px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    animation: fadeInDown 0.6s ease-out;
+}
+
+.game-hero-category i {
+    font-size: 1.3rem;
+}
+
+.game-hero-title {
+    font-size: 4rem;
+    font-weight: 800;
+    margin-bottom: 30px;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    line-height: 1.1;
+    animation: fadeInUp 0.6s ease-out 0.2s both;
+    letter-spacing: -1px;
+}
+
+.game-hero-specs {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    margin-top: 50px;
+    flex-wrap: wrap;
+    animation: fadeInUp 0.6s ease-out 0.4s both;
+}
+
+.hero-spec-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 25px 35px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 180px;
+}
+
+.hero-spec-item:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+.hero-spec-icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 18px;
+    font-size: 1.8rem;
+}
+
+.hero-spec-value {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-top: 8px;
+}
+
+.hero-spec-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    opacity: 0.95;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 992px) {
+    .game-hero-title {
+        font-size: 3rem;
+    }
+    
+    .game-hero-specs {
+        gap: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .game-hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .game-hero-specs {
+        gap: 20px;
+    }
+    
+    .hero-spec-item {
+        padding: 20px 25px;
+        min-width: 150px;
+    }
+    
+    .hero-spec-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+    
+    .hero-spec-value {
+        font-size: 1.6rem;
+    }
+    
+    .game-hero-content {
+        padding: 60px 0;
+    }
+}
 </style>
 CSS;
 ?>
