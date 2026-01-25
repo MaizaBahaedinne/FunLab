@@ -288,17 +288,49 @@ CSS;
 ])) ?>
 <?= view('front/layouts/navbar', compact('activeMenu')) ?>
 
-<!-- Hero with Breadcrumb -->
-<section class="game-detail-hero">
+<!-- Hero Section -->
+<section class="game-detail-hero-top">
     <div class="container">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="<?= base_url('/') ?>">Accueil</a></li>
-                <li class="breadcrumb-item"><a href="<?= base_url('games') ?>">Jeux</a></li>
-                <li class="breadcrumb-item active"><?= esc($game['name']) ?></li>
-            </ol>
-        </nav>
+        <div class="game-hero-content">
+            <?php if (!empty($game['category_name'])): ?>
+                <div class="game-hero-category">
+                    <i class="<?= esc($game['category_icon']) ?>"></i>
+                    <span><?= esc($game['category_name']) ?></span>
+                </div>
+            <?php endif; ?>
+            
+            <h1 class="game-hero-title"><?= esc($game['name']) ?></h1>
+            
+            <div class="game-hero-specs">
+                <div class="hero-spec-item">
+                    <div class="hero-spec-icon"><i class="bi bi-clock"></i></div>
+                    <div class="hero-spec-value"><?= $game['duration_minutes'] ?> min</div>
+                    <div class="hero-spec-label">Durée</div>
+                </div>
+                <div class="hero-spec-item">
+                    <div class="hero-spec-icon"><i class="bi bi-people"></i></div>
+                    <div class="hero-spec-value"><?= $game['min_players'] ?>-<?= $game['max_players'] ?></div>
+                    <div class="hero-spec-label">Joueurs</div>
+                </div>
+                <div class="hero-spec-item">
+                    <div class="hero-spec-icon"><i class="bi bi-tag"></i></div>
+                    <div class="hero-spec-value"><?= number_format($game['price'], 0) ?> TND</div>
+                    <div class="hero-spec-label">Prix</div>
+                </div>
+            </div>
+        </div>
     </div>
+</section>
+
+<!-- Breadcrumb removed from hero, now separate -->
+<section class="container mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb bg-transparent">
+            <li class="breadcrumb-item"><a href="<?= base_url('/') ?>">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="<?= base_url('games') ?>">Jeux</a></li>
+            <li class="breadcrumb-item active"><?= esc($game['name']) ?></li>
+        </ol>
+    </nav>
 </section>
 
 <!-- Game Detail -->
@@ -482,5 +514,173 @@ CSS;
         </div>
     </div>
 </section>
+
+<!-- Reviews Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <!-- Flash Messages -->
+                <?php if (session()->getFlashdata('review_success')): ?>
+                    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        <?= session()->getFlashdata('review_success') ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <?php endif; ?>
+                
+                <?php if (session()->getFlashdata('review_error')): ?>
+                    <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <?= session()->getFlashdata('review_error') ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <?php endif; ?>
+                
+                <!-- Reviews Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="h3 mb-0">
+                        <i class="bi bi-star-fill text-warning"></i> Avis des Joueurs
+                    </h2>
+                    <?php if ($reviewCount > 0): ?>
+                        <div class="text-end">
+                            <div class="h4 mb-0"><?= $averageRating ?> <small class="text-muted">/5</small></div>
+                            <small class="text-muted"><?= $reviewCount ?> avis</small>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Add Review Form -->
+                <?php if (!$hasReviewed): ?>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Laissez votre avis</h5>
+                        
+                        <?php if (session()->getFlashdata('review_success')): ?>
+                            <div class="alert alert-success">
+                                <?= session()->getFlashdata('review_success') ?>
+                            </div>
+                        <?php endif; ?>
+                        
+                        <?php if (session()->getFlashdata('review_error')): ?>
+                            <div class="alert alert-danger">
+                                <?= session()->getFlashdata('review_error') ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <form action="<?= base_url('games/' . $game['id'] . '/review') ?>" method="POST">
+                            <?= csrf_field() ?>
+                            
+                            <?php if (!session()->get('isLoggedIn')): ?>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Nom <span class="text-danger">*</span></label>
+                                    <input type="text" name="name" class="form-control" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Email <span class="text-danger">*</span></label>
+                                    <input type="email" name="email" class="form-control" required>
+                                </div>
+                            </div>
+                            <?php endif; ?>
+
+                            <div class="mb-3">
+                                <label class="form-label">Note <span class="text-danger">*</span></label>
+                                <div class="rating-input">
+                                    <?php for ($i = 5; $i >= 1; $i--): ?>
+                                        <input type="radio" name="rating" value="<?= $i ?>" id="star<?= $i ?>" required>
+                                        <label for="star<?= $i ?>"><i class="bi bi-star-fill"></i></label>
+                                    <?php endfor; ?>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Commentaire <span class="text-danger">*</span></label>
+                                <textarea name="comment" class="form-control" rows="4" required 
+                                          placeholder="Partagez votre expérience..."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-send"></i> Publier l'avis
+                            </button>
+                            
+                            <small class="text-muted d-block mt-2">
+                                Votre avis sera publié après modération
+                            </small>
+                        </form>
+                    </div>
+                </div>
+                <?php else: ?>
+                    <div class="alert alert-info mb-4">
+                        <i class="bi bi-info-circle"></i> Vous avez déjà laissé un avis pour ce jeu
+                    </div>
+                <?php endif; ?>
+
+                <!-- Reviews List -->
+                <?php if (!empty($reviews)): ?>
+                    <div class="reviews-list">
+                        <?php foreach ($reviews as $review): ?>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <h6 class="mb-0">
+                                            <?= esc($review['username'] ?? $review['name']) ?>
+                                        </h6>
+                                        <small class="text-muted">
+                                            <?= date('d/m/Y', strtotime($review['created_at'])) ?>
+                                        </small>
+                                    </div>
+                                    <div class="rating-display">
+                                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                                            <i class="bi bi-star-fill <?= $i <= $review['rating'] ? 'text-warning' : 'text-muted' ?>"></i>
+                                        <?php endfor; ?>
+                                    </div>
+                                </div>
+                                <p class="mb-0"><?= nl2br(esc($review['comment'])) ?></p>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <div class="text-center py-5">
+                        <i class="bi bi-chat-dots" style="font-size: 3rem; color: #ccc;"></i>
+                        <p class="text-muted mt-3">Aucun avis pour le moment. Soyez le premier !</p>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.rating-input {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+.rating-input input[type="radio"] {
+    display: none;
+}
+
+.rating-input label {
+    cursor: pointer;
+    font-size: 2rem;
+    color: #ddd;
+    transition: color 0.2s;
+}
+
+.rating-input label:hover,
+.rating-input label:hover ~ label,
+.rating-input input[type="radio"]:checked ~ label {
+    color: #ffc107;
+}
+
+.rating-display {
+    font-size: 1.2rem;
+}
+</style>
 
 <?= view('front/layouts/footer') ?>

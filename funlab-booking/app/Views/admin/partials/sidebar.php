@@ -20,6 +20,18 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link text-white <?= strpos(uri_string(), 'admin/game-categories') !== false ? 'active bg-primary' : '' ?>" 
+                    href="<?= base_url('admin/game-categories') ?>">
+                    <i class="bi bi-tags"></i> Catégories
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white <?= strpos(uri_string(), 'admin/reviews') !== false ? 'active bg-primary' : '' ?>" 
+                    href="<?= base_url('admin/reviews') ?>">
+                    <i class="bi bi-star"></i> Avis
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link text-white <?= strpos(uri_string(), 'admin/bookings') !== false ? 'active bg-primary' : '' ?>" 
                     href="<?= base_url('admin/bookings') ?>">
                     <i class="bi bi-calendar-check"></i> Réservations

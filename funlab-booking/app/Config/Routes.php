@@ -44,6 +44,7 @@ $routes->get('/', 'Front\HomeController::index');
 $routes->get('about', 'Front\AboutController::index');
 $routes->get('games', 'Front\GamesController::index');
 $routes->get('games/(:num)', 'Front\GamesController::view/$1');
+$routes->post('games/(:num)/review', 'Front\GamesController::submitReview/$1');
 $routes->get('contact', 'Front\ContactController::index');
 $routes->post('contact/send', 'Front\ContactController::send');
 
@@ -109,6 +110,13 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'ad
     $routes->get('game-categories/edit/(:num)', 'GameCategoriesController::edit/$1');
     $routes->post('game-categories/update/(:num)', 'GameCategoriesController::update/$1');
     $routes->get('game-categories/delete/(:num)', 'GameCategoriesController::delete/$1');
+    
+    // Gestion des avis
+    $routes->get('reviews', 'ReviewsController::index');
+    $routes->get('reviews/approve/(:num)', 'ReviewsController::approve/$1');
+    $routes->get('reviews/reject/(:num)', 'ReviewsController::reject/$1');
+    $routes->get('reviews/delete/(:num)', 'ReviewsController::delete/$1');
+    $routes->get('reviews/game/(:num)', 'ReviewsController::gameReviews/$1');
     
     // Gestion des réservations
     $routes->get('bookings', 'BookingsController::index');

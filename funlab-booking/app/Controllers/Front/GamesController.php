@@ -10,11 +10,13 @@ class GamesController extends BaseController
 {
     protected $gameModel;
     protected $categoryModel;
+    protected $reviewModel;
 
     public function __construct()
     {
         $this->gameModel = new GameModel();
         $this->categoryModel = new GameCategoryModel();
+        $this->reviewModel = new \App\Models\ReviewModel();
     }
 
     /**
@@ -78,6 +80,17 @@ class GamesController extends BaseController
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Jeu non trouvé');
         }
 
+        // Charger les avis
+        $reviews = $this->reviewModel->getApprovedReviewsByGame($id);
+        $averageRating = $this->reviewModel->getAverageRating($id);
+        $reviewCount = $this->reviewModel->countApprovedReviews($id);
+        
+        // Vérifier si l'utilisateur a déjà laissé un avis
+        $hasReviewed = false;
+        if (session()->get('isLoggedIn') && session()->get('userId')) {
+            $hasReviewed = $this->reviewModel->hasUserReviewed($id, session()->get('userId'));
+        }
+
         // Préparer les données SEO
         $gameUrl = base_url('games/' . $game['id']);
         $gameImage = !empty($game['image']) 
@@ -92,6 +105,10 @@ class GamesController extends BaseController
             'title' => esc($game['name']) . ' - FunLab Tunisie',
             'activeMenu' => 'games',
             'game' => $game,
+            'reviews' => $reviews,
+            'averageRating' => $averageRating,
+            'reviewCount' => $reviewCount,
+            'hasReviewed' => $hasReviewed,
             
             // SEO Meta Tags
             'metaTitle' => esc($game['name']) . ' - FunLab Tunisie',
@@ -119,5 +136,72 @@ class GamesController extends BaseController
         ];
 
         return view('front/game_detail', $data);
+    }
+
+    /**
+     * Soumettre un avis pour un jeu
+     */
+    public function submitReview($id)
+    {
+        $validation = \Config\Services::validation();
+        
+        $rules = [
+            'rating' => 'required|integer|greater_than[0]|less_than[6]',
+            'comment' => 'required|min_length[10]|max_length[1000]'
+        ];
+
+        // Si utilisateur non connecté, valider nom et email
+        if (!session()->get('isLoggedIn')) {
+            $rules['name'] = 'required|min_length[3]|max_length[100]';
+            $rules['email'] = 'required|valid_email';
+        }
+
+        $validation->setRules($rules);
+
+        if (!$validation->withRequest($this->request)->run()) {
+            return redirect()->back()
+                           ->withInput()
+                           ->with('review_error', 'Veuillez corriger les erreurs du formulaire');
+        }
+
+        // Vérifier si le jeu existe
+        $game = $this->gameModel->find($id);
+        if (!$game) {
+            return redirect()->to('/games')->with('error', 'Jeu non trouvé');
+        }
+
+        // Vérifier si l'utilisateur a déjà laissé un avis
+        if (session()->get('isLoggedIn') && session()->get('userId')) {
+            $hasReviewed = $this->reviewModel->hasUserReviewed($id, session()->get('userId'));
+            if ($hasReviewed) {
+                return redirect()->back()
+                               ->with('review_error', 'Vous avez déjà laissé un avis pour ce jeu');
+            }
+        }
+
+        // Préparer les données
+        $data = [
+            'game_id' => $id,
+            'rating' => $this->request->getPost('rating'),
+            'comment' => $this->request->getPost('comment'),
+            'is_approved' => 0 // Nécessite modération
+        ];
+
+        if (session()->get('isLoggedIn')) {
+            $data['user_id'] = session()->get('userId');
+        } else {
+            $data['name'] = $this->request->getPost('name');
+            $data['email'] = $this->request->getPost('email');
+        }
+
+        // Sauvegarder l'avis
+        if ($this->reviewModel->insert($data)) {
+            return redirect()->to('/games/' . $id)
+                           ->with('review_success', 'Merci pour votre avis ! Il sera publié après modération.');
+        } else {
+            return redirect()->back()
+                           ->withInput()
+                           ->with('review_error', 'Une erreur est survenue. Veuillez réessayer.');
+        }
     }
 }
