@@ -79,10 +79,11 @@ $breadcrumbs = [
                                value="<?= esc($settings['footer_phone'] ?? '') ?>">
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Horaires</label>
-                        <textarea name="footer_hours" class="form-control" rows="3"><?= esc($settings['footer_hours'] ?? '') ?></textarea>
-                        <small class="text-muted">Vous pouvez utiliser &lt;br&gt; pour les sauts de ligne</small>
+                    <div class="alert alert-info mb-3">
+                        <i class="bi bi-info-circle"></i> 
+                        <strong>Horaires d'ouverture</strong><br>
+                        Les horaires affichés dans le footer sont automatiquement récupérés depuis la page 
+                        <a href="<?= base_url('admin/settings/hours') ?>" class="alert-link">Paramètres > Horaires de travail</a>
                     </div>
                 </div>
 
