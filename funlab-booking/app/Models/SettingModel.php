@@ -97,11 +97,19 @@ class SettingModel extends Model
      */
     public function getByCategory($category)
     {
+        return $this->where('category', $category)->findAll();
+    }
+
+    /**
+     * Récupérer tous les paramètres d'une catégorie sous forme de tableau associatif
+     */
+    public function getByCategoryAsArray($category)
+    {
         $settings = $this->where('category', $category)->findAll();
         $result = [];
 
         foreach ($settings as $setting) {
-            $result[$setting['key']] = $this->getSetting($setting['key']);
+            $result[$setting['key']] = $setting['value'];
         }
 
         return $result;
