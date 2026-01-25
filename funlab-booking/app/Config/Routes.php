@@ -42,6 +42,8 @@ $routes->get('register', 'AuthController::register');
 // ============================================================
 $routes->get('/', 'Front\HomeController::index');
 $routes->get('about', 'Front\AboutController::index');
+$routes->get('games', 'Front\GamesController::index');
+$routes->get('games/(:num)', 'Front\GamesController::view/$1');
 
 // Réservation client
 $routes->group('booking', ['namespace' => 'App\Controllers\Front'], function($routes) {
@@ -97,6 +99,14 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'ad
     $routes->get('games/edit/(:num)', 'GamesController::edit/$1');
     $routes->post('games/update/(:num)', 'GamesController::update/$1');
     $routes->post('games/delete/(:num)', 'GamesController::delete/$1');
+    
+    // Gestion des catégories de jeux
+    $routes->get('game-categories', 'GameCategoriesController::index');
+    $routes->get('game-categories/create', 'GameCategoriesController::create');
+    $routes->post('game-categories/store', 'GameCategoriesController::store');
+    $routes->get('game-categories/edit/(:num)', 'GameCategoriesController::edit/$1');
+    $routes->post('game-categories/update/(:num)', 'GameCategoriesController::update/$1');
+    $routes->get('game-categories/delete/(:num)', 'GameCategoriesController::delete/$1');
     
     // Gestion des réservations
     $routes->get('bookings', 'BookingsController::index');

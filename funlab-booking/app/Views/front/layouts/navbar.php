@@ -19,10 +19,36 @@
                         <i class="bi bi-info-circle"></i> À Propos
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link <?= ($activeMenu ?? '') === 'games' ? 'active' : '' ?>" href="<?= base_url('games') ?>">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle <?= ($activeMenu ?? '') === 'games' ? 'active' : '' ?>" 
+                       href="<?= base_url('games') ?>" 
+                       role="button" 
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false">
                         <i class="bi bi-controller"></i> Jeux
                     </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="<?= base_url('games') ?>">
+                                <i class="bi bi-grid"></i> Tous les Jeux
+                            </a>
+                        </li>
+                        <?php 
+                        // Charger les jeux actifs pour le menu
+                        $gameModel = new \App\Models\GameModel();
+                        $menuGames = $gameModel->where('status', 'active')->orderBy('name', 'ASC')->findAll();
+                        if (!empty($menuGames)): 
+                        ?>
+                            <li><hr class="dropdown-divider"></li>
+                            <?php foreach ($menuGames as $menuGame): ?>
+                            <li>
+                                <a class="dropdown-item" href="<?= base_url('booking?game=' . $menuGame['id']) ?>">
+                                    <i class="bi bi-controller"></i> <?= esc($menuGame['name']) ?>
+                                </a>
+                            </li>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </ul>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?= ($activeMenu ?? '') === 'booking' ? 'active' : '' ?>" href="<?= base_url('booking') ?>">

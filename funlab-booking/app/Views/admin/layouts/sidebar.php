@@ -22,6 +22,11 @@
                     <i class="bi bi-controller"></i> Jeux
                 </a>
                 
+                <a class="nav-link text-white <?= ($activeMenu ?? '') === 'categories' ? 'active bg-primary rounded' : '' ?>" 
+                   href="<?= base_url('admin/game-categories') ?>">
+                    <i class="bi bi-grid"></i> Catégories
+                </a>
+                
                 <a class="nav-link text-white <?= ($activeMenu ?? '') === 'rooms' ? 'active bg-primary rounded' : '' ?>" 
                    href="<?= base_url('admin/rooms') ?>">
                     <i class="bi bi-door-closed"></i> Salles
