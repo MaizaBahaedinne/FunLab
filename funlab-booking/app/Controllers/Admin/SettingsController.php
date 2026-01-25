@@ -218,12 +218,16 @@ class SettingsController extends BaseController
             unset($data['csrf_test_name']);
 
             $updated = 0;
+            $errors = [];
+            
             foreach ($data as $key => $value) {
                 if (!is_string($key)) continue;
                 
                 // Déterminer le type selon le champ
                 $type = 'text';
-                if (strpos($key, 'text') !== false || strpos($key, 'embed') !== false) {
+                if (strpos($key, 'text') !== false || 
+                    strpos($key, 'embed') !== false || 
+                    strpos($key, 'address') !== false) {
                     $type = 'textarea';
                 }
                 
@@ -231,18 +235,27 @@ class SettingsController extends BaseController
                     $result = $this->settingModel->setSetting($key, $value, $type, 'contact');
                     if ($result) {
                         $updated++;
+                        log_message('info', "Updated setting: $key = " . substr($value, 0, 50));
+                    } else {
+                        $errors[] = $key;
+                        log_message('error', "Failed to update setting: $key");
                     }
                 } catch (\Exception $e) {
+                    $errors[] = $key;
                     log_message('error', 'Error updating ' . $key . ': ' . $e->getMessage());
                 }
             }
 
             if ($updated > 0) {
+                $message = "Page Contact mise à jour avec succès ($updated champs modifiés)";
+                if (!empty($errors)) {
+                    $message .= ". Erreurs: " . implode(', ', $errors);
+                }
                 return redirect()->to('/admin/settings/contact')
-                               ->with('success', "Page Contact mise à jour avec succès ($updated champs modifiés)");
+                               ->with('success', $message);
             } else {
                 return redirect()->to('/admin/settings/contact')
-                               ->with('error', 'Aucune modification effectuée');
+                               ->with('error', 'Aucune modification effectuée. Erreurs: ' . implode(', ', $errors));
             }
         }
 
