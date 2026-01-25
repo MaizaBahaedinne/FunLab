@@ -32,7 +32,7 @@ class SettingsController extends BaseController
     {
         $data = [
             'title' => 'Paramètres généraux',
-            'settings' => $this->settingModel->getByCategory('general')
+            'settings' => $this->settingModel->getByCategoryAsArray('general')
         ];
 
         return view('admin/settings/general', $data);
@@ -45,7 +45,7 @@ class SettingsController extends BaseController
     {
         $data = [
             'title' => 'Horaires de travail',
-            'settings' => $this->settingModel->getByCategory('hours')
+            'settings' => $this->settingModel->getByCategoryAsArray('hours')
         ];
 
         return view('admin/settings/hours', $data);
@@ -58,7 +58,7 @@ class SettingsController extends BaseController
     {
         $data = [
             'title' => 'Configuration Email',
-            'settings' => $this->settingModel->getByCategory('mail')
+            'settings' => $this->settingModel->getByCategoryAsArray('mail')
         ];
 
         return view('admin/settings/mail', $data);
@@ -71,7 +71,7 @@ class SettingsController extends BaseController
     {
         $data = [
             'title' => 'Configuration SMS',
-            'settings' => $this->settingModel->getByCategory('sms')
+            'settings' => $this->settingModel->getByCategoryAsArray('sms')
         ];
 
         return view('admin/settings/sms', $data);
@@ -84,7 +84,7 @@ class SettingsController extends BaseController
     {
         $data = [
             'title' => 'Référencement SEO',
-            'settings' => $this->settingModel->getByCategory('seo')
+            'settings' => $this->settingModel->getByCategoryAsArray('seo')
         ];
 
         return view('admin/settings/seo', $data);
