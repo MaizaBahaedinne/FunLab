@@ -398,28 +398,26 @@ $additionalStyles = '
             <?php endforeach; ?>
         </div>
     <?php endif; ?>
-</div>
 
-<script>
-function filterReviews(status) {
-    const rows = document.querySelectorAll('.review-row');
-    const buttons = document.querySelectorAll('.btn-group .btn');
-    
-    // Update active button
-    buttons.forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    
-    // Filter rows
-    rows.forEach(row => {
-        if (status === 'all') {
-            row.style.display = '';
-        } else {
-            row.style.display = row.dataset.status === status ? '' : 'none';
-        }
-    });
-}
-</script>
-
+    <script>
+    function filterReviews(status) {
+        const rows = document.querySelectorAll('.review-row');
+        const buttons = document.querySelectorAll('.filter-btn');
+        
+        // Update active button
+        buttons.forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        
+        // Filter rows
+        rows.forEach(row => {
+            if (status === 'all') {
+                row.style.display = '';
+            } else {
+                row.style.display = row.dataset.status === status ? '' : 'none';
+            }
+        });
+    }
+    </script>
 </div> <!-- .container-fluid -->
 
 <?= view('admin/layouts/footer') ?>
