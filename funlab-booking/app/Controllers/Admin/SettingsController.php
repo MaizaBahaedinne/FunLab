@@ -232,9 +232,13 @@ class SettingsController extends BaseController
             foreach ($data as $key => $value) {
                 if (!is_string($key)) continue;
                 
+                // Normaliser les valeurs pour comparaison (trim et traiter null/empty comme équivalents)
+                $newValue = trim($value);
+                $oldValue = isset($existingSettings[$key]) ? trim($existingSettings[$key]) : '';
+                
                 // Vérifier si la valeur a réellement changé
-                $oldValue = $existingSettings[$key] ?? null;
-                if ($oldValue === $value) {
+                if ($oldValue === $newValue) {
+                    log_message('debug', "Skipping unchanged setting: $key");
                     continue; // Pas de changement, on saute
                 }
                 
@@ -250,7 +254,7 @@ class SettingsController extends BaseController
                     $result = $this->settingModel->setSetting($key, $value, $type, 'contact');
                     if ($result) {
                         $updated++;
-                        log_message('info', "Updated setting: $key (changed from '" . substr($oldValue ?? '', 0, 30) . "' to '" . substr($value, 0, 30) . "')");
+                        log_message('info', "Updated setting: $key (changed from '" . substr($oldValue, 0, 30) . "...' to '" . substr($newValue, 0, 30) . "...')");
                     } else {
                         $errors[] = $key;
                         log_message('error', "Failed to update setting: $key");
