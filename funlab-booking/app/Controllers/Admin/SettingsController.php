@@ -315,22 +315,64 @@ class SettingsController extends BaseController
             return redirect()->back()->with('error', 'Données invalides');
         }
 
+        $updated = 0;
+        $errors = [];
+
         foreach ($settings as $key => $value) {
             // Déterminer le type
             $type = 'text';
             if (is_array($value)) {
                 $type = 'json';
+                $value = json_encode($value);
             } elseif (in_array($value, ['0', '1', 'true', 'false'])) {
                 $type = 'boolean';
             } elseif (is_numeric($value)) {
                 $type = 'number';
             }
 
-            $this->settingModel->setSetting($key, $value, $type, $category);
+            // Trouver l'enregistrement existant
+            $existing = $this->settingModel
+                ->where('key', $key)
+                ->where('category', $category)
+                ->first();
+
+            if ($existing) {
+                // Update
+                $result = $this->settingModel->update($existing['id'], [
+                    'value' => $value,
+                    'type' => $type
+                ]);
+                
+                if ($result) {
+                    $updated++;
+                } else {
+                    $errors[] = "Erreur mise à jour: $key";
+                }
+            } else {
+                // Insert (désactiver validation temporairement)
+                $this->settingModel->skipValidation(true);
+                $result = $this->settingModel->insert([
+                    'key' => $key,
+                    'value' => $value,
+                    'type' => $type,
+                    'category' => $category
+                ]);
+                $this->settingModel->skipValidation(false);
+                
+                if ($result) {
+                    $updated++;
+                } else {
+                    $errors[] = "Erreur insertion: $key";
+                }
+            }
+        }
+
+        if (!empty($errors)) {
+            log_message('error', 'Erreurs sauvegarde settings: ' . implode(', ', $errors));
         }
 
         return redirect()->to('/admin/settings/' . $category)
-            ->with('success', 'Paramètres sauvegardés avec succès');
+            ->with('success', "$updated paramètre(s) sauvegardé(s) avec succès");
     }
 
     /**
