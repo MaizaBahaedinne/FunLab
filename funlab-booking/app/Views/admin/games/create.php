@@ -142,6 +142,65 @@ $additionalStyles = '
                         </div>
                     </div>
 
+                    <!-- SEO & Partage Social -->
+                    <div class="form-section">
+                        <h5><i class="bi bi-share"></i> SEO & Partage Social</h5>
+                        <p class="text-muted small mb-3">
+                            <i class="bi bi-info-circle"></i> Ces informations améliorent le référencement et l'apparence lors du partage sur les réseaux sociaux
+                        </p>
+                        
+                        <div class="mb-3">
+                            <label for="meta_title" class="form-label">
+                                Titre SEO
+                                <span class="text-muted small">(Optionnel)</span>
+                            </label>
+                            <input type="text" class="form-control" id="meta_title" name="meta_title" 
+                                   value="<?= old('meta_title') ?>" 
+                                   maxlength="60">
+                            <div class="form-text">
+                                Titre optimisé pour les moteurs de recherche (max 60 caractères)
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="meta_description" class="form-label">
+                                Description SEO
+                                <span class="text-muted small">(Optionnel)</span>
+                            </label>
+                            <textarea class="form-control" id="meta_description" name="meta_description" 
+                                      rows="3" maxlength="160"><?= old('meta_description') ?></textarea>
+                            <div class="form-text">
+                                Description pour les moteurs de recherche et réseaux sociaux (max 160 caractères)
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="meta_keywords" class="form-label">
+                                Mots-clés SEO
+                                <span class="text-muted small">(Optionnel)</span>
+                            </label>
+                            <input type="text" class="form-control" id="meta_keywords" name="meta_keywords" 
+                                   value="<?= old('meta_keywords') ?>" 
+                                   placeholder="escape game, réalité virtuelle, divertissement, tunisie">
+                            <div class="form-text">
+                                Mots-clés séparés par des virgules
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="og_image" class="form-label">
+                                Image pour partage social
+                                <span class="text-muted small">(Optionnel)</span>
+                            </label>
+                            <input type="text" class="form-control" id="og_image" name="og_image" 
+                                   value="<?= old('og_image') ?>" 
+                                   placeholder="https://exemple.com/image-partage.jpg">
+                            <div class="form-text">
+                                URL de l'image pour Facebook, WhatsApp, etc. (1200x630px recommandé)
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Buttons -->
                     <div class="d-flex justify-content-between">
                         <a href="<?= base_url('admin/games') ?>" class="btn btn-outline-secondary">

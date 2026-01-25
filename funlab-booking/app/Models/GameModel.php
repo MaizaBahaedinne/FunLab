@@ -23,7 +23,12 @@ class GameModel extends Model
         'deposit_required',
         'deposit_percentage',
         'image',
-        'status'
+        'status',
+        'category_id',
+        'meta_title',
+        'meta_description',
+        'meta_keywords',
+        'og_image'
     ];
 
     // Dates

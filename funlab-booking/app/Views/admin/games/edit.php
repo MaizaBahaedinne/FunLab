@@ -146,6 +146,76 @@ $additionalStyles = '
                         </div>
                     </div>
 
+                    <!-- SEO & Partage Social -->
+                    <div class="form-section">
+                        <h5><i class="bi bi-share"></i> SEO & Partage Social</h5>
+                        <p class="text-muted small mb-3">
+                            <i class="bi bi-info-circle"></i> Ces informations améliorent le référencement et l'apparence lors du partage sur les réseaux sociaux (Facebook, Twitter, WhatsApp, etc.)
+                        </p>
+                        
+                        <div class="mb-3">
+                            <label for="meta_title" class="form-label">
+                                Titre SEO
+                                <span class="text-muted small">(Optionnel - Par défaut: nom du jeu)</span>
+                            </label>
+                            <input type="text" class="form-control" id="meta_title" name="meta_title" 
+                                   value="<?= old('meta_title', $game['meta_title'] ?? '') ?>" 
+                                   maxlength="60"
+                                   placeholder="<?= esc($game['name']) ?>">
+                            <div class="form-text">
+                                Titre optimisé pour les moteurs de recherche (max 60 caractères)
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="meta_description" class="form-label">
+                                Description SEO
+                                <span class="text-muted small">(Optionnel)</span>
+                            </label>
+                            <textarea class="form-control" id="meta_description" name="meta_description" 
+                                      rows="3" maxlength="160"><?= old('meta_description', $game['meta_description'] ?? '') ?></textarea>
+                            <div class="form-text">
+                                Description pour les moteurs de recherche et réseaux sociaux (max 160 caractères)
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="meta_keywords" class="form-label">
+                                Mots-clés SEO
+                                <span class="text-muted small">(Optionnel)</span>
+                            </label>
+                            <input type="text" class="form-control" id="meta_keywords" name="meta_keywords" 
+                                   value="<?= old('meta_keywords', $game['meta_keywords'] ?? '') ?>" 
+                                   placeholder="escape game, réalité virtuelle, divertissement, tunisie">
+                            <div class="form-text">
+                                Mots-clés séparés par des virgules
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="og_image" class="form-label">
+                                Image pour partage social (Open Graph)
+                                <span class="text-muted small">(Optionnel - Par défaut: image principale)</span>
+                            </label>
+                            <input type="text" class="form-control" id="og_image" name="og_image" 
+                                   value="<?= old('og_image', $game['og_image'] ?? '') ?>" 
+                                   placeholder="https://exemple.com/image-partage.jpg">
+                            <div class="form-text">
+                                URL de l'image pour Facebook, WhatsApp, LinkedIn, etc. (format 1200x630px recommandé)
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <strong><i class="bi bi-lightbulb"></i> Astuce :</strong>
+                            <ul class="mb-0 mt-2 small">
+                                <li>Laissez vide pour utiliser les valeurs par défaut (nom et image du jeu)</li>
+                                <li>Le titre SEO apparaît dans les résultats Google et lors du partage</li>
+                                <li>Une bonne description améliore le taux de clic</li>
+                                <li>L'image Open Graph doit faire au moins 1200x630 pixels</li>
+                            </ul>
+                        </div>
+                    </div>
+
                     <!-- Buttons -->
                     <div class="d-flex justify-content-between">
                         <a href="<?= base_url('admin/games') ?>" class="btn btn-outline-secondary">

@@ -93,16 +93,33 @@ class GamesController extends BaseController
 
         // Préparer les données SEO
         $gameUrl = base_url('games/' . $game['id']);
-        $gameImage = !empty($game['image']) 
-            ? base_url('uploads/games/' . $game['image']) 
-            : base_url('assets/images/game-default.jpg');
         
-        $metaDescription = !empty($game['description']) 
-            ? mb_substr(strip_tags($game['description']), 0, 160) 
-            : "Découvrez {$game['name']} chez FunLab Tunisie. Réservez dès maintenant !";
+        // Utiliser og_image si défini, sinon l'image du jeu, sinon l'image par défaut
+        $gameImage = !empty($game['og_image']) 
+            ? $game['og_image']
+            : (!empty($game['image']) 
+                ? base_url('uploads/games/' . $game['image']) 
+                : base_url('assets/images/game-default.jpg'));
+        
+        // Utiliser meta_title si défini, sinon le nom du jeu
+        $metaTitle = !empty($game['meta_title']) 
+            ? esc($game['meta_title']) 
+            : esc($game['name']) . ' - FunLab Tunisie';
+        
+        // Utiliser meta_description si définie, sinon générer depuis la description
+        $metaDescription = !empty($game['meta_description']) 
+            ? esc($game['meta_description'])
+            : (!empty($game['description']) 
+                ? mb_substr(strip_tags($game['description']), 0, 160) 
+                : "Découvrez {$game['name']} chez FunLab Tunisie. Réservez dès maintenant !");
+        
+        // Utiliser meta_keywords si définis, sinon générer automatiquement
+        $metaKeywords = !empty($game['meta_keywords'])
+            ? esc($game['meta_keywords'])
+            : esc($game['name']) . ', ' . ($game['category_name'] ?? '') . ', funlab tunisie, réservation, jeu';
 
         $data = [
-            'title' => esc($game['name']) . ' - FunLab Tunisie',
+            'title' => $metaTitle,
             'activeMenu' => 'games',
             'game' => $game,
             'reviews' => $reviews,
@@ -111,21 +128,21 @@ class GamesController extends BaseController
             'hasReviewed' => $hasReviewed,
             
             // SEO Meta Tags
-            'metaTitle' => esc($game['name']) . ' - FunLab Tunisie',
+            'metaTitle' => $metaTitle,
             'metaDescription' => $metaDescription,
-            'metaKeywords' => esc($game['name']) . ', ' . ($game['category_name'] ?? '') . ', funlab tunisie, réservation, jeu',
+            'metaKeywords' => $metaKeywords,
             'canonicalUrl' => $gameUrl,
             
             // Open Graph
             'ogType' => 'product',
             'ogUrl' => $gameUrl,
-            'ogTitle' => esc($game['name']) . ' - FunLab Tunisie',
+            'ogTitle' => $metaTitle,
             'ogDescription' => $metaDescription,
             'ogImage' => $gameImage,
             
             // Twitter Card
             'twitterUrl' => $gameUrl,
-            'twitterTitle' => esc($game['name']) . ' - FunLab Tunisie',
+            'twitterTitle' => $metaTitle,
             'twitterDescription' => $metaDescription,
             'twitterImage' => $gameImage,
             
