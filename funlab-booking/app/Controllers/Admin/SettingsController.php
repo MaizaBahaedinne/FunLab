@@ -155,6 +155,54 @@ class SettingsController extends BaseController
     }
 
     /**
+     * Configuration de la page À Propos
+     */
+    public function about()
+    {
+        if ($this->request->getMethod() === 'post' || $_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = $this->request->getPost();
+            
+            if (empty($data)) {
+                return redirect()->to('/admin/settings/about')
+                               ->with('error', 'Aucune donnée reçue du formulaire');
+            }
+            
+            unset($data['csrf_test_name']);
+
+            $updated = 0;
+            foreach ($data as $key => $value) {
+                if (!is_string($key)) continue;
+                
+                $type = (strpos($key, 'content') !== false || strpos($key, 'intro') !== false) ? 'textarea' : 'text';
+                
+                try {
+                    $result = $this->settingModel->setSetting($key, $value, $type, 'about');
+                    if ($result) {
+                        $updated++;
+                    }
+                } catch (\Exception $e) {
+                    log_message('error', 'Error updating ' . $key . ': ' . $e->getMessage());
+                }
+            }
+
+            if ($updated > 0) {
+                return redirect()->to('/admin/settings/about')
+                               ->with('success', "Page À Propos mise à jour avec succès ($updated champs modifiés)");
+            } else {
+                return redirect()->to('/admin/settings/about')
+                               ->with('error', 'Aucune modification effectuée');
+            }
+        }
+
+        $data = [
+            'title' => 'Configuration Page À Propos',
+            'settings' => $this->settingModel->getByCategory('about')
+        ];
+
+        return view('admin/settings/about', $data);
+    }
+
+    /**
      * Configuration OAuth (Google, Facebook)
      */
     public function oauth()

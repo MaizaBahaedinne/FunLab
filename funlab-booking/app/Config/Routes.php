@@ -41,6 +41,7 @@ $routes->get('register', 'AuthController::register');
 // ROUTES FRONT-END
 // ============================================================
 $routes->get('/', 'Front\HomeController::index');
+$routes->get('about', 'Front\AboutController::index');
 
 // Réservation client
 $routes->group('booking', ['namespace' => 'App\Controllers\Front'], function($routes) {
@@ -145,6 +146,8 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'ad
     $routes->get('settings/seo', 'SettingsController::seo');
     $routes->get('settings/footer', 'SettingsController::footer');
     $routes->post('settings/footer', 'SettingsController::footer');
+    $routes->get('settings/about', 'SettingsController::about');
+    $routes->post('settings/about', 'SettingsController::about');
     $routes->get('settings/oauth', 'SettingsController::oauth');
     $routes->get('settings/users', 'SettingsController::users');
     $routes->get('settings/roles', 'SettingsController::roles');
