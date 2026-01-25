@@ -148,7 +148,7 @@ class SettingsController extends BaseController
 
         $data = [
             'title' => 'Configuration Footer',
-            'settings' => $this->settingModel->getByCategory('footer')
+            'settings' => $this->settingModel->getByCategoryAsArray('footer')
         ];
 
         return view('admin/settings/footer', $data);
@@ -196,7 +196,7 @@ class SettingsController extends BaseController
 
         $data = [
             'title' => 'Configuration Page À Propos',
-            'settings' => $this->settingModel->getByCategory('about')
+            'settings' => $this->settingModel->getByCategoryAsArray('about')
         ];
 
         return view('admin/settings/about', $data);
