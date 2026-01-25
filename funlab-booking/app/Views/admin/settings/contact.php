@@ -17,6 +17,9 @@ if (isset($settings) && is_array($settings)) {
         }
     }
 }
+
+// Debug pour vérifier le chargement
+log_message('debug', 'Contact settings loaded: ' . json_encode($contactSettings));
 ?>
 
 <?= view('admin/layouts/header', compact('title')) ?>
