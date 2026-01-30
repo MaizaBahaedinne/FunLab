@@ -375,12 +375,12 @@ $additionalJS = '
         const result = await Swal.fire({
             title: "Confirmer l'annulation",
             text: "Êtes-vous sûr de vouloir annuler cette réservation ?",
-            icon: 'warning',
+            icon: "warning",
             showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Oui, annuler',
-            cancelButtonText: 'Non, garder'
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Oui, annuler",
+            cancelButtonText: "Non, garder"
         });
 
         if (!result.isConfirmed) {
@@ -409,8 +409,8 @@ $additionalJS = '
                 calendar.refetchEvents();
             } else {
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Erreur',
+                    icon: "error",
+                    title: "Erreur",
                     text: data.message || "Erreur lors de l'annulation"
                 });
             }
@@ -418,9 +418,9 @@ $additionalJS = '
         } catch (error) {
             console.error("Erreur:", error);
             Swal.fire({
-                icon: 'error',
-                title: 'Erreur',
-                text: 'Erreur lors de l\'annulation'
+                icon: "error",
+                title: "Erreur",
+                text: "Erreur lors de l'annulation"
             });
         }
     }
