@@ -42,12 +42,41 @@ while ($row = $settingsResult->fetch_assoc()) {
 
 echo "<div class='step success'>✅ Paramètres chargés:</div>";
 echo "<ul>";
+echo "<li>Protocol: " . ($settings['mail_protocol'] ?? 'N/A') . "</li>";
+echo "<li>SMTP Host: " . ($settings['mail_smtp_host'] ?? 'N/A') . "</li>";
+echo "<li>SMTP Port: " . ($settings['mail_smtp_port'] ?? 'N/A') . "</li>";
+echo "<li>SMTP User: " . ($settings['mail_smtp_user'] ?? 'N/A') . "</li>";
+echo "<li>SMTP Crypto: " . ($settings['mail_smtp_crypto'] ?? 'N/A') . "</li>";
 echo "<li>From Email: " . ($settings['mail_from_email'] ?? 'N/A') . "</li>";
 echo "<li>From Name: " . ($settings['mail_from_name'] ?? 'N/A') . "</li>";
 echo "</ul>";
 
-// Étape 4: Préparation du message
-echo "<div class='step'><strong>Étape 4:</strong> Préparation du message HTML...</div>";
+// Étape 4: Chargement CodeIgniter
+echo "<div class='step'><strong>Étape 4:</strong> Chargement de CodeIgniter...</div>";
+define('FCPATH', __DIR__ . '/');
+$pathsPath = realpath(__DIR__ . '/../app/Config/Paths.php');
+
+if (!file_exists($pathsPath)) {
+    echo "<div class='step error'>❌ Paths.php introuvable</div>";
+    die();
+}
+
+require_once $pathsPath;
+$paths = new Config\Paths();
+$bootstrapPath = rtrim($paths->systemDirectory, '\\/ ') . '/bootstrap.php';
+
+if (file_exists($bootstrapPath)) {
+    require $bootstrapPath;
+    echo "<div class='step success'>✅ CodeIgniter chargé (nouveau système)</div>";
+} else {
+    // Fallback pour CodeIgniter 4.5+
+    require rtrim($paths->systemDirectory, '\\/ ') . '/Config/BaseConfig.php';
+    require rtrim($paths->systemDirectory, '\\/ ') . '/Common.php';
+    echo "<div class='step success'>✅ CodeIgniter chargé (système récent)</div>";
+}
+
+// Étape 5: Préparation du message
+echo "<div class='step'><strong>Étape 5:</strong> Préparation du message HTML...</div>";
 $code = $user['verification_code'] ?? '000000';
 $firstName = $user['first_name'];
 
@@ -75,90 +104,103 @@ HTML;
 
 echo "<div class='step success'>✅ Message HTML préparé (" . strlen($message) . " caractères)</div>";
 
-// Étape 5: Préparation des headers
-echo "<div class='step'><strong>Étape 5:</strong> Préparation des headers email...</div>";
+// Étape 6: Configuration SMTP avec CodeIgniter
+echo "<div class='step'><strong>Étape 6:</strong> Configuration SMTP CodeIgniter...</div>";
 $to = $user['email'];
-$subject = 'Vérification de votre compte FunLab';
+$subject = 'Vérification de votre compte FunLab - TEST DEBUG';
 
-$headers = "MIME-Version: 1.0\r\n";
-$headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-$headers .= "From: " . ($settings['mail_from_name'] ?? 'FunLab') . " <" . ($settings['mail_from_email'] ?? 'noreply@funlab.tn') . ">\r\n";
-$headers .= "Reply-To: " . ($settings['mail_from_email'] ?? 'noreply@funlab.tn') . "\r\n";
+$config = [
+    'protocol'     => 'smtp',
+    'SMTPHost'     => $settings['mail_smtp_host'] ?? 'mail.faltaagency.com',
+    'SMTPPort'     => (int)($settings['mail_smtp_port'] ?? 587),
+    'SMTPUser'     => $settings['mail_smtp_user'] ?? 'funlab@faltaagency.com',
+    'SMTPPass'     => $settings['mail_smtp_pass'] ?? '',
+    'SMTPCrypto'   => $settings['mail_smtp_crypto'] ?? 'tls',
+    'SMTPAuth'     => true,
+    'SMTPTimeout'  => 10,
+    'mailType'     => 'html',
+    'charset'      => 'utf-8',
+    'newline'      => "\r\n",
+    'wordWrap'     => true
+];
 
-echo "<div class='step success'>✅ Headers préparés</div>";
-echo "<pre style='background:#f8f9fa;padding:10px;font-size:11px;'>" . htmlspecialchars($headers) . "</pre>";
+echo "<div class='step success'>✅ Configuration SMTP:</div>";
+echo "<pre style='background:#f8f9fa;padding:10px;font-size:11px;'>";
+echo "Host: " . $config['SMTPHost'] . "\n";
+echo "Port: " . $config['SMTPPort'] . "\n";
+echo "User: " . $config['SMTPUser'] . "\n";
+echo "Crypto: " . $config['SMTPCrypto'] . "\n";
+echo "</pre>";
 
-// Étape 6: Vérification fonction mail()
-echo "<div class='step'><strong>Étape 6:</strong> Vérification fonction mail()...</div>";
-if (!function_exists('mail')) {
-    echo "<div class='step error'>❌ La fonction mail() n'est pas disponible sur ce serveur !</div>";
-    die();
-}
-echo "<div class='step success'>✅ Fonction mail() disponible</div>";
-
-// Étape 7: Envoi de l'email
-echo "<div class='step'><strong>Étape 7:</strong> Tentative d'envoi de l'email...</div>";
+// Étape 7: Envoi via CodeIgniter Email
+echo "<div class='step'><strong>Étape 7:</strong> Tentative d'envoi via SMTP externe...</div>";
 echo "<div class='step warning'>
     <strong>Destinataire:</strong> $to<br>
-    <strong>Sujet:</strong> $subject<br>
-    <strong>Taille message:</strong> " . strlen($message) . " octets
+    <strong>Sujet:</strong> $subject
 </div>";
 
-$startTime = microtime(true);
+try {
+    $email = \Config\Services::email($config);
+    $email->setFrom(
+        $settings['mail_from_email'] ?? 'funlab@faltaagency.com',
+        $settings['mail_from_name'] ?? 'FunLab'
+    );
+    $email->setTo($to);
+    $email->setSubject($subject);
+    $email->setMessage($message);
 
-// Activer le rapport d'erreur pour mail()
-error_reporting(E_ALL);
-$lastError = error_get_last();
+    $startTime = microtime(true);
+    $result = $email->send();
+    $endTime = microtime(true);
+    $duration = round(($endTime - $startTime) * 1000, 2);
 
-$result = @mail($to, $subject, $message, $headers);
-
-$endTime = microtime(true);
-$duration = round(($endTime - $startTime) * 1000, 2);
-
-$newError = error_get_last();
-
-if ($result) {
-    echo "<div class='step success'>✅ <strong>mail() a retourné TRUE</strong></div>";
-    echo "<div class='step success'>⏱️ Temps d'exécution: {$duration}ms</div>";
-    echo "<div class='step warning'>
-        ⚠️ <strong>Important:</strong> mail() retourne TRUE ne signifie pas que l'email est arrivé !<br>
-        Cela signifie seulement que PHP a transmis l'email au serveur mail.<br><br>
-        <strong>Vérifications à faire:</strong>
-        <ul>
-            <li>Vérifier les SPAMS dans votre boîte mail</li>
-            <li>Vérifier les logs du serveur mail: /var/log/mail.log</li>
-            <li>Vérifier la configuration DNS (SPF, DKIM) dans cPanel</li>
-            <li>Tester avec un autre email (Gmail peut bloquer certains serveurs)</li>
-        </ul>
-    </div>";
-} else {
-    echo "<div class='step error'>❌ <strong>mail() a retourné FALSE</strong></div>";
-    echo "<div class='step error'>⏱️ Temps d'exécution: {$duration}ms</div>";
-    
-    if ($newError && $newError !== $lastError) {
-        echo "<div class='step error'><strong>Erreur PHP:</strong><br>" . htmlspecialchars($newError['message']) . "</div>";
+    if ($result) {
+        echo "<div class='step success'>✅ <strong>Email envoyé avec succès via SMTP !</strong></div>";
+        echo "<div class='step success'>⏱️ Temps d'exécution: {$duration}ms</div>";
+        echo "<div class='step warning'>
+            📧 <strong>Vérifiez votre boîte mail:</strong>
+            <ul>
+                <li>Boîte de réception: $to</li>
+                <li>Dossier SPAM / Courrier indésirable</li>
+                <li>Peut prendre quelques minutes pour arriver</li>
+            </ul>
+        </div>";
+    } else {
+        echo "<div class='step error'>❌ <strong>Échec de l'envoi SMTP</strong></div>";
+        echo "<div class='step error'>⏱️ Temps d'exécution: {$duration}ms</div>";
+        echo "<div class='step error'><strong>Détails:</strong><br><pre style='background:#f8d7da;padding:10px;overflow:auto;max-height:300px;'>";
+        echo $email->printDebugger(['headers', 'subject', 'body']);
+        echo "</pre></div>";
     }
-    
-    echo "<div class='step error'>
-        <strong>Causes possibles:</strong>
-        <ul>
-            <li>Fonction mail() désactivée dans php.ini</li>
-            <li>Serveur mail (sendmail/postfix) non configuré</li>
-            <li>Permissions insuffisantes</li>
-            <li>Pare-feu bloquant le port 25</li>
-        </ul>
-    </div>";
+} catch (Exception $e) {
+    echo "<div class='step error'>❌ <strong>Exception:</strong> " . htmlspecialchars($e->getMessage()) . "</div>";
 }
 
-// Étape 8: Informations serveur
-echo "<div class='step'><strong>Étape 8:</strong> Informations serveur mail...</div>";
+// Étape 8: Informations supplémentaires
+echo "<div class='step'><strong>Étape 8:</strong> Test de connexion SMTP...</div>";
 echo "<ul>";
 echo "<li>sendmail_path: " . ini_get('sendmail_path') . "</li>";
 echo "<li>SMTP: " . ini_get('SMTP') . "</li>";
-echo "<li>smtp_port: " . ini_get('smtp_port') . "</li>";
-echo "</ul>";
+// Étape 8: Test de connexion SMTP
+echo "<div class='step'><strong>Étape 8:</strong> Test de connexion SMTP...</div>";
+$smtp_host = $config['SMTPHost'];
+$smtp_port = $config['SMTPPort'];
+$smtp_crypto = $config['SMTPCrypto'];
 
-$mysqli->close();
+$fp = @fsockopen(($smtp_crypto == 'tls' ? '' : 'ssl://') . $smtp_host, $smtp_port, $errno, $errstr, 5);
+if ($fp) {
+    echo "<div class='step success'>✅ Connexion {$smtp_crypto}://{$smtp_host}:{$smtp_port} réussie</div>";
+    $response = fgets($fp, 1024);
+    echo "<div class='step success'>Réponse serveur: <code>" . htmlspecialchars($response) . "</code></div>";
+    fclose($fp);
+} else {
+    echo "<div class='step error'>❌ Impossible de se connecter à {$smtp_host}:{$smtp_port}</div>";
+    echo "<div class='step error'>Erreur: $errstr ($errno)</div>";
+}
+
+echo "<ul>";
+echo "<li>Config: {$smtp_crypto}://{$smtp_host}:{$smtp_port}</li>";
+echo "<li>User: " . $config['SMTPUser']
 
 echo "<hr>";
 echo "<p><a href='/auth/verify-email' style='display:inline-block;background:#667eea;color:white;padding:12px 24px;text-decoration:none;border-radius:5px;'>→ Aller à la page de vérification</a></p>";
