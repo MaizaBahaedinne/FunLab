@@ -23,6 +23,11 @@ $routes->group('auth', function($routes) {
     $routes->get('reset-password/(:any)', 'AuthController::resetPassword/$1');
     $routes->post('reset-password', 'AuthController::updatePassword');
     
+    // Vérification email
+    $routes->get('verify-email', 'AuthController::verifyEmail');
+    $routes->post('attempt-verify-email', 'AuthController::attemptVerifyEmail');
+    $routes->post('resend-verification-code', 'AuthController::resendVerificationCode');
+    
     // OAuth Google
     $routes->get('google', 'SocialAuthController::redirectToGoogle');
     $routes->get('google/callback', 'SocialAuthController::handleGoogleCallback');

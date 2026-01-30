@@ -66,6 +66,23 @@ class AuthController extends BaseController
             return redirect()->back()->withInput()->with('error', 'Votre compte est désactivé');
         }
 
+        // Vérifier si l'email est vérifié (uniquement pour les comptes natifs)
+        if ($user['auth_provider'] === 'native' && !$user['email_verified']) {
+            // Régénérer un code de vérification
+            $newCode = sprintf('%06d', mt_rand(0, 999999));
+            $this->userModel->update($user['id'], [
+                'verification_code' => $newCode,
+                'verification_code_expires' => date('Y-m-d H:i:s', strtotime('+15 minutes'))
+            ]);
+            
+            $user['verification_code'] = $newCode;
+            $this->sendVerificationEmail($user);
+            
+            session()->setTempdata('pending_verification_user_id', $user['id'], 1800);
+            
+            return redirect()->to('/auth/verify-email')->with('warning', 'Veuillez d\'abord vérifier votre email. Un nouveau code vient d\'être envoyé.');
+        }
+
         // Créer la session
         $sessionData = [
             'userId' => $user['id'],
@@ -144,7 +161,10 @@ class AuthController extends BaseController
             'username' => $this->generateUsername($this->request->getPost('email')),
             'role' => 'customer',
             'auth_provider' => 'native',
-            'is_active' => 1
+            'is_active' => 1,
+            'email_verified' => 0,
+            'verification_code' => sprintf('%06d', mt_rand(0, 999999)),
+            'verification_code_expires' => date('Y-m-d H:i:s', strtotime('+15 minutes'))
         ];
 
         $userId = $this->userModel->insert($userData);
@@ -153,24 +173,14 @@ class AuthController extends BaseController
             return redirect()->back()->withInput()->with('error', 'Erreur lors de la création du compte');
         }
 
-        // Connexion automatique
+        // Envoyer l\'email de vérification
         $user = $this->userModel->find($userId);
-        
-        $sessionData = [
-            'userId' => $user['id'],
-            'email' => $user['email'],
-            'username' => $user['username'],
-            'firstName' => $user['first_name'],
-            'lastName' => $user['last_name'],
-            'role' => $user['role'],
-            'isLoggedIn' => true,
-            'isAdmin' => false,
-            'isStaff' => false
-        ];
+        $this->sendVerificationEmail($user);
 
-        session()->set($sessionData);
+        // Stocker l\'ID utilisateur en session temporaire pour la vérification
+        session()->setTempdata('pending_verification_user_id', $userId, 1800); // 30 minutes
 
-        return redirect()->to('/account')->with('success', 'Compte créé avec succès !');
+        return redirect()->to('/auth/verify-email')->with('success', 'Compte créé ! Veuillez vérifier votre email.');
     }
 
     /**
@@ -338,5 +348,191 @@ class AuthController extends BaseController
 </body>
 </html>
 HTML;
+    }
+
+    /**
+     * Envoyer l'email de vérification avec code à 6 chiffres
+     */
+    private function sendVerificationEmail($user)
+    {
+        $settings = $this->settingModel->getByCategoryAsArray('mail');
+        
+        $config = [
+            'protocol'     => $settings['mail_protocol'] ?? 'smtp',
+            'SMTPHost'     => $settings['mail_smtp_host'] ?? '',
+            'SMTPPort'     => (int)($settings['mail_smtp_port'] ?? 587),
+            'SMTPUser'     => $settings['mail_smtp_user'] ?? '',
+            'SMTPPass'     => $settings['mail_smtp_pass'] ?? '',
+            'SMTPCrypto'   => $settings['mail_smtp_crypto'] ?? 'tls',
+            'SMTPAuth'     => true,
+            'mailType'     => 'html',
+            'charset'      => 'utf-8',
+            'newline'      => "\r\n"
+        ];
+
+        $email = \Config\Services::email($config);
+        $email->setFrom(
+            $settings['mail_from_email'] ?? 'noreply@funlab.tn',
+            $settings['mail_from_name'] ?? 'FunLab'
+        );
+        $email->setTo($user['email']);
+        $email->setSubject('Vérification de votre compte FunLab');
+        
+        $message = $this->getVerificationEmailTemplate($user['first_name'], $user['verification_code']);
+        $email->setMessage($message);
+
+        try {
+            $email->send();
+        } catch (\Exception $e) {
+            log_message('error', 'Erreur envoi email vérification: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Template HTML pour l'email de vérification
+     */
+    private function getVerificationEmailTemplate($firstName, $code)
+    {
+        return <<<HTML
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+        .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+        .code-box { background: white; border: 2px dashed #667eea; padding: 20px; text-align: center; margin: 20px 0; border-radius: 8px; }
+        .code { font-size: 32px; font-weight: bold; color: #667eea; letter-spacing: 5px; }
+        .footer { text-align: center; margin-top: 20px; color: #999; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Bienvenue sur FunLab !</h1>
+        </div>
+        <div class="content">
+            <h2>Bonjour $firstName,</h2>
+            <p>Merci de vous être inscrit sur FunLab ! Pour activer votre compte, veuillez entrer le code de vérification ci-dessous :</p>
+            <div class="code-box">
+                <div class="code">$code</div>
+            </div>
+            <p><strong>Ce code expire dans 15 minutes.</strong></p>
+            <p>Si vous n'avez pas créé de compte, ignorez cet email.</p>
+        </div>
+        <div class="footer">
+            <p>FunLab Tunisie | funlab@faltaagency.com</p>
+        </div>
+    </div>
+</body>
+</html>
+HTML;
+    }
+
+    /**
+     * Afficher la page de vérification d'email
+     */
+    public function verifyEmail()
+    {
+        $userId = session()->getTempdata('pending_verification_user_id');
+        
+        if (!$userId) {
+            return redirect()->to('/login')->with('error', 'Session expirée. Veuillez vous reconnecter.');
+        }
+
+        $user = $this->userModel->find($userId);
+        
+        if (!$user || $user['email_verified']) {
+            return redirect()->to('/login')->with('error', 'Email déjà vérifié ou utilisateur introuvable.');
+        }
+
+        return view('auth/verify_email', ['email' => $user['email']]);
+    }
+
+    /**
+     * Vérifier le code à 6 chiffres
+     */
+    public function attemptVerifyEmail()
+    {
+        $userId = session()->getTempdata('pending_verification_user_id');
+        
+        if (!$userId) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Session expirée']);
+        }
+
+        $code = $this->request->getPost('code');
+        $user = $this->userModel->find($userId);
+
+        if (!$user) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Utilisateur introuvable']);
+        }
+
+        // Vérifier si le code a expiré
+        if (strtotime($user['verification_code_expires']) < time()) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Code expiré. Demandez un nouveau code.']);
+        }
+
+        // Vérifier le code
+        if ($user['verification_code'] !== $code) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Code incorrect']);
+        }
+
+        // Activer le compte
+        $this->userModel->update($userId, [
+            'email_verified' => 1,
+            'verification_code' => null,
+            'verification_code_expires' => null
+        ]);
+
+        // Connexion automatique
+        $sessionData = [
+            'userId' => $user['id'],
+            'email' => $user['email'],
+            'username' => $user['username'],
+            'firstName' => $user['first_name'],
+            'lastName' => $user['last_name'],
+            'role' => $user['role'],
+            'isLoggedIn' => true,
+            'isAdmin' => false,
+            'isStaff' => false
+        ];
+
+        session()->set($sessionData);
+        session()->removeTempdata('pending_verification_user_id');
+
+        return $this->response->setJSON(['success' => true, 'redirect' => base_url('/account')]);
+    }
+
+    /**
+     * Renvoyer le code de vérification
+     */
+    public function resendVerificationCode()
+    {
+        $userId = session()->getTempdata('pending_verification_user_id');
+        
+        if (!$userId) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Session expirée']);
+        }
+
+        $user = $this->userModel->find($userId);
+
+        if (!$user || $user['email_verified']) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Email déjà vérifié']);
+        }
+
+        // Générer un nouveau code
+        $newCode = sprintf('%06d', mt_rand(0, 999999));
+        
+        $this->userModel->update($userId, [
+            'verification_code' => $newCode,
+            'verification_code_expires' => date('Y-m-d H:i:s', strtotime('+15 minutes'))
+        ]);
+
+        $user['verification_code'] = $newCode;
+        $this->sendVerificationEmail($user);
+
+        return $this->response->setJSON(['success' => true, 'message' => 'Nouveau code envoyé par email']);
     }
 }
