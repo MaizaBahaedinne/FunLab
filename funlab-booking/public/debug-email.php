@@ -176,11 +176,6 @@ try {
     echo "<div class='step error'>❌ <strong>Exception:</strong> " . htmlspecialchars($e->getMessage()) . "</div>";
 }
 
-// Étape 8: Informations supplémentaires
-echo "<div class='step'><strong>Étape 8:</strong> Test de connexion SMTP...</div>";
-echo "<ul>";
-echo "<li>sendmail_path: " . ini_get('sendmail_path') . "</li>";
-echo "<li>SMTP: " . ini_get('SMTP') . "</li>";
 // Étape 8: Test de connexion SMTP
 echo "<div class='step'><strong>Étape 8:</strong> Test de connexion SMTP...</div>";
 $smtp_host = $config['SMTPHost'];
@@ -200,7 +195,8 @@ if ($fp) {
 
 echo "<ul>";
 echo "<li>Config: {$smtp_crypto}://{$smtp_host}:{$smtp_port}</li>";
-echo "<li>User: " . $config['SMTPUser']
+echo "<li>User: " . $config['SMTPUser'] . "</li>";
+echo "</ul>";
 
 echo "<hr>";
 echo "<p><a href='/auth/verify-email' style='display:inline-block;background:#667eea;color:white;padding:12px 24px;text-decoration:none;border-radius:5px;'>→ Aller à la page de vérification</a></p>";
