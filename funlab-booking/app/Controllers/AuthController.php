@@ -551,26 +551,31 @@ HTML;
 
         // Générer un nouveau code
         $newCode = sprintf('%06d', mt_rand(0, 999999));
+        $expires = date('Y-m-d H:i:s', strtotime('+15 minutes'));
         
-        $updated = $this->userModel->update($userId, [
-            'verification_code' => $newCode,
-            'verification_code_expires' => date('Y-m-d H:i:s', strtotime('+15 minutes'))
-        ]);
+        // Forcer l'update direct avec la base de données
+        $db = \Config\Database::connect();
+        $db->table('users')
+           ->where('id', $userId)
+           ->update([
+               'verification_code' => $newCode,
+               'verification_code_expires' => $expires
+           ]);
+
+        // Recharger l'utilisateur avec le nouveau code
+        $user = $this->userModel->find($userId);
         
-        if (!$updated) {
-            // Si l'update échoue, forcer avec une requête directe
-            $db = \Config\Database::connect();
-            $db->table('users')
-               ->where('id', $userId)
-               ->update([
-                   'verification_code' => $newCode,
-                   'verification_code_expires' => date('Y-m-d H:i:s', strtotime('+15 minutes'))
-               ]);
+        // Envoyer l'email
+        if ($this->sendVerificationEmail($user)) {
+            return $this->response->setJSON([
+                'success' => true, 
+                'message' => 'Nouveau code envoyé par email'
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'success' => false, 
+                'message' => 'Erreur lors de l\'envoi de l\'email'
+            ]);
         }
-
-        $user['verification_code'] = $newCode;
-        $this->sendVerificationEmail($user);
-
-        return $this->response->setJSON(['success' => true, 'message' => 'Nouveau code envoyé par email']);
     }
 }
