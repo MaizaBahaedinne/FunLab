@@ -363,39 +363,38 @@ HTML;
         try {
             $settings = $this->settingModel->getByCategoryAsArray('mail');
             
-            $config = [
-                'protocol'     => 'smtp',
-                'SMTPHost'     => $settings['mail_smtp_host'] ?? 'mail.faltaagency.com',
-                'SMTPPort'     => (int)($settings['mail_smtp_port'] ?? 587),
-                'SMTPUser'     => $settings['mail_smtp_user'] ?? 'funlab@faltaagency.com',
-                'SMTPPass'     => $settings['mail_smtp_pass'] ?? '',
-                'SMTPCrypto'   => $settings['mail_smtp_crypto'] ?? 'tls',
-                'SMTPAuth'     => true,
-                'SMTPTimeout'  => 5, // Timeout court pour ne pas bloquer
-                'mailType'     => 'html',
-                'charset'      => 'utf-8',
-                'newline'      => "\r\n",
-                'wordWrap'     => true
-            ];
-
-            $email = \Config\Services::email($config);
-            $email->setFrom(
+            // Charger PHPMailer
+            require_once ROOTPATH . 'vendor/autoload.php';
+            
+            $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
+            
+            // Configuration SMTP
+            $mail->isSMTP();
+            $mail->Host       = $settings['mail_smtp_host'] ?? 'mail.faltaagency.com';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = $settings['mail_smtp_user'] ?? 'funlab@faltaagency.com';
+            $mail->Password   = $settings['mail_smtp_pass'] ?? '';
+            $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port       = (int)($settings['mail_smtp_port'] ?? 587);
+            $mail->CharSet    = 'UTF-8';
+            $mail->Timeout    = 10;
+            
+            // Expéditeur et destinataire
+            $mail->setFrom(
                 $settings['mail_from_email'] ?? 'funlab@faltaagency.com',
                 $settings['mail_from_name'] ?? 'FunLab'
             );
-            $email->setTo($user['email']);
-            $email->setSubject('Vérification de votre compte FunLab');
+            $mail->addAddress($user['email']);
             
-            $message = $this->getVerificationEmailTemplate($user['first_name'], $user['verification_code']);
-            $email->setMessage($message);
+            // Contenu
+            $mail->isHTML(true);
+            $mail->Subject = 'Vérification de votre compte FunLab';
+            $mail->Body    = $this->getVerificationEmailTemplate($user['first_name'], $user['verification_code']);
 
-            if ($email->send()) {
-                log_message('info', 'Email de vérification envoyé à: ' . $user['email']);
-                return true;
-            } else {
-                log_message('error', 'Échec envoi email vérification à ' . $user['email']);
-                return false;
-            }
+            $mail->send();
+            log_message('info', 'Email de vérification envoyé à: ' . $user['email']);
+            return true;
+            
         } catch (\Exception $e) {
             log_message('error', 'Exception envoi email vérification: ' . $e->getMessage());
             return false;
