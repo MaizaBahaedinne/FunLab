@@ -422,7 +422,7 @@ HTML;
             $mail->Body    = $this->getVerificationEmailTemplate($user['first_name'], $user['verification_code']);
 
             $mail->send();
-            log_message('info', 'Email de vérification envoyé à: ' . $user['email']);
+            log_message('info', 'Email de vérification envoyé à: ' . $user['email'] . ' avec le code: ' . $user['verification_code']);
             return true;
             
         } catch (\Exception $e) {
@@ -525,6 +525,8 @@ HTML;
         }
 
         // Vérifier le code
+        log_message('debug', "Verification attempt - User ID: $userId, Code entered: '$code', Code in DB: '{$user['verification_code']}'");
+        
         if ($user['verification_code'] !== $code) {
             return $this->response->setJSON(['success' => false, 'message' => 'Code incorrect']);
         }
