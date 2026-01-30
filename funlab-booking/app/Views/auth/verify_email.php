@@ -160,15 +160,13 @@
             }
 
             try {
+                const formData = new FormData();
+                formData.append('code', code);
+                formData.append('email', '<?= esc($email) ?>');
+
                 const response = await fetch('<?= base_url('auth/attempt-verify-email') ?>', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ 
-                        code: code,
-                        email: '<?= esc($email) ?>' // Envoyer l'email en fallback
-                    })
+                    body: formData
                 });
 
                 const data = await response.json();
@@ -212,12 +210,12 @@
             }
 
             try {
+                const formData = new FormData();
+                formData.append('email', '<?= esc($email) ?>');
+
                 const response = await fetch('<?= base_url('auth/resend-verification-code') ?>', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ email: '<?= esc($email) ?>' })
+                    body: formData
                 });
 
                 const data = await response.json();
