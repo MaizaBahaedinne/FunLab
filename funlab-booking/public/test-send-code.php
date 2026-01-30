@@ -1,9 +1,126 @@
 <?php
-// Test direct d'envoi d'email avec CodeIgniter
-define('FCPATH', __DIR__ . '/');
-require_once '../app/Config/Paths.php';
-$paths = new Config\Paths();
-require rtrim($paths->systemDirectory, '\\/ ') . '/bootstrap.php';
+// Test direct d'envoi d'email sans CodeIgniter complet
+require '../vendor/autoload.php';
+
+// Charger les variables d'environnement
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv->load();
+
+// Connexion DB
+$mysqli = new mysqli('localhost', 'funl_FunLabBooking', 'FunLabBooking2026!', 'funl_FunLabBooking');
+
+if ($mysqli->connect_error) {
+    die('Erreur DB: ' . $mysqli->connect_error);
+}
+
+// Récupérer l'utilisateur
+$result = $mysqli->query("SELECT * FROM users WHERE email = 'maizakoussai@gmail.com'");
+$user = $result->fetch_assoc();
+
+if (!$user) {
+    die('Utilisateur non trouvé');
+}
+
+echo "<h2>Test envoi email de vérification</h2>";
+echo "<p>Email: {$user['email']}</p>";
+echo "<p>Code actuel: <strong style='font-size:20px;color:#667eea;'>{$user['verification_code']}</strong></p>";
+echo "<p>Expire: {$user['verification_code_expires']}</p>";
+
+// Charger les paramètres email
+$settingsResult = $mysqli->query("SELECT `key`, value FROM settings WHERE category = 'mail'");
+$settings = [];
+while ($row = $settingsResult->fetch_assoc()) {
+    $settings[$row['key']] = $row['value'];
+}
+
+echo "<h3>Configuration SMTP:</h3>";
+echo "<pre>";
+echo "Host: " . ($settings['mail_smtp_host'] ?? 'N/A') . "\n";
+echo "Port: " . ($settings['mail_smtp_port'] ?? 'N/A') . "\n";
+echo "User: " . ($settings['mail_smtp_user'] ?? 'N/A') . "\n";
+echo "Crypto: " . ($settings['mail_smtp_crypto'] ?? 'N/A') . "\n";
+echo "From: " . ($settings['mail_from_email'] ?? 'N/A') . "\n";
+echo "</pre>";
+
+// Utiliser PHPMailer
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+$mail = new PHPMailer(true);
+
+try {
+    $mail->isSMTP();
+    $mail->Host = $settings['mail_smtp_host'];
+    $mail->SMTPAuth = true;
+    $mail->Username = $settings['mail_smtp_user'];
+    $mail->Password = $settings['mail_smtp_pass'];
+    $mail->SMTPSecure = $settings['mail_smtp_crypto'];
+    $mail->Port = $settings['mail_smtp_port'];
+    $mail->CharSet = 'UTF-8';
+
+    $mail->setFrom($settings['mail_from_email'], $settings['mail_from_name']);
+    $mail->addAddress($user['email']);
+
+    $mail->isHTML(true);
+    $mail->Subject = 'Vérification de votre compte FunLab';
+    
+    $code = $user['verification_code'];
+    $firstName = $user['first_name'];
+    
+    $mail->Body = <<<HTML
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+        .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+        .code-box { background: white; border: 2px dashed #667eea; padding: 20px; text-align: center; margin: 20px 0; border-radius: 8px; }
+        .code { font-size: 32px; font-weight: bold; color: #667eea; letter-spacing: 5px; }
+        .footer { text-align: center; margin-top: 20px; color: #999; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Bienvenue sur FunLab !</h1>
+        </div>
+        <div class="content">
+            <h2>Bonjour $firstName,</h2>
+            <p>Merci de vous être inscrit sur FunLab ! Pour activer votre compte, veuillez entrer le code de vérification ci-dessous :</p>
+            <div class="code-box">
+                <div class="code">$code</div>
+            </div>
+            <p><strong>Ce code expire dans 15 minutes.</strong></p>
+            <p>Si vous n'avez pas créé de compte, ignorez cet email.</p>
+        </div>
+        <div class="footer">
+            <p>FunLab Tunisie | funlab@faltaagency.com</p>
+        </div>
+    </div>
+</body>
+</html>
+HTML;
+
+    echo "<h3>Tentative d'envoi...</h3>";
+    $mail->send();
+    
+    echo '<p style="color:green;font-size:18px;">✅ <strong>Email envoyé avec succès !</strong></p>';
+    echo '<p>Vérifiez votre boîte mail : <strong>' . $user['email'] . '</strong></p>';
+    echo '<p style="background:#fff3cd;padding:10px;border-left:4px solid #ffc107;">⚠️ N\'oubliez pas de vérifier les <strong>SPAMS / Courrier indésirable</strong></p>';
+    echo '<p style="margin-top:20px;"><a href="/auth/verify-email" style="background:#667eea;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;">Aller à la page de vérification</a></p>';
+    
+} catch (Exception $e) {
+    echo '<p style="color:red;font-size:18px;">❌ <strong>Échec de l\'envoi</strong></p>';
+    echo '<h4>Erreur:</h4>';
+    echo '<pre style="background:#f5f5f5;padding:15px;border-left:4px solid #dc3545;">';
+    echo htmlspecialchars($mail->ErrorInfo);
+    echo '</pre>';
+}
+
+$mysqli->close();
 
 $db = \Config\Database::connect();
 
