@@ -373,7 +373,7 @@ $additionalJS = '
 
     async function cancelBooking(bookingId) {
         const result = await Swal.fire({
-            title: 'Confirmer l\'annulation',
+            title: "Confirmer l'annulation",
             text: "Êtes-vous sûr de vouloir annuler cette réservation ?",
             icon: 'warning',
             showCancelButton: true,
@@ -392,7 +392,7 @@ $additionalJS = '
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    cancellation_reason: "Annulé par l\'administrateur"
+                    cancellation_reason: "Annulé par l'administrateur"
                 })
             });
 
@@ -411,7 +411,7 @@ $additionalJS = '
                 Swal.fire({
                     icon: 'error',
                     title: 'Erreur',
-                    text: data.message || 'Erreur lors de l\'annulation'
+                    text: data.message || "Erreur lors de l'annulation"
                 });
             }
 
