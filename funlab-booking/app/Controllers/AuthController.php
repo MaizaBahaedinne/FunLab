@@ -360,25 +360,36 @@ HTML;
      */
     private function sendVerificationEmail($user)
     {
-        // Envoyer l'email en arrière-plan pour ne pas bloquer l'utilisateur
         try {
             $settings = $this->settingModel->getByCategoryAsArray('mail');
             
-            // Utiliser mail() natif de PHP qui est plus rapide que SMTP
-            $to = $user['email'];
-            $subject = 'Vérification de votre compte FunLab';
-            $code = $user['verification_code'];
-            $firstName = $user['first_name'];
+            $config = [
+                'protocol'     => 'smtp',
+                'SMTPHost'     => $settings['mail_smtp_host'] ?? 'mail.faltaagency.com',
+                'SMTPPort'     => (int)($settings['mail_smtp_port'] ?? 587),
+                'SMTPUser'     => $settings['mail_smtp_user'] ?? 'funlab@faltaagency.com',
+                'SMTPPass'     => $settings['mail_smtp_pass'] ?? '',
+                'SMTPCrypto'   => $settings['mail_smtp_crypto'] ?? 'tls',
+                'SMTPAuth'     => true,
+                'SMTPTimeout'  => 5, // Timeout court pour ne pas bloquer
+                'mailType'     => 'html',
+                'charset'      => 'utf-8',
+                'newline'      => "\r\n",
+                'wordWrap'     => true
+            ];
+
+            $email = \Config\Services::email($config);
+            $email->setFrom(
+                $settings['mail_from_email'] ?? 'funlab@faltaagency.com',
+                $settings['mail_from_name'] ?? 'FunLab'
+            );
+            $email->setTo($user['email']);
+            $email->setSubject('Vérification de votre compte FunLab');
             
-            $message = $this->getVerificationEmailTemplate($firstName, $code);
-            
-            $headers = "MIME-Version: 1.0\r\n";
-            $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-            $headers .= "From: " . ($settings['mail_from_name'] ?? 'FunLab') . " <" . ($settings['mail_from_email'] ?? 'noreply@funlab.tn') . ">\r\n";
-            $headers .= "Reply-To: " . ($settings['mail_from_email'] ?? 'noreply@funlab.tn') . "\r\n";
-            
-            // Envoyer avec mail() natif (rapide, non bloquant)
-            if (@mail($to, $subject, $message, $headers)) {
+            $message = $this->getVerificationEmailTemplate($user['first_name'], $user['verification_code']);
+            $email->setMessage($message);
+
+            if ($email->send()) {
                 log_message('info', 'Email de vérification envoyé à: ' . $user['email']);
                 return true;
             } else {
