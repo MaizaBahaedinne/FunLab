@@ -213,7 +213,11 @@
 
             try {
                 const response = await fetch('<?= base_url('auth/resend-verification-code') ?>', {
-                    method: 'POST'
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: '<?= esc($email) ?>' })
                 });
 
                 const data = await response.json();

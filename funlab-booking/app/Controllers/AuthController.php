@@ -70,10 +70,15 @@ class AuthController extends BaseController
         if ($user['auth_provider'] === 'native' && !$user['email_verified']) {
             // Régénérer un code de vérification
             $newCode = sprintf('%06d', mt_rand(0, 999999));
-            $this->userModel->update($user['id'], [
-                'verification_code' => $newCode,
-                'verification_code_expires' => date('Y-m-d H:i:s', strtotime('+15 minutes'))
-            ]);
+            
+            // Forcer l'update avec une requête directe
+            $db = \Config\Database::connect();
+            $db->table('users')
+               ->where('id', $user['id'])
+               ->update([
+                   'verification_code' => $newCode,
+                   'verification_code_expires' => date('Y-m-d H:i:s', strtotime('+15 minutes'))
+               ]);
             
             $user['verification_code'] = $newCode;
             $this->sendVerificationEmail($user);
@@ -518,6 +523,13 @@ HTML;
     public function resendVerificationCode()
     {
         $userId = session()->getTempdata('pending_verification_user_id');
+        $email = $this->request->getPost('email'); // Support email en fallback
+        
+        // Si pas de session, chercher par email
+        if (!$userId && $email) {
+            $user = $this->userModel->where('email', $email)->first();
+            $userId = $user['id'] ?? null;
+        }
         
         if (!$userId) {
             return $this->response->setJSON(['success' => false, 'message' => 'Session expirée']);
@@ -532,10 +544,21 @@ HTML;
         // Générer un nouveau code
         $newCode = sprintf('%06d', mt_rand(0, 999999));
         
-        $this->userModel->update($userId, [
+        $updated = $this->userModel->update($userId, [
             'verification_code' => $newCode,
             'verification_code_expires' => date('Y-m-d H:i:s', strtotime('+15 minutes'))
         ]);
+        
+        if (!$updated) {
+            // Si l'update échoue, forcer avec une requête directe
+            $db = \Config\Database::connect();
+            $db->table('users')
+               ->where('id', $userId)
+               ->update([
+                   'verification_code' => $newCode,
+                   'verification_code_expires' => date('Y-m-d H:i:s', strtotime('+15 minutes'))
+               ]);
+        }
 
         $user['verification_code'] = $newCode;
         $this->sendVerificationEmail($user);
