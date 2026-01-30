@@ -101,87 +101,90 @@ HTML;
 
 echo "<div class='step success'>✅ Message HTML préparé (" . strlen($message) . " caractères)</div>";
 
-// Étape 6: Configuration SMTP avec CodeIgniter
-echo "<div class='step'><strong>Étape 6:</strong> Configuration SMTP CodeIgniter...</div>";
+// Étape 4: Configuration PHPMailer
+echo "<div class='step'><strong>Étape 4:</strong> Configuration PHPMailer...</div>";
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+$mail = new PHPMailer(true);
 $to = $user['email'];
 $subject = 'Vérification de votre compte FunLab - TEST DEBUG';
 
-$config = [
-    'protocol'     => 'smtp',
-    'SMTPHost'     => $settings['mail_smtp_host'] ?? 'mail.faltaagency.com',
-    'SMTPPort'     => (int)($settings['mail_smtp_port'] ?? 587),
-    'SMTPUser'     => $settings['mail_smtp_user'] ?? 'funlab@faltaagency.com',
-    'SMTPPass'     => $settings['mail_smtp_pass'] ?? '',
-    'SMTPCrypto'   => $settings['mail_smtp_crypto'] ?? 'tls',
-    'SMTPAuth'     => true,
-    'SMTPTimeout'  => 10,
-    'mailType'     => 'html',
-    'charset'      => 'utf-8',
-    'newline'      => "\r\n",
-    'wordWrap'     => true
-];
-
-echo "<div class='step success'>✅ Configuration SMTP:</div>";
-echo "<pre style='background:#f8f9fa;padding:10px;font-size:11px;'>";
-echo "Host: " . $config['SMTPHost'] . "\n";
-echo "Port: " . $config['SMTPPort'] . "\n";
-echo "User: " . $config['SMTPUser'] . "\n";
-echo "Crypto: " . $config['SMTPCrypto'] . "\n";
-echo "</pre>";
-
-// Étape 7: Envoi via CodeIgniter Email
-echo "<div class='step'><strong>Étape 7:</strong> Tentative d'envoi via SMTP externe...</div>";
-echo "<div class='step warning'>
-    <strong>Destinataire:</strong> $to<br>
-    <strong>Sujet:</strong> $subject
-</div>";
-
 try {
-    $email = \Config\Services::email($config);
-    $email->setFrom(
+    // Configuration serveur
+    $mail->isSMTP();
+    $mail->Host       = $settings['mail_smtp_host'] ?? 'mail.faltaagency.com';
+    $mail->SMTPAuth   = true;
+    $mail->Username   = $settings['mail_smtp_user'] ?? 'funlab@faltaagency.com';
+    $mail->Password   = $settings['mail_smtp_pass'] ?? '';
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    $mail->Port       = (int)($settings['mail_smtp_port'] ?? 587);
+    $mail->CharSet    = 'UTF-8';
+    
+    echo "<div class='step success'>✅ Configuration SMTP:</div>";
+    echo "<pre style='background:#f8f9fa;padding:10px;font-size:11px;'>";
+    echo "Host: " . $mail->Host . "\n";
+    echo "Port: " . $mail->Port . "\n";
+    echo "User: " . $mail->Username . "\n";
+    echo "Encryption: STARTTLS (port 587)\n";
+    echo "</pre>";
+
+    // Étape 5: Envoi de l'email
+    echo "<div class='step'><strong>Étape 5:</strong> Tentative d'envoi via SMTP...</div>";
+    echo "<div class='step warning'>
+        <strong>Destinataire:</strong> $to<br>
+        <strong>Sujet:</strong> $subject
+    </div>";
+
+    // Expéditeur et destinataire
+    $mail->setFrom(
         $settings['mail_from_email'] ?? 'funlab@faltaagency.com',
         $settings['mail_from_name'] ?? 'FunLab'
     );
-    $email->setTo($to);
-    $email->setSubject($subject);
-    $email->setMessage($message);
+    $mail->addAddress($to);
+    
+    // Contenu
+    $mail->isHTML(true);
+    $mail->Subject = $subject;
+    $mail->Body    = $message;
 
     $startTime = microtime(true);
-    $result = $email->send();
+    $mail->send();
     $endTime = microtime(true);
     $duration = round(($endTime - $startTime) * 1000, 2);
 
-    if ($result) {
-        echo "<div class='step success'>✅ <strong>Email envoyé avec succès via SMTP !</strong></div>";
-        echo "<div class='step success'>⏱️ Temps d'exécution: {$duration}ms</div>";
-        echo "<div class='step warning'>
-            📧 <strong>Vérifiez votre boîte mail:</strong>
-            <ul>
-                <li>Boîte de réception: $to</li>
-                <li>Dossier SPAM / Courrier indésirable</li>
-                <li>Peut prendre quelques minutes pour arriver</li>
-            </ul>
-        </div>";
-    } else {
-        echo "<div class='step error'>❌ <strong>Échec de l'envoi SMTP</strong></div>";
-        echo "<div class='step error'>⏱️ Temps d'exécution: {$duration}ms</div>";
-        echo "<div class='step error'><strong>Détails:</strong><br><pre style='background:#f8d7da;padding:10px;overflow:auto;max-height:300px;'>";
-        echo $email->printDebugger(['headers', 'subject', 'body']);
-        echo "</pre></div>";
-    }
+    echo "<div class='step success'>✅ <strong>Email envoyé avec succès via SMTP !</strong></div>";
+    echo "<div class='step success'>⏱️ Temps d'exécution: {$duration}ms</div>";
+    echo "<div class='step warning'>
+        📧 <strong>Vérifiez votre boîte mail:</strong>
+        <ul>
+            <li>Boîte de réception: $to</li>
+            <li>Dossier SPAM / Courrier indésirable</li>
+            <li>Peut prendre quelques minutes pour arriver</li>
+        </ul>
+    </div>";
+
 } catch (Exception $e) {
-    echo "<div class='step error'>❌ <strong>Exception:</strong> " . htmlspecialchars($e->getMessage()) . "</div>";
+    echo "<div class='step error'>❌ <strong>Erreur d'envoi:</strong> " . htmlspecialchars($mail->ErrorInfo) . "</div>";
+    echo "<div class='step error'><strong>Exception:</strong> " . htmlspecialchars($e->getMessage()) . "</div>";
 }
 
-// Étape 8: Test de connexion SMTP
-echo "<div class='step'><strong>Étape 8:</strong> Test de connexion SMTP...</div>";
-$smtp_host = $config['SMTPHost'];
-$smtp_port = $config['SMTPPort'];
-$smtp_crypto = $config['SMTPCrypto'];
+// Étape 6: Test de connexion SMTP
+echo "<div class='step'><strong>Étape 6:</strong> Test de connexion SMTP...</div>";
+$smtp_host = $settings['mail_smtp_host'] ?? 'mail.faltaagency.com';
+$smtp_port = (int)($settings['mail_smtp_port'] ?? 587);
 
-$fp = @fsockopen(($smtp_crypto == 'tls' ? '' : 'ssl://') . $smtp_host, $smtp_port, $errno, $errstr, 5);
+// Étape 6: Test de connexion SMTP
+echo "<div class='step'><strong>Étape 6:</strong> Test de connexion SMTP...</div>";
+$smtp_host = $settings['mail_smtp_host'] ?? 'mail.faltaagency.com';
+$smtp_port = (int)($settings['mail_smtp_port'] ?? 587);
+
+$fp = @fsockopen($smtp_host, $smtp_port, $errno, $errstr, 5);
 if ($fp) {
-    echo "<div class='step success'>✅ Connexion {$smtp_crypto}://{$smtp_host}:{$smtp_port} réussie</div>";
+    echo "<div class='step success'>✅ Connexion {$smtp_host}:{$smtp_port} réussie</div>";
     $response = fgets($fp, 1024);
     echo "<div class='step success'>Réponse serveur: <code>" . htmlspecialchars($response) . "</code></div>";
     fclose($fp);
@@ -189,11 +192,6 @@ if ($fp) {
     echo "<div class='step error'>❌ Impossible de se connecter à {$smtp_host}:{$smtp_port}</div>";
     echo "<div class='step error'>Erreur: $errstr ($errno)</div>";
 }
-
-echo "<ul>";
-echo "<li>Config: {$smtp_crypto}://{$smtp_host}:{$smtp_port}</li>";
-echo "<li>User: " . $config['SMTPUser'] . "</li>";
-echo "</ul>";
 
 echo "<hr>";
 echo "<p><a href='/auth/verify-email' style='display:inline-block;background:#667eea;color:white;padding:12px 24px;text-decoration:none;border-radius:5px;'>→ Aller à la page de vérification</a></p>";
