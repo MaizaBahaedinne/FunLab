@@ -61,21 +61,16 @@ define('APPPATH', realpath(__DIR__ . '/../app') . '/');
 define('WRITEPATH', realpath(__DIR__ . '/../writable') . '/');
 define('ROOTPATH', realpath(__DIR__ . '/..') . '/');
 
-// Charger les variables d'environnement depuis .env
-if (file_exists(ROOTPATH . '.env')) {
-    require_once ROOTPATH . 'vendor/autoload.php';
-    $dotenv = Dotenv\Dotenv::createImmutable(ROOTPATH);
-    $dotenv->load();
-}
+// Charger l'autoloader
+require_once ROOTPATH . 'vendor/autoload.php';
 
 // Définir l'environnement
-defined('ENVIRONMENT') || define('ENVIRONMENT', $_ENV['CI_ENVIRONMENT'] ?? 'production');
+defined('ENVIRONMENT') || define('ENVIRONMENT', 'production');
 
 // Charger les fonctions communes de CodeIgniter
 require_once SYSTEMPATH . 'Common.php';
-require_once APPPATH . 'Config/Constants.php';
 
-echo "<div class='step success'>✅ CodeIgniter chargé (version 4.5+)</div>";
+echo "<div class='step success'>✅ CodeIgniter chargé</div>";
 
 // Étape 5: Préparation du message
 echo "<div class='step'><strong>Étape 5:</strong> Préparation du message HTML...</div>";
