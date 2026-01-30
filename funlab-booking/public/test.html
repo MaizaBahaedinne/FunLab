@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Static - FunLab</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            font-size: 3em;
+            margin: 0;
+        }
+        .time {
+            font-size: 1.5em;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✅ Le serveur web fonctionne!</h1>
+        <p class="time">Date: <span id="date"></span></p>
+        <p>Si vous voyez cette page, cela signifie que:</p>
+        <ul style="text-align: left; display: inline-block;">
+            <li>✅ Le serveur LiteSpeed est opérationnel</li>
+            <li>✅ Les fichiers HTML sont correctement servis</li>
+            <li>✅ Le domaine est bien configuré</li>
+        </ul>
+        <p><a href="test.php" style="color: white; text-decoration: underline;">→ Tester PHP</a></p>
+    </div>
+    <script>
+        document.getElementById('date').textContent = new Date().toLocaleString('fr-FR');
+    </script>
+</body>
+</html>
