@@ -392,7 +392,7 @@ $additionalJS = '
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    cancellation_reason: "Annulé par l'administrateur"
+                    cancellation_reason: "Annulé par l\'administrateur"
                 })
             });
 
@@ -411,7 +411,7 @@ $additionalJS = '
                 Swal.fire({
                     icon: "error",
                     title: "Erreur",
-                    text: data.message || "Erreur lors de l'annulation"
+                    text: data.message || "Erreur lors de l\'annulation"
                 });
             }
 
@@ -420,7 +420,7 @@ $additionalJS = '
             Swal.fire({
                 icon: "error",
                 title: "Erreur",
-                text: "Erreur lors de l'annulation"
+                text: "Erreur lors de l\'annulation"
             });
         }
     }
