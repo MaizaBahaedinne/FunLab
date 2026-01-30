@@ -224,20 +224,45 @@ class AuthController extends BaseController
 
         $token = $this->userModel->createPasswordResetToken($email);
         
-        // Envoyer l'email
+        // Envoyer l'email avec PHPMailer
         $resetLink = base_url("auth/reset-password/$token");
         
-        $emailService = \Config\Services::email();
-        $emailService->setTo($email);
-        $emailService->setSubject('Réinitialisation de mot de passe - FunLab');
-        $emailService->setMessage($this->getResetEmailTemplate($resetLink));
-        $emailService->setMailType('html');
+        try {
+            $settings = $this->settingModel->getByCategoryAsArray('mail');
+            
+            require_once ROOTPATH . 'vendor/autoload.php';
+            
+            $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
+            
+            // Configuration SMTP
+            $mail->isSMTP();
+            $mail->Host       = $settings['mail_smtp_host'] ?? 'mail.faltaagency.com';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = $settings['mail_smtp_user'] ?? 'funlab@faltaagency.com';
+            $mail->Password   = $settings['mail_smtp_pass'] ?? '';
+            $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port       = (int)($settings['mail_smtp_port'] ?? 587);
+            $mail->CharSet    = 'UTF-8';
+            
+            // Expéditeur et destinataire
+            $mail->setFrom(
+                $settings['mail_from_email'] ?? 'funlab@faltaagency.com',
+                $settings['mail_from_name'] ?? 'FunLab'
+            );
+            $mail->addAddress($email);
+            
+            // Contenu
+            $mail->isHTML(true);
+            $mail->Subject = 'Réinitialisation de mot de passe - FunLab';
+            $mail->Body    = $this->getResetEmailTemplate($resetLink);
 
-        if ($emailService->send()) {
+            $mail->send();
+            
             return redirect()->back()->with('success', 'Un email de réinitialisation a été envoyé');
+        } catch (\Exception $e) {
+            log_message('error', 'Erreur envoi email reset: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Erreur lors de l\'envoi de l\'email');
         }
-
-        return redirect()->back()->with('error', 'Erreur lors de l\'envoi de l\'email');
     }
 
     /**
