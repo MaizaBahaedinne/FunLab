@@ -603,7 +603,7 @@ class SettingsController extends BaseController
         }
 
         // Charger les paramètres email depuis la base de données
-        $settings = $this->settingModel->getByCategory('mail');
+        $settings = $this->settingModel->getByCategoryAsArray('mail');
 
         // S'assurer que le mot de passe est bien une chaîne
         $smtpPass = isset($settings['mail_smtp_pass']) ? trim($settings['mail_smtp_pass']) : '';
