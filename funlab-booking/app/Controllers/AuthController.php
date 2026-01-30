@@ -457,12 +457,19 @@ HTML;
     public function attemptVerifyEmail()
     {
         $userId = session()->getTempdata('pending_verification_user_id');
+        $code = $this->request->getPost('code');
+        $email = $this->request->getPost('email'); // Support email en fallback
+        
+        // Si pas de session, chercher par email
+        if (!$userId && $email) {
+            $user = $this->userModel->where('email', $email)->first();
+            $userId = $user['id'] ?? null;
+        }
         
         if (!$userId) {
             return $this->response->setJSON(['success' => false, 'message' => 'Session expirée']);
         }
 
-        $code = $this->request->getPost('code');
         $user = $this->userModel->find($userId);
 
         if (!$user) {

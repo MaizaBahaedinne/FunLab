@@ -165,7 +165,10 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ code })
+                    body: JSON.stringify({ 
+                        code: code,
+                        email: '<?= esc($email) ?>' // Envoyer l'email en fallback
+                    })
                 });
 
                 const data = await response.json();
