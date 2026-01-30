@@ -235,7 +235,7 @@ $additionalStyles = '
                                                 </div>
                                                 <a href="<?= base_url('admin/bookings/delete-participant/' . $participant['id']) ?>" 
                                                    class="btn btn-sm btn-outline-danger"
-                                                   onclick="return confirm('Supprimer ce participant ?')">
+                                                   onclick="event.preventDefault(); confirmDelete(this.href, \'Supprimer ce participant \?\', \'Le participant sera supprimé définitivement\')">
                                                     <i class="bi bi-trash"></i>
                                                 </a>
                                             </div>
@@ -274,14 +274,14 @@ $additionalStyles = '
                                 <?php if ($booking['status'] !== 'cancelled'): ?>
                                 <a href="<?= base_url('admin/bookings/cancel/' . $booking['id']) ?>" 
                                    class="btn btn-outline-danger"
-                                   onclick="return confirm('Annuler cette réservation ?')">
+                                   onclick="event.preventDefault(); confirmDelete(this.href, \'Annuler cette réservation \?\', \'La réservation sera annulée\', \'Oui, annuler\')">
                                     <i class="bi bi-x-circle"></i> Annuler
                                 </a>
                                 <?php endif; ?>
 
                                 <a href="<?= base_url('admin/bookings/delete/' . $booking['id']) ?>" 
                                    class="btn btn-outline-danger"
-                                   onclick="return confirm('Supprimer définitivement ?')">
+                                   onclick="event.preventDefault(); confirmDelete(this.href, \'Supprimer définitivement \?\', \'Cette action est irréversible\')">
                                     <i class="bi bi-trash"></i> Supprimer
                                 </a>
                             </div>
@@ -436,6 +436,23 @@ $additionalJS = '
         setTimeout(() => {
             btn.innerHTML = originalHtml;
         }, 2000);
+    }
+    
+    function confirmDelete(url, title, text, confirmText = \'Oui, supprimer\') {
+        Swal.fire({
+            title: title,
+            text: text,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: confirmText,
+            cancelButtonText: "Annuler"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
     }
 </script>
 ';
