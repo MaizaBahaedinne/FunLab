@@ -1,0 +1,96 @@
+═══════════════════════════════════════════════════════════════
+  COMMANDES SSH - COPIER/COLLER UNE PAR UNE
+═══════════════════════════════════════════════════════════════
+
+Après avoir transféré les fichiers par FTP, connectez-vous en SSH :
+
+  ssh falta4808@funlab.faltaagency.com
+
+Puis copiez/collez ces commandes UNE PAR UNE :
+
+───────────────────────────────────────────────────────────────
+# 1. Aller dans le dossier
+───────────────────────────────────────────────────────────────
+
+cd /home/faltaagency.com/funlab.faltaagency.com/funlab-booking
+
+
+───────────────────────────────────────────────────────────────
+# 2. Créer les dossiers nécessaires
+───────────────────────────────────────────────────────────────
+
+mkdir -p writable/cache writable/logs writable/session writable/uploads writable/debugbar
+
+
+───────────────────────────────────────────────────────────────
+# 3. Corriger le propriétaire
+───────────────────────────────────────────────────────────────
+
+chown -R falta4808:falta4808 .
+
+
+───────────────────────────────────────────────────────────────
+# 4. Permissions fichiers (644)
+───────────────────────────────────────────────────────────────
+
+find . -type f -exec chmod 644 {} \;
+
+
+───────────────────────────────────────────────────────────────
+# 5. Permissions dossiers (755)
+───────────────────────────────────────────────────────────────
+
+find . -type d -exec chmod 755 {} \;
+
+
+───────────────────────────────────────────────────────────────
+# 6. Permissions writable (775) - LE PLUS IMPORTANT
+───────────────────────────────────────────────────────────────
+
+chmod -R 775 writable/
+
+
+───────────────────────────────────────────────────────────────
+# 7. Nettoyer le cache
+───────────────────────────────────────────────────────────────
+
+rm -rf writable/cache/*
+
+
+───────────────────────────────────────────────────────────────
+# 8. Redémarrer LiteSpeed
+───────────────────────────────────────────────────────────────
+
+sudo /usr/local/lsws/bin/lswsctrl restart
+
+
+───────────────────────────────────────────────────────────────
+# 9. Voir les dernières erreurs (si besoin)
+───────────────────────────────────────────────────────────────
+
+tail -30 ../logs/error.log
+
+tail -30 writable/logs/log-$(date +%Y-%m-%d).log
+
+
+═══════════════════════════════════════════════════════════════
+  TESTS À EFFECTUER APRÈS
+═══════════════════════════════════════════════════════════════
+
+Ouvrez ces URLs dans votre navigateur :
+
+1. https://funlab.faltaagency.com/test.html
+2. https://funlab.faltaagency.com/test.php
+3. https://funlab.faltaagency.com/test-db.php
+4. https://funlab.faltaagency.com/
+
+
+═══════════════════════════════════════════════════════════════
+  NETTOYAGE FINAL (quand tout marche)
+═══════════════════════════════════════════════════════════════
+
+cd public
+rm test.php test-db.php info.php test.html
+
+
+═══════════════════════════════════════════════════════════════
