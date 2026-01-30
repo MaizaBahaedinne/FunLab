@@ -368,7 +368,17 @@ $additionalJS = '
 
         const cancelBtn = document.getElementById("btn-cancel-booking");
         cancelBtn.onclick = () => cancelBooking(booking.id);
-        cancelBtn.style.display = booking.status === "cancelled" ? "none" : "inline-block";
+        
+        // Vérifier si la réservation est passée
+        const bookingDateTime = new Date(booking.booking_date + " " + booking.start_time);
+        const isPastBooking = bookingDateTime < new Date();
+        
+        // Cacher le bouton si annulé ou passé
+        if (booking.status === "cancelled" || isPastBooking) {
+            cancelBtn.style.display = "none";
+        } else {
+            cancelBtn.style.display = "inline-block";
+        }
     }
 
     async function cancelBooking(bookingId) {
