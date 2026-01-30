@@ -261,7 +261,12 @@ class AuthController extends BaseController
             return redirect()->back()->with('success', 'Un email de réinitialisation a été envoyé');
         } catch (\Exception $e) {
             log_message('error', 'Erreur envoi email reset: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Erreur lors de l\'envoi de l\'email');
+            // Afficher l'erreur détaillée en développement
+            $errorMsg = 'Erreur lors de l\'envoi de l\'email';
+            if (ENVIRONMENT === 'development') {
+                $errorMsg .= ': ' . $e->getMessage();
+            }
+            return redirect()->back()->with('error', $errorMsg);
         }
     }
 
