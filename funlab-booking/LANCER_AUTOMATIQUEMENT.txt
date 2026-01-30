@@ -1,0 +1,117 @@
+╔════════════════════════════════════════════════════════════════╗
+║                                                                ║
+║  🚀 EXÉCUTION AUTOMATIQUE - VOUS N'AVEZ QU'UNE COMMANDE      ║
+║                                                                ║
+╚════════════════════════════════════════════════════════════════╝
+
+
+📋 J'AI CRÉÉ 2 SCRIPTS QUI FONT TOUT AUTOMATIQUEMENT
+════════════════════════════════════════════════════════════════
+
+  1️⃣  deploy-simple.sh        → Version ultra-simple (recommandée)
+  2️⃣  deploy-automatique.sh   → Version complète avec vérifications
+
+
+🎯 SOLUTION LA PLUS SIMPLE - UNE SEULE COMMANDE !
+════════════════════════════════════════════════════════════════
+
+Ouvrez le Terminal sur votre Mac et tapez :
+
+┌────────────────────────────────────────────────────────────┐
+│                                                            │
+│  cd /Users/mac/Documents/FunLab/funlab-booking            │
+│  ./deploy-simple.sh                                        │
+│                                                            │
+└────────────────────────────────────────────────────────────┘
+
+C'EST TOUT ! Le script va :
+  ✅ Transférer automatiquement tous les fichiers
+  ✅ Se connecter en SSH
+  ✅ Exécuter toutes les commandes de réparation
+  ✅ Redémarrer LiteSpeed
+  ✅ Tester le site
+
+⚠️  Il vous demandera votre mot de passe SSH une fois.
+
+
+📦 ALTERNATIVE : VERSION COMPLÈTE
+════════════════════════════════════════════════════════════════
+
+Si vous voulez plus de détails :
+
+┌────────────────────────────────────────────────────────────┐
+│  ./deploy-automatique.sh                                   │
+└────────────────────────────────────────────────────────────┘
+
+Cette version :
+  ✅ Vérifie que tous les fichiers existent
+  ✅ Transfère fichier par fichier avec confirmation
+  ✅ Exécute les commandes de réparation
+  ✅ Fait des tests automatiques avec curl
+  ✅ Affiche les résultats détaillés
+
+
+🔑 MOT DE PASSE SSH
+════════════════════════════════════════════════════════════════
+
+Le script vous demandera le mot de passe pour :
+  • falta4808@funlab.faltaagency.com
+
+Entrez-le quand demandé (1 ou 2 fois selon les permissions).
+
+
+⏱️  DURÉE D'EXÉCUTION
+════════════════════════════════════════════════════════════════
+
+  • Transfert des fichiers  : 5-10 secondes
+  • Configuration serveur   : 10-15 secondes
+  • Tests automatiques      : 5 secondes
+  
+  ⏳ TOTAL : ~30 secondes
+
+
+✅ RÉSULTAT ATTENDU
+════════════════════════════════════════════════════════════════
+
+À la fin, vous verrez :
+
+  🧪 Test 1 : Page statique     → Status: 200
+  🧪 Test 2 : PHP               → Status: 200
+  🧪 Test 3 : Base de données   → Status: 200
+  🧪 Test 4 : Application       → Status: 200
+
+  ✅ DÉPLOIEMENT TERMINÉ !
+  🔗 Testez : https://funlab.faltaagency.com/
+
+
+❌ EN CAS D'ERREUR
+════════════════════════════════════════════════════════════════
+
+Si vous voyez "Permission denied (publickey)" :
+
+  → Vous devez entrer votre mot de passe SSH
+  → Si le problème persiste, utilisez la méthode manuelle
+
+
+Si les tests montrent "Status: 500" :
+
+  → Consultez les logs affichés par le script
+  → Connectez-vous manuellement pour déboguer :
+    ssh falta4808@funlab.faltaagency.com
+    tail -50 /home/faltaagency.com/funlab.faltaagency.com/logs/error.log
+
+
+📱 MÉTHODE MANUELLE (si les scripts ne marchent pas)
+════════════════════════════════════════════════════════════════
+
+Consultez : COMMANDES_SSH.txt
+  → Copiez/collez les commandes une par une
+
+
+════════════════════════════════════════════════════════════════
+
+        💡 RECOMMANDATION : Utilisez deploy-simple.sh
+
+              C'est le plus rapide et efficace !
+
+════════════════════════════════════════════════════════════════
