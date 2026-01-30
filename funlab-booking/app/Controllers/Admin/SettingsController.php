@@ -658,8 +658,24 @@ class SettingsController extends BaseController
         
         $email->setMessage($message);
 
+        // Activer le debug SMTP
+        log_message('info', 'Tentative d\'envoi email de test vers: ' . $testEmail);
+        log_message('info', 'Config SMTP: ' . $config['SMTPHost'] . ':' . $config['SMTPPort'] . ' (' . $config['SMTPCrypto'] . ')');
+        log_message('info', 'User SMTP: ' . $config['SMTPUser']);
+
         if ($email->send()) {
-            return redirect()->back()->with('success', '✅ Email de test envoyé avec succès à ' . $testEmail);
+            $debugInfo = $email->printDebugger(['headers']);
+            log_message('info', 'Email envoyé avec succès. Debug: ' . $debugInfo);
+            
+            return redirect()->back()->with('success', 
+                '✅ Email de test envoyé avec succès à ' . $testEmail . 
+                '<br><small>⚠️ Si vous ne le recevez pas, vérifiez vos spams ou le compte email ' . $config['SMTPUser'] . '</small>' .
+                '<br><details><summary>Détails SMTP</summary><pre style="font-size:10px;">' . 
+                'Serveur: ' . $config['SMTPHost'] . ':' . $config['SMTPPort'] . '<br>' .
+                'Utilisateur: ' . $config['SMTPUser'] . '<br>' .
+                'Cryptage: ' . $config['SMTPCrypto'] . 
+                '</pre></details>'
+            );
         } else {
             $debugInfo = $email->printDebugger(['headers', 'subject', 'body']);
             
