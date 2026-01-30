@@ -320,7 +320,11 @@
 
                 const result = await response.json();
                 if (result.status !== 'success') {
-                    alert('Erreur lors de l\'assignation');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erreur',
+                        text: 'Erreur lors de l\'assignation'
+                    });
                     location.reload();
                 }
             } catch (error) {

@@ -215,7 +215,11 @@
                     // Actualiser la liste des participants
                     loadParticipants();
                 } else {
-                    alert(result.message);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erreur',
+                        text: result.message
+                    });
                 }
 
                 btn.disabled = false;

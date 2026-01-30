@@ -172,11 +172,19 @@ $additionalJS = '
                 if (data.success) {
                     window.location.reload();
                 } else {
-                    alert("Erreur: " + data.message);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erreur',
+                        text: 'Erreur: ' + data.message
+                    });
                 }
             })
             .catch(error => {
-                alert("Erreur lors de la suppression");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erreur',
+                    text: 'Erreur lors de la suppression'
+                });
                 console.error(error);
             });
         }

@@ -600,12 +600,20 @@
             const numPlayers = parseInt(document.getElementById('num-players').value);
 
             if (!name || !email || !phone) {
-                alert('Veuillez remplir tous les champs obligatoires');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Attention',
+                    text: 'Veuillez remplir tous les champs obligatoires'
+                });
                 return;
             }
 
             if (numPlayers < bookingData.game.min_players || numPlayers > bookingData.game.max_players) {
-                alert(`Le nombre de joueurs doit être entre ${bookingData.game.min_players} et ${bookingData.game.max_players}`);
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Nombre de joueurs invalide',
+                    text: `Le nombre de joueurs doit être entre ${bookingData.game.min_players} et ${bookingData.game.max_players}`
+                });
                 return;
             }
 
@@ -616,12 +624,20 @@
                 const passwordConfirm = document.getElementById('account-password-confirm').value;
 
                 if (!password || password.length < 6) {
-                    alert('Le mot de passe doit contenir au moins 6 caractères');
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Mot de passe trop court',
+                        text: 'Le mot de passe doit contenir au moins 6 caractères'
+                    });
                     return;
                 }
 
                 if (password !== passwordConfirm) {
-                    alert('Les mots de passe ne correspondent pas');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erreur',
+                        text: 'Les mots de passe ne correspondent pas'
+                    });
                     return;
                 }
 
@@ -739,13 +755,21 @@
                 if (response.ok && result.status === 'success') {
                     showConfirmation(result);
                 } else {
-                    alert(result.message || 'Erreur lors de la création de la réservation');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erreur',
+                        text: result.message || 'Erreur lors de la création de la réservation'
+                    });
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = '<i class="bi bi-check-circle"></i> Confirmer la réservation';
                 }
             } catch (error) {
                 console.error('Erreur:', error);
-                alert('Une erreur est survenue');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erreur',
+                    text: 'Une erreur est survenue'
+                });
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '<i class="bi bi-check-circle"></i> Confirmer la réservation';
             }
@@ -867,7 +891,11 @@
         }
 
         function downloadTicket() {
-            alert('Fonctionnalité de téléchargement en cours de développement');
+            Swal.fire({
+                icon: 'info',
+                title: 'En développement',
+                text: 'Fonctionnalité de téléchargement en cours de développement'
+            });
         }
     </script>
 </body>
