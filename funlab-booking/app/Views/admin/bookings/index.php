@@ -373,7 +373,7 @@ $additionalJS = '
 
     async function cancelBooking(bookingId) {
         const result = await Swal.fire({
-            title: "Confirmer l'annulation",
+            title: "Confirmer l\'annulation",
             text: "Êtes-vous sûr de vouloir annuler cette réservation ?",
             icon: "warning",
             showCancelButton: true,
@@ -400,9 +400,9 @@ $additionalJS = '
 
             if (data.status === "success") {
                 await Swal.fire({
-                    icon: 'success',
-                    title: 'Annulée !',
-                    text: 'Réservation annulée avec succès',
+                    icon: "success",
+                    title: "Annulée !",
+                    text: "Réservation annulée avec succès",
                     timer: 2000
                 });
                 bootstrap.Modal.getInstance(document.getElementById("bookingDetailsModal")).hide();
