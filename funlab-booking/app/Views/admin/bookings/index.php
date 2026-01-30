@@ -372,7 +372,18 @@ $additionalJS = '
     }
 
     async function cancelBooking(bookingId) {
-        if (!confirm("Êtes-vous sûr de vouloir annuler cette réservation ?")) {
+        const result = await Swal.fire({
+            title: 'Confirmer l\'annulation',
+            text: "Êtes-vous sûr de vouloir annuler cette réservation ?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Oui, annuler',
+            cancelButtonText: 'Non, garder'
+        });
+
+        if (!result.isConfirmed) {
             return;
         }
 
@@ -385,19 +396,32 @@ $additionalJS = '
                 })
             });
 
-            const result = await response.json();
+            const data = await response.json();
 
-            if (result.status === "success") {
-                alert("Réservation annulée avec succès");
+            if (data.status === "success") {
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Annulée !',
+                    text: 'Réservation annulée avec succès',
+                    timer: 2000
+                });
                 bootstrap.Modal.getInstance(document.getElementById("bookingDetailsModal")).hide();
                 calendar.refetchEvents();
             } else {
-                alert("Erreur: " + result.message);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erreur',
+                    text: data.message || 'Erreur lors de l\'annulation'
+                });
             }
 
         } catch (error) {
             console.error("Erreur:", error);
-            alert("Erreur lors de l\'annulation");
+            Swal.fire({
+                icon: 'error',
+                title: 'Erreur',
+                text: 'Erreur lors de l\'annulation'
+            });
         }
     }
 
