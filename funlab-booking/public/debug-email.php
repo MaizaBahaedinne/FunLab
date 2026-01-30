@@ -53,27 +53,29 @@ echo "</ul>";
 
 // Étape 4: Chargement CodeIgniter
 echo "<div class='step'><strong>Étape 4:</strong> Chargement de CodeIgniter...</div>";
+
+// Définir les constantes nécessaires
 define('FCPATH', __DIR__ . '/');
-$pathsPath = realpath(__DIR__ . '/../app/Config/Paths.php');
+define('SYSTEMPATH', realpath(__DIR__ . '/../vendor/codeigniter4/framework/system') . '/');
+define('APPPATH', realpath(__DIR__ . '/../app') . '/');
+define('WRITEPATH', realpath(__DIR__ . '/../writable') . '/');
+define('ROOTPATH', realpath(__DIR__ . '/..') . '/');
 
-if (!file_exists($pathsPath)) {
-    echo "<div class='step error'>❌ Paths.php introuvable</div>";
-    die();
+// Charger les variables d'environnement depuis .env
+if (file_exists(ROOTPATH . '.env')) {
+    require_once ROOTPATH . 'vendor/autoload.php';
+    $dotenv = Dotenv\Dotenv::createImmutable(ROOTPATH);
+    $dotenv->load();
 }
 
-require_once $pathsPath;
-$paths = new Config\Paths();
-$bootstrapPath = rtrim($paths->systemDirectory, '\\/ ') . '/bootstrap.php';
+// Définir l'environnement
+defined('ENVIRONMENT') || define('ENVIRONMENT', $_ENV['CI_ENVIRONMENT'] ?? 'production');
 
-if (file_exists($bootstrapPath)) {
-    require $bootstrapPath;
-    echo "<div class='step success'>✅ CodeIgniter chargé (nouveau système)</div>";
-} else {
-    // Fallback pour CodeIgniter 4.5+
-    require rtrim($paths->systemDirectory, '\\/ ') . '/Config/BaseConfig.php';
-    require rtrim($paths->systemDirectory, '\\/ ') . '/Common.php';
-    echo "<div class='step success'>✅ CodeIgniter chargé (système récent)</div>";
-}
+// Charger les fonctions communes de CodeIgniter
+require_once SYSTEMPATH . 'Common.php';
+require_once APPPATH . 'Config/Constants.php';
+
+echo "<div class='step success'>✅ CodeIgniter chargé (version 4.5+)</div>";
 
 // Étape 5: Préparation du message
 echo "<div class='step'><strong>Étape 5:</strong> Préparation du message HTML...</div>";
