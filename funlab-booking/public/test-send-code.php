@@ -1,16 +1,110 @@
 <?php
-// Test direct d'envoi d'email
+// Test simple d'envoi d'email avec mail() natif PHP
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 echo "<h2>Test d'envoi d'email de vérification</h2>";
 
-// Vérifier si vendor/autoload existe
-if (!file_exists('../vendor/autoload.php')) {
-    die('<p style="color:red;">❌ vendor/autoload.php introuvable. Exécutez "composer install"</p>');
+// Connexion DB
+$mysqli = @new mysqli('localhost', 'funl_FunLabBooking', 'FunLabBooking2026!', 'funl_FunLabBooking');
+
+if ($mysqli->connect_error) {
+    die('<p style="color:red;">❌ Erreur DB: ' . htmlspecialchars($mysqli->connect_error) . '</p>');
 }
 
-require '../vendor/autoload.php';
+// Récupérer l'utilisateur
+$result = $mysqli->query("SELECT * FROM users WHERE email = 'maizakoussai@gmail.com'");
+if (!$result) {
+    die('<p style="color:red;">❌ Erreur requête: ' . htmlspecialchars($mysqli->error) . '</p>');
+}
+
+$user = $result->fetch_assoc();
+
+if (!$user) {
+    die('<p style="color:red;">❌ Utilisateur non trouvé</p>');
+}
+
+echo "<p>Email: {$user['email']}</p>";
+echo "<p>Code actuel: <strong style='font-size:24px;color:#667eea;background:#f0f0f0;padding:10px;border-radius:5px;'>{$user['verification_code']}</strong></p>";
+echo "<p>Expire: {$user['verification_code_expires']}</p>";
+
+// Charger les paramètres email
+$settingsResult = $mysqli->query("SELECT `key`, value FROM settings WHERE category = 'mail'");
+$settings = [];
+while ($row = $settingsResult->fetch_assoc()) {
+    $settings[$row['key']] = $row['value'];
+}
+
+echo "<hr>";
+echo "<h3>Configuration email:</h3>";
+echo "<ul>";
+echo "<li>From: " . htmlspecialchars($settings['mail_from_email'] ?? 'N/A') . "</li>";
+echo "<li>Name: " . htmlspecialchars($settings['mail_from_name'] ?? 'N/A') . "</li>";
+echo "</ul>";
+
+// Préparer l'email
+$to = $user['email'];
+$subject = 'Vérification de votre compte FunLab';
+$code = $user['verification_code'];
+$firstName = $user['first_name'];
+
+$message = <<<HTML
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0;">
+    <div style="max-width: 600px; margin: 20px auto; padding: 0;">
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+            <h1 style="margin: 0;">🎮 Bienvenue sur FunLab !</h1>
+        </div>
+        <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
+            <h2>Bonjour $firstName,</h2>
+            <p>Merci de vous être inscrit sur FunLab ! Pour activer votre compte, veuillez entrer le code de vérification ci-dessous :</p>
+            <div style="background: white; border: 2px dashed #667eea; padding: 20px; text-align: center; margin: 20px 0; border-radius: 8px;">
+                <div style="font-size: 32px; font-weight: bold; color: #667eea; letter-spacing: 5px;">$code</div>
+            </div>
+            <p><strong>Ce code expire dans 15 minutes.</strong></p>
+            <p>Si vous n'avez pas créé de compte, ignorez cet email.</p>
+        </div>
+        <div style="text-align: center; margin-top: 20px; color: #999; font-size: 12px;">
+            <p>FunLab Tunisie | funlab@faltaagency.com</p>
+        </div>
+    </div>
+</body>
+</html>
+HTML;
+
+$headers = "MIME-Version: 1.0\r\n";
+$headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+$headers .= "From: " . ($settings['mail_from_name'] ?? 'FunLab') . " <" . ($settings['mail_from_email'] ?? 'noreply@funlab.tn') . ">\r\n";
+$headers .= "Reply-To: " . ($settings['mail_from_email'] ?? 'noreply@funlab.tn') . "\r\n";
+
+echo "<h3>Envoi en cours...</h3>";
+
+// Envoyer l'email
+if (mail($to, $subject, $message, $headers)) {
+    echo '<div style="background:#d4edda;border:1px solid #c3e6cb;color:#155724;padding:20px;border-radius:5px;margin:20px 0;">';
+    echo '<h3 style="margin:0 0 10px 0;">✅ Email envoyé avec succès !</h3>';
+    echo '<p>Destinataire : <strong>' . htmlspecialchars($user['email']) . '</strong></p>';
+    echo '<p style="margin:0;">⚠️ Pensez à vérifier les <strong>SPAMS / Courrier indésirable</strong></p>';
+    echo '</div>';
+    echo '<p><a href="/auth/verify-email" style="display:inline-block;background:#667eea;color:white;padding:12px 24px;text-decoration:none;border-radius:5px;font-weight:bold;">→ Aller à la page de vérification</a></p>';
+} else {
+    $error = error_get_last();
+    echo '<div style="background:#f8d7da;border:1px solid #f5c6cb;color:#721c24;padding:20px;border-radius:5px;margin:20px 0;">';
+    echo '<h3 style="margin:0 0 10px 0;">❌ Échec de l\'envoi</h3>';
+    if ($error) {
+        echo '<p><strong>Erreur:</strong> ' . htmlspecialchars($error['message']) . '</p>';
+    } else {
+        echo '<p>La fonction mail() a échoué. Vérifiez la configuration SMTP du serveur.</p>';
+    }
+    echo '</div>';
+}
+
+$mysqli->close();
+
 
 // Connexion DB
 $mysqli = new mysqli('localhost', 'funl_FunLabBooking', 'FunLabBooking2026!', 'funl_FunLabBooking');
