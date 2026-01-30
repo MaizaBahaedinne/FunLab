@@ -387,9 +387,16 @@ HTML;
         $email->setMessage($message);
 
         try {
-            $email->send();
+            if ($email->send()) {
+                log_message('info', 'Email de vérification envoyé à: ' . $user['email']);
+                return true;
+            } else {
+                log_message('error', 'Échec envoi email vérification à ' . $user['email'] . ': ' . $email->printDebugger(['headers']));
+                return false;
+            }
         } catch (\Exception $e) {
-            log_message('error', 'Erreur envoi email vérification: ' . $e->getMessage());
+            log_message('error', 'Exception envoi email vérification: ' . $e->getMessage());
+            return false;
         }
     }
 
