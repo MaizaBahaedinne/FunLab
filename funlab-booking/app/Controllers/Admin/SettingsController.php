@@ -580,6 +580,11 @@ class SettingsController extends BaseController
      */
     public function createUser()
     {
+        // Vérifier la permission de créer des utilisateurs
+        if ($redirect = checkPermissionOrRedirect('users', 'create')) {
+            return $redirect;
+        }
+        
         $validation = \Config\Services::validation();
         
         $validation->setRules([
@@ -594,14 +599,27 @@ class SettingsController extends BaseController
                 ->withInput()
                 ->with('errors', $validation->getErrors());
         }
+        
+        $newRole = $this->request->getPost('role');
+        
+        // SÉCURITÉ: Un staff ne peut PAS créer d'admin
+        $currentUserRole = session()->get('role');
+        if ($currentUserRole === 'staff' && $newRole === 'admin') {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Vous ne pouvez pas créer un compte administrateur');
+        }
 
         $this->userModel->insert([
             'username' => $this->request->getPost('username'),
             'email' => $this->request->getPost('email'),
             'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
-            'role' => $this->request->getPost('role'),
+            'role' => $newRole,
             'first_name' => $this->request->getPost('first_name'),
-            'last_name' => $this->request->getPost('last_name')
+            'last_name' => $this->request->getPost('last_name'),
+            'is_active' => 1,
+            'email_verified' => 1,
+            'auth_provider' => 'native'
         ]);
 
         return redirect()->to('/admin/settings/users')
@@ -613,13 +631,37 @@ class SettingsController extends BaseController
      */
     public function updateUser($id)
     {
+        // Vérifier la permission de modifier les utilisateurs
+        if ($redirect = checkPermissionOrRedirect('users', 'edit')) {
+            return $redirect;
+        }
+        
+        // Récupérer l'utilisateur cible
+        $targetUser = $this->userModel->find($id);
+        if (!$targetUser) {
+            return redirect()->back()->with('error', 'Utilisateur introuvable');
+        }
+        
+        // SÉCURITÉ: Un staff ne peut PAS modifier un admin
+        $currentUserRole = session()->get('role');
+        if ($currentUserRole === 'staff' && $targetUser['role'] === 'admin') {
+            return redirect()->back()->with('error', 'Vous ne pouvez pas modifier un administrateur');
+        }
+        
         $data = [
             'username' => $this->request->getPost('username'),
             'email' => $this->request->getPost('email'),
-            'role' => $this->request->getPost('role'),
             'first_name' => $this->request->getPost('first_name'),
             'last_name' => $this->request->getPost('last_name')
         ];
+        
+        // SÉCURITÉ: Un staff ne peut PAS changer les rôles
+        $newRole = $this->request->getPost('role');
+        if ($currentUserRole === 'admin') {
+            $data['role'] = $newRole;
+        } elseif ($newRole !== $targetUser['role']) {
+            return redirect()->back()->with('error', 'Vous ne pouvez pas modifier le rôle d\'un utilisateur');
+        }
 
         // Mettre à jour le mot de passe si fourni
         $password = $this->request->getPost('password');
@@ -638,10 +680,37 @@ class SettingsController extends BaseController
      */
     public function deleteUser($id)
     {
+        // Vérifier la permission de supprimer les utilisateurs
+        if ($redirect = checkPermissionOrRedirect('users', 'delete')) {
+            return $redirect;
+        }
+        
         // Ne pas supprimer son propre compte
         if ($id == session()->get('userId')) {
             return redirect()->back()
                 ->with('error', 'Vous ne pouvez pas supprimer votre propre compte');
+        }
+        
+        // Récupérer l'utilisateur cible
+        $targetUser = $this->userModel->find($id);
+        if (!$targetUser) {
+            return redirect()->back()->with('error', 'Utilisateur introuvable');
+        }
+        
+        // SÉCURITÉ: Un staff ne peut PAS supprimer un admin
+        $currentUserRole = session()->get('role');
+        if ($currentUserRole === 'staff' && $targetUser['role'] === 'admin') {
+            return redirect()->back()
+                ->with('error', 'Vous ne pouvez pas supprimer un administrateur');
+        }
+        
+        // SÉCURITÉ: Empêcher la suppression du dernier admin
+        if ($targetUser['role'] === 'admin') {
+            $adminCount = $this->userModel->where('role', 'admin')->countAllResults();
+            if ($adminCount <= 1) {
+                return redirect()->back()
+                    ->with('error', 'Impossible de supprimer le dernier administrateur');
+            }
         }
 
         $this->userModel->delete($id);
