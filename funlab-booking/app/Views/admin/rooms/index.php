@@ -126,19 +126,19 @@ $additionalJS = '
                     window.location.reload();
                 } else {
                     Swal.fire({
-                        icon: 'error',
-                        title: 'Erreur',
-                        text: 'Erreur: ' + data.message
+                        icon: "error",
+                        title: "Erreur",
+                        text: data.message || "Une erreur est survenue"
                     });
                 }
             })
-            .catch(error => {
+            .catch(err => {
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Erreur',
-                    text: 'Erreur lors de la suppression'
+                    icon: "error",
+                    title: "Erreur",
+                    text: "Erreur lors de la suppression"
                 });
-                console.error(error);
+                console.error(err);
             });
         }
     }
