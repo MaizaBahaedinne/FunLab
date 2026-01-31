@@ -38,10 +38,10 @@ class HomeController extends BaseController
         
         // Récupérer les derniers avis (limité à 3)
         $reviews = $reviewModel
-            ->select('reviews.*, users.first_name, users.last_name')
-            ->join('users', 'users.id = reviews.user_id', 'left')
-            ->where('reviews.status', 'approved')
-            ->orderBy('reviews.created_at', 'DESC')
+            ->select('game_reviews.*, users.first_name, users.last_name')
+            ->join('users', 'users.id = game_reviews.user_id', 'left')
+            ->where('game_reviews.is_approved', 1)
+            ->orderBy('game_reviews.created_at', 'DESC')
             ->limit(3)
             ->findAll();
         
