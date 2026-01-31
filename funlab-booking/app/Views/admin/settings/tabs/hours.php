@@ -18,7 +18,14 @@
             ];
             
             foreach ($days as $key => $label): 
-                $daySettings = $settings['business_hours_' . $key] ?? ['open' => '09:00', 'close' => '22:00', 'enabled' => true];
+                $dayData = $settings['business_hours_' . $key] ?? '{"open":"09:00","close":"22:00","enabled":true}';
+                
+                // Décoder le JSON si c'est une chaîne
+                if (is_string($dayData)) {
+                    $daySettings = json_decode($dayData, true) ?: ['open' => '09:00', 'close' => '22:00', 'enabled' => true];
+                } else {
+                    $daySettings = $dayData;
+                }
             ?>
                 <div class="row mb-3 align-items-center">
                     <div class="col-md-2">

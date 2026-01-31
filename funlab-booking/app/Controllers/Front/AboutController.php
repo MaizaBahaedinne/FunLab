@@ -10,7 +10,7 @@ class AboutController extends BaseController
     public function index()
     {
         $settingModel = new SettingModel();
-        $settings = $settingModel->getByCategory('about');
+        $settings = $settingModel->getByCategoryAsArray('about');
         
         $data = [
             'title' => $settings['about_title'] ?? 'À Propos - FunLab Tunisie',
