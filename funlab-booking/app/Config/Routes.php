@@ -89,6 +89,10 @@ $routes->group('account', ['filter' => 'auth'], function($routes) {
 // ============================================================
 // ROUTES ADMINISTRATION
 // ============================================================
+// Route de login admin (non protégée)
+$routes->get('admin/login', 'AuthController::login');
+$routes->post('admin/login', 'AuthController::attemptLogin');
+
 $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'adminAuth'], function($routes) {
     
     // Dashboard

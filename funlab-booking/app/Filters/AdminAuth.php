@@ -10,11 +10,16 @@ class AdminAuth implements FilterInterface
 {
     public function before(RequestInterface $request, $arguments = null)
     {
-        // Vérifier si l'utilisateur est connecté en tant qu'admin
+        // Vérifier si l'utilisateur est connecté en tant qu'admin ou staff
         $session = session();
         
-        if (!$session->get('isLoggedIn') || !$session->get('isAdmin')) {
-            return redirect()->to('/admin/login')->with('error', 'Accès non autorisé');
+        if (!$session->get('isLoggedIn')) {
+            return redirect()->to('/admin/login')->with('error', 'Veuillez vous connecter');
+        }
+        
+        // Vérifier si l'utilisateur a les droits admin ou staff
+        if (!$session->get('isAdmin') && !$session->get('isStaff')) {
+            return redirect()->to('/')->with('error', 'Accès non autorisé - Réservé au personnel');
         }
     }
 
