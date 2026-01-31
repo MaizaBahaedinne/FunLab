@@ -20,6 +20,9 @@ CREATE TABLE IF NOT EXISTS `game_reviews` (
 
 -- Insérer quelques exemples d'avis approuvés pour tester
 INSERT INTO `game_reviews` (`game_id`, `user_id`, `name`, `email`, `rating`, `comment`, `is_approved`, `created_at`) VALUES
-(1, 5, NULL, NULL, 5, 'Expérience incroyable ! Les énigmes étaient bien pensées et l''ambiance était immersive. Je recommande vivement !', 1, '2026-01-25 14:30:00'),
-(1, NULL, 'Sophie Martin', 'sophie.m@example.com', 4, 'Très bon jeu d''évasion. Quelques énigmes un peu difficiles mais c''était amusant en équipe.', 1, '2026-01-20 16:45:00'),
-(1, NULL, 'Thomas Dubois', 'thomas.d@example.com', 5, 'Meilleur escape game que j''ai fait ! Le game master était excellent et nous a bien guidés.', 1, '2026-01-15 11:20:00');
+(1, NULL, 'Ahmed Mansour', 'ahmed.mansour@example.com', 5, 'Expérience incroyable ! Les énigmes étaient bien pensées et l''ambiance était immersive. Je recommande vivement !', 1, '2026-01-25 14:30:00'),
+(1, NULL, 'Amira Ben Salem', 'amira.bensalem@example.com', 4, 'Très bon jeu d''évasion. Quelques énigmes un peu difficiles mais c''était amusant en équipe.', 1, '2026-01-20 16:45:00'),
+(1, NULL, 'Youssef Trabelsi', 'youssef.trabelsi@example.com', 5, 'Meilleur escape game que j''ai fait ! Le game master était excellent et nous a bien guidés.', 1, '2026-01-15 11:20:00'),
+(2, NULL, 'Leila Gharbi', 'leila.gharbi@example.com', 5, 'Magnifique expérience ! L''équipe est très professionnelle et l''ambiance est top !', 1, '2026-01-18 10:15:00'),
+(2, NULL, 'Mehdi Karoui', 'mehdi.karoui@example.com', 4, 'Super moment entre amis. Les énigmes sont bien pensées et le décor est soigné.', 1, '2026-01-22 15:30:00'),
+(3, NULL, 'Yasmine Slimani', 'yasmine.slimani@example.com', 5, 'Je recommande à 100% ! C''est notre deuxième escape game ici et on adore !', 1, '2026-01-26 18:20:00');
