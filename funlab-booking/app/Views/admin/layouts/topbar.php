@@ -1,3 +1,4 @@
+<?php helper('permission'); ?>
         <!-- Main Content -->
         <div class="admin-content">
             <!-- Top Bar -->
@@ -26,15 +27,26 @@
                         <div class="dropdown">
                             <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                 <i class="bi bi-person-circle"></i>
-                                <?= session()->get('userName') ?? session()->get('userEmail') ?? 'Admin' ?>
+                                <?= session()->get('firstName') . ' ' . session()->get('lastName') ?>
+                                <?php 
+                                $role = session()->get('role');
+                                $roleLabel = $role === 'admin' ? 'Admin' : ($role === 'staff' ? 'Staff' : 'Utilisateur');
+                                ?>
+                                <span class="badge bg-<?= $role === 'admin' ? 'danger' : 'warning' ?> ms-2"><?= $roleLabel ?></span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
+                                <li class="dropdown-header">
+                                    <small class="text-muted"><?= session()->get('email') ?></small>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="<?= base_url('admin/profile') ?>">
                                     <i class="bi bi-person"></i> Profil
                                 </a></li>
+                                <?php if (hasPermission('settings', 'view')): ?>
                                 <li><a class="dropdown-item" href="<?= base_url('admin/settings/general') ?>">
                                     <i class="bi bi-gear"></i> Paramètres
                                 </a></li>
+                                <?php endif; ?>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="<?= base_url('logout') ?>">
                                     <i class="bi bi-box-arrow-right"></i> Déconnexion
