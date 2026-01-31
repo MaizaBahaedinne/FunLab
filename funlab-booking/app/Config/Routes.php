@@ -152,6 +152,14 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'ad
     // Documentation Wiki
     $routes->get('wiki', 'WikiController::index');
     $routes->get('wiki/(:segment)', 'WikiController::page/$1');
+    
+    // Templates d'emails
+    $routes->get('email-templates', 'EmailTemplatesController::index');
+    $routes->get('email-templates/edit/(:num)', 'EmailTemplatesController::edit/$1');
+    $routes->post('email-templates/update/(:num)', 'EmailTemplatesController::update/$1');
+    $routes->get('email-templates/preview/(:num)', 'EmailTemplatesController::preview/$1');
+    $routes->post('email-templates/test/(:num)', 'EmailTemplatesController::test/$1');
+    
     $routes->post('teams/assign-participant', 'TeamsController::assignParticipant');
     $routes->post('teams/reorder', 'TeamsController::reorder');
     

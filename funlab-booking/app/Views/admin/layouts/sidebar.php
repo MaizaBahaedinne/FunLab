@@ -119,16 +119,16 @@
                 </div>
                 
                 <!-- Communications (ADMIN ONLY) -->
-                <a class="nav-link text-white <?= in_array($activeMenu ?? '', ['settings-mail', 'settings-sms']) ? 'active bg-primary rounded' : '' ?>" 
+                <a class="nav-link text-white <?= in_array($activeMenu ?? '', ['settings-mail', 'settings-sms', 'email-templates']) ? 'active bg-primary rounded' : '' ?>" 
                    data-bs-toggle="collapse" 
                    href="#commsMenu" 
                    role="button" 
-                   aria-expanded="<?= in_array($activeMenu ?? '', ['settings-mail', 'settings-sms']) ? 'true' : 'false' ?>"
+                   aria-expanded="<?= in_array($activeMenu ?? '', ['settings-mail', 'settings-sms', 'email-templates']) ? 'true' : 'false' ?>"
                    aria-controls="commsMenu">
                     <i class="bi bi-chat-dots"></i> Communications
                     <i class="bi bi-chevron-down float-end"></i>
                 </a>
-                <div class="collapse <?= in_array($activeMenu ?? '', ['settings-mail', 'settings-sms']) ? 'show' : '' ?>" id="commsMenu">
+                <div class="collapse <?= in_array($activeMenu ?? '', ['settings-mail', 'settings-sms', 'email-templates']) ? 'show' : '' ?>" id="commsMenu">
                     <ul class="nav flex-column ms-3">
                         <li class="nav-item">
                             <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-mail' ? 'text-white' : '' ?>" 
@@ -140,6 +140,12 @@
                             <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-sms' ? 'text-white' : '' ?>" 
                                href="<?= base_url('admin/settings/sms') ?>">
                                 <i class="bi bi-phone"></i> SMS
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'email-templates' ? 'text-white' : '' ?>" 
+                               href="<?= base_url('admin/email-templates') ?>">
+                                <i class="bi bi-envelope-paper"></i> Templates Emails
                             </a>
                         </li>
                     </ul>
