@@ -67,7 +67,27 @@ $additionalStyles = '
         <div class="col-md-9">
             <div class="card shadow-sm">
                 <div class="card-body wiki-content">
-                    <?= view('admin/wiki/pages/' . $currentPage) ?>
+                    <?php
+                    // Parser Markdown simple
+                    ob_start();
+                    include APPPATH . 'Views/admin/wiki/pages/' . $currentPage . '.php';
+                    $content = ob_get_clean();
+                    
+                    // Convertir Markdown basique en HTML
+                    $content = preg_replace('/^# (.+)$/m', '<h1>$1</h1>', $content);
+                    $content = preg_replace('/^## (.+)$/m', '<h2>$1</h2>', $content);
+                    $content = preg_replace('/^### (.+)$/m', '<h3>$1</h3>', $content);
+                    $content = preg_replace('/^#### (.+)$/m', '<h4>$1</h4>', $content);
+                    $content = preg_replace('/\*\*(.+?)\*\*/s', '<strong>$1</strong>', $content);
+                    $content = preg_replace('/\*(.+?)\*/s', '<em>$1</em>', $content);
+                    $content = preg_replace('/`(.+?)`/s', '<code>$1</code>', $content);
+                    $content = preg_replace('/```(\w+)?\n(.+?)```/s', '<pre><code>$2</code></pre>', $content);
+                    $content = preg_replace('/^\- (.+)$/m', '<li>$1</li>', $content);
+                    $content = preg_replace('/(<li>.*<\/li>)/s', '<ul>$1</ul>', $content);
+                    $content = nl2br($content);
+                    
+                    echo $content;
+                    ?>
                 </div>
             </div>
         </div>
