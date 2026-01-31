@@ -175,7 +175,7 @@ $additionalJS = '
                     Swal.fire({
                         icon: "error",
                         title: "Erreur",
-                        text: "Erreur: " + data.message
+                        text: data.message || "Une erreur est survenue"
                     });
                 }
             })
