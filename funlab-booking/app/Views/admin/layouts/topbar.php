@@ -39,8 +39,8 @@
                                     <small class="text-muted"><?= session()->get('email') ?></small>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="<?= base_url('admin/profile') ?>">
-                                    <i class="bi bi-person"></i> Profil
+                                <li><a class="dropdown-item" href="<?= base_url('account/profile') ?>">
+                                    <i class="bi bi-person"></i> Mon Profil
                                 </a></li>
                                 <?php if (hasPermission('settings', 'view')): ?>
                                 <li><a class="dropdown-item" href="<?= base_url('admin/settings/general') ?>">
