@@ -60,10 +60,6 @@ class GamesController extends BaseController
             'deposit_required' => $this->request->getPost('deposit_required') ? 1 : 0,
             'deposit_percentage' => $this->request->getPost('deposit_percentage') ?: 30,
             'status' => $this->request->getPost('status') === 'active' ? 'active' : 'inactive',
-            'meta_title' => $this->request->getPost('meta_title'),
-            'meta_description' => $this->request->getPost('meta_description'),
-            'meta_keywords' => $this->request->getPost('meta_keywords'),
-            'og_image' => $this->request->getPost('og_image'),
         ];
 
         $gameId = $this->gameModel->insert($data);
@@ -123,11 +119,10 @@ class GamesController extends BaseController
             'min_players' => $this->request->getPost('min_players'),
             'max_players' => $this->request->getPost('max_players'),
             'price' => $this->request->getPost('price') ?: 0,
+            'price_per_person' => $this->request->getPost('price_per_person') ?: null,
+            'deposit_required' => $this->request->getPost('deposit_required') ? 1 : 0,
+            'deposit_percentage' => $this->request->getPost('deposit_percentage') ?: 30,
             'status' => $this->request->getPost('status') === 'active' ? 'active' : 'inactive',
-            'meta_title' => $this->request->getPost('meta_title'),
-            'meta_description' => $this->request->getPost('meta_description'),
-            'meta_keywords' => $this->request->getPost('meta_keywords'),
-            'og_image' => $this->request->getPost('og_image'),
         ];
 
         if ($this->gameModel->update($id, $data)) {
