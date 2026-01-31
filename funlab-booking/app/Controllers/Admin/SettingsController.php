@@ -15,6 +15,9 @@ class SettingsController extends BaseController
     {
         $this->settingModel = new SettingModel();
         $this->userModel = new UserModel();
+        
+        // Charger le helper de permissions
+        helper('permission');
     }
 
     /**
@@ -22,6 +25,11 @@ class SettingsController extends BaseController
      */
     public function index()
     {
+        // Vérifier la permission d'accès aux paramètres
+        if ($redirect = checkPermissionOrRedirect('settings', 'view')) {
+            return $redirect;
+        }
+        
         return redirect()->to('/admin/settings/general');
     }
 
@@ -30,6 +38,11 @@ class SettingsController extends BaseController
      */
     public function general()
     {
+        // Vérifier la permission d'accès aux paramètres
+        if ($redirect = checkPermissionOrRedirect('settings', 'view')) {
+            return $redirect;
+        }
+        
         $data = [
             'title' => 'Paramètres généraux',
             'settings' => $this->settingModel->getByCategoryAsArray('general')
@@ -43,6 +56,11 @@ class SettingsController extends BaseController
      */
     public function hours()
     {
+        // Vérifier la permission d'accès aux paramètres
+        if ($redirect = checkPermissionOrRedirect('settings', 'view')) {
+            return $redirect;
+        }
+        
         $data = [
             'title' => 'Horaires de travail',
             'settings' => $this->settingModel->getByCategoryAsArray('hours')
@@ -459,8 +477,49 @@ class SettingsController extends BaseController
      */
     public function updateRolePermissions()
     {
-        // TODO: Implémenter la sauvegarde des permissions dans la base de données
-        return redirect()->back()->with('success', 'Permissions mises à jour');
+        // Vérifier la permission d'éditer les paramètres
+        if ($redirect = checkPermissionOrRedirect('settings', 'edit')) {
+            return $redirect;
+        }
+        
+        $permissions = $this->request->getPost('permissions');
+        
+        if (!$permissions || !is_array($permissions)) {
+            return redirect()->back()->with('error', 'Données de permissions invalides');
+        }
+        
+        // Valider et nettoyer les permissions
+        $validatedPermissions = [];
+        $validRoles = ['admin', 'staff', 'user'];
+        $validActions = ['view', 'create', 'edit', 'delete', 'scan', 'approve'];
+        
+        foreach ($permissions as $role => $modules) {
+            if (!in_array($role, $validRoles)) {
+                continue;
+            }
+            
+            $validatedPermissions[$role] = [];
+            
+            foreach ($modules as $module => $actions) {
+                if (!is_array($actions)) {
+                    continue;
+                }
+                
+                $validatedPermissions[$role][$module] = array_filter($actions, function($action) use ($validActions) {
+                    return in_array($action, $validActions);
+                });
+            }
+        }
+        
+        // Sauvegarder dans la base de données
+        $permissionsJson = json_encode($validatedPermissions);
+        $result = $this->settingModel->setSetting('role_permissions', $permissionsJson, 'text', 'permissions');
+        
+        if ($result) {
+            return redirect()->back()->with('success', 'Permissions mises à jour avec succès');
+        }
+        
+        return redirect()->back()->with('error', 'Erreur lors de la sauvegarde des permissions');
     }
 
     /**

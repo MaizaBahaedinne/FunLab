@@ -21,22 +21,40 @@ class GamesController extends BaseController
         $this->roomModel = new RoomModel();
         $this->roomGameModel = new RoomGameModel();
         $this->bookingModel = new BookingModel();
+        
+        // Charger le helper de permissions
+        helper('permission');
     }
 
     public function index()
     {
+        // Vérifier la permission de voir les jeux
+        if ($redirect = checkPermissionOrRedirect('games', 'view')) {
+            return $redirect;
+        }
+        
         $data['games'] = $this->gameModel->findAll();
         return view('admin/games/index', $data);
     }
 
     public function create()
     {
+        // Vérifier la permission de créer des jeux
+        if ($redirect = checkPermissionOrRedirect('games', 'create')) {
+            return $redirect;
+        }
+        
         $data['rooms'] = $this->roomModel->where('status', 'active')->findAll();
         return view('admin/games/create', $data);
     }
 
     public function store()
     {
+        // Vérifier la permission de créer des jeux
+        if ($redirect = checkPermissionOrRedirect('games', 'create')) {
+            return $redirect;
+        }
+        
         $rules = [
             'name' => 'required|min_length[3]|max_length[255]',
             'duration_minutes' => 'required|integer|greater_than[0]',
@@ -86,6 +104,11 @@ class GamesController extends BaseController
 
     public function edit($id)
     {
+        // Vérifier la permission de modifier des jeux
+        if ($redirect = checkPermissionOrRedirect('games', 'edit')) {
+            return $redirect;
+        }
+        
         $data['game'] = $this->gameModel->find($id);
         
         if (!$data['game']) {
@@ -100,6 +123,11 @@ class GamesController extends BaseController
 
     public function update($id)
     {
+        // Vérifier la permission de modifier des jeux
+        if ($redirect = checkPermissionOrRedirect('games', 'edit')) {
+            return $redirect;
+        }
+        
         $rules = [
             'name' => 'required|min_length[3]|max_length[255]',
             'duration_minutes' => 'required|integer|greater_than[0]',
@@ -144,6 +172,14 @@ class GamesController extends BaseController
 
     public function delete($id)
     {
+        // Vérifier la permission de supprimer des jeux
+        if (!hasPermission('games', 'delete')) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => "Vous n'avez pas la permission de supprimer des jeux."
+            ]);
+        }
+        
         if ($this->request->isAJAX()) {
             try {
                 // Check if game has bookings
