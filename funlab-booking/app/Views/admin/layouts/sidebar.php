@@ -1,3 +1,4 @@
+<?php helper('permission'); ?>
         <!-- Sidebar -->
         <div class="admin-sidebar text-white">
             <div class="p-4 border-bottom border-secondary">
@@ -7,54 +8,84 @@
             </div>
             
             <nav class="nav flex-column p-3">
+                <!-- Dashboard -->
+                <?php if (canAccessModule('dashboard')): ?>
                 <a class="nav-link text-white <?= ($activeMenu ?? '') === 'dashboard' ? 'active bg-primary rounded' : '' ?>" 
                    href="<?= base_url('admin/dashboard') ?>">
                     <i class="bi bi-house"></i> Dashboard
                 </a>
+                <?php endif; ?>
                 
+                <!-- Réservations -->
+                <?php if (canAccessModule('bookings')): ?>
                 <a class="nav-link text-white <?= ($activeMenu ?? '') === 'bookings' ? 'active bg-primary rounded' : '' ?>" 
                    href="<?= base_url('admin/bookings') ?>">
                     <i class="bi bi-calendar-check"></i> Réservations
                 </a>
+                <?php endif; ?>
                 
+                <!-- Jeux -->
+                <?php if (canAccessModule('games')): ?>
                 <a class="nav-link text-white <?= ($activeMenu ?? '') === 'games' ? 'active bg-primary rounded' : '' ?>" 
                    href="<?= base_url('admin/games') ?>">
                     <i class="bi bi-controller"></i> Jeux
                 </a>
+                <?php endif; ?>
                 
+                <!-- Catégories (lié aux jeux) -->
+                <?php if (canAccessModule('games')): ?>
                 <a class="nav-link text-white <?= ($activeMenu ?? '') === 'categories' ? 'active bg-primary rounded' : '' ?>" 
                    href="<?= base_url('admin/game-categories') ?>">
                     <i class="bi bi-grid"></i> Catégories
                 </a>
+                <?php endif; ?>
                 
+                <!-- Avis -->
+                <?php if (canAccessModule('reviews')): ?>
                 <a class="nav-link text-white <?= ($activeMenu ?? '') === 'reviews' ? 'active bg-primary rounded' : '' ?>" 
                    href="<?= base_url('admin/reviews') ?>">
                     <i class="bi bi-star"></i> Avis
                 </a>
+                <?php endif; ?>
                 
+                <!-- Salles -->
+                <?php if (canAccessModule('rooms')): ?>
                 <a class="nav-link text-white <?= ($activeMenu ?? '') === 'rooms' ? 'active bg-primary rounded' : '' ?>" 
                    href="<?= base_url('admin/rooms') ?>">
                     <i class="bi bi-door-closed"></i> Salles
                 </a>
+                <?php endif; ?>
                 
+                <!-- Fermetures -->
+                <?php if (canAccessModule('closures')): ?>
                 <a class="nav-link text-white <?= ($activeMenu ?? '') === 'closures' ? 'active bg-primary rounded' : '' ?>" 
                    href="<?= base_url('admin/closures') ?>">
                     <i class="bi bi-x-circle"></i> Fermetures
                 </a>
+                <?php endif; ?>
                 
+                <!-- Scanner -->
+                <?php if (canAccessModule('scanner')): ?>
                 <a class="nav-link text-white <?= ($activeMenu ?? '') === 'scanner' ? 'active bg-primary rounded' : '' ?>" 
                    href="<?= base_url('admin/scanner') ?>">
                     <i class="bi bi-qr-code-scan"></i> Scanner
                 </a>
+                <?php endif; ?>
                 
+                <!-- Équipes (lié aux bookings) -->
+                <?php if (canAccessModule('teams')): ?>
                 <a class="nav-link text-white <?= ($activeMenu ?? '') === 'teams' ? 'active bg-primary rounded' : '' ?>" 
                    href="<?= base_url('admin/teams') ?>">
                     <i class="bi bi-people"></i> Équipes
                 </a>
+                <?php endif; ?>
                 
+                <?php if (canAccessModule('settings') || canAccessModule('users')): ?>
                 <hr class="border-secondary my-3">
+                <?php endif; ?>
                 
-                <!-- Configuration Système -->
+                <!-- Configuration Système (ADMIN ONLY) -->
+                <?php if (canAccessModule('settings')): ?>
                 <a class="nav-link text-white <?= (str_starts_with($activeMenu ?? '', 'settings-')) && in_array($activeMenu, ['settings-general', 'settings-hours', 'settings-oauth']) ? 'active bg-primary rounded' : '' ?>" 
                    data-bs-toggle="collapse" 
                    href="#configMenu" 
@@ -87,7 +118,7 @@
                     </ul>
                 </div>
                 
-                <!-- Communications -->
+                <!-- Communications (ADMIN ONLY) -->
                 <a class="nav-link text-white <?= in_array($activeMenu ?? '', ['settings-mail', 'settings-sms']) ? 'active bg-primary rounded' : '' ?>" 
                    data-bs-toggle="collapse" 
                    href="#commsMenu" 
@@ -114,7 +145,7 @@
                     </ul>
                 </div>
                 
-                <!-- Pages & Contenu -->
+                <!-- Pages & Contenu (ADMIN ONLY) -->
                 <a class="nav-link text-white <?= in_array($activeMenu ?? '', ['settings-about', 'settings-footer', 'settings-seo']) ? 'active bg-primary rounded' : '' ?>" 
                    data-bs-toggle="collapse" 
                    href="#contentMenu" 
@@ -152,8 +183,10 @@
                         </li>
                     </ul>
                 </div>
+                <?php endif; ?>
                 
-                <!-- Utilisateurs & Permissions -->
+                <!-- Utilisateurs & Permissions (ADMIN ONLY) -->
+                <?php if (canAccessModule('users')): ?>
                 <a class="nav-link text-white <?= in_array($activeMenu ?? '', ['settings-users', 'settings-roles']) ? 'active bg-primary rounded' : '' ?>" 
                    data-bs-toggle="collapse" 
                    href="#usersMenu" 
@@ -179,6 +212,7 @@
                         </li>
                     </ul>
                 </div>
+                <?php endif; ?>
                 
                 <hr class="border-secondary my-3">
                 
