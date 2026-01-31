@@ -74,6 +74,11 @@ class SettingsController extends BaseController
      */
     public function mail()
     {
+        // Vérifier la permission d'accès aux paramètres
+        if ($redirect = checkPermissionOrRedirect('settings', 'view')) {
+            return $redirect;
+        }
+        
         $data = [
             'title' => 'Configuration Email',
             'settings' => $this->settingModel->getByCategoryAsArray('mail')
@@ -87,6 +92,11 @@ class SettingsController extends BaseController
      */
     public function sms()
     {
+        // Vérifier la permission d'accès aux paramètres
+        if ($redirect = checkPermissionOrRedirect('settings', 'view')) {
+            return $redirect;
+        }
+        
         $data = [
             'title' => 'Configuration SMS',
             'settings' => $this->settingModel->getByCategoryAsArray('sms')
@@ -100,6 +110,11 @@ class SettingsController extends BaseController
      */
     public function seo()
     {
+        // Vérifier la permission d'accès aux paramètres
+        if ($redirect = checkPermissionOrRedirect('settings', 'view')) {
+            return $redirect;
+        }
+        
         $data = [
             'title' => 'Référencement SEO',
             'settings' => $this->settingModel->getByCategoryAsArray('seo')
@@ -113,6 +128,11 @@ class SettingsController extends BaseController
      */
     public function footer()
     {
+        // Vérifier la permission d'accès aux paramètres
+        if ($redirect = checkPermissionOrRedirect('settings', 'view')) {
+            return $redirect;
+        }
+        
         // Vérifier si c'est une soumission POST
         if ($this->request->getMethod() === 'post' || $_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = $this->request->getPost();
@@ -177,6 +197,11 @@ class SettingsController extends BaseController
      */
     public function about()
     {
+        // Vérifier la permission d'accès aux paramètres
+        if ($redirect = checkPermissionOrRedirect('settings', 'view')) {
+            return $redirect;
+        }
+        
         if ($this->request->getMethod() === 'post' || $_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = $this->request->getPost();
             
@@ -225,6 +250,11 @@ class SettingsController extends BaseController
      */
     public function contact()
     {
+        // Vérifier la permission d'accès aux paramètres
+        if ($redirect = checkPermissionOrRedirect('settings', 'view')) {
+            return $redirect;
+        }
+        
         if ($this->request->getMethod() === 'post' || $_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = $this->request->getPost();
             
@@ -313,6 +343,11 @@ class SettingsController extends BaseController
      */
     public function oauth()
     {
+        // Vérifier la permission d'accès aux paramètres
+        if ($redirect = checkPermissionOrRedirect('settings', 'view')) {
+            return $redirect;
+        }
+        
         $data = [
             'title' => 'Authentification OAuth',
             'settings' => $this->settingModel->getByCategory('oauth')
@@ -326,6 +361,11 @@ class SettingsController extends BaseController
      */
     public function save()
     {
+        // Vérifier la permission d'éditer les paramètres
+        if ($redirect = checkPermissionOrRedirect('settings', 'edit')) {
+            return $redirect;
+        }
+        
         $category = $this->request->getPost('category');
         $settings = $this->request->getPost('settings');
 
@@ -398,6 +438,11 @@ class SettingsController extends BaseController
      */
     public function roles()
     {
+        // Vérifier la permission d'accès aux paramètres (SENSIBLE!)
+        if ($redirect = checkPermissionOrRedirect('settings', 'view')) {
+            return $redirect;
+        }
+        
         $data = [
             'title' => 'Gestion des rôles et permissions',
             'roles' => [
@@ -565,6 +610,11 @@ class SettingsController extends BaseController
      */
     public function users()
     {
+        // Vérifier la permission d'accès aux utilisateurs
+        if ($redirect = checkPermissionOrRedirect('users', 'view')) {
+            return $redirect;
+        }
+        
         $users = $this->userModel->findAll();
 
         $data = [
