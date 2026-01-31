@@ -148,6 +148,10 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'ad
     $routes->post('teams/create', 'TeamsController::create');
     $routes->post('teams/update/(:num)', 'TeamsController::update/$1');
     $routes->post('teams/delete/(:num)', 'TeamsController::delete/$1');
+    
+    // Documentation Wiki
+    $routes->get('wiki', 'WikiController::index');
+    $routes->get('wiki/(:segment)', 'WikiController::page/$1');
     $routes->post('teams/assign-participant', 'TeamsController::assignParticipant');
     $routes->post('teams/reorder', 'TeamsController::reorder');
     

@@ -216,6 +216,11 @@
                 
                 <hr class="border-secondary my-3">
                 
+                <a class="nav-link text-white <?= ($activeMenu ?? '') === 'wiki' ? 'active bg-primary rounded' : '' ?>" 
+                   href="<?= base_url('admin/wiki') ?>">
+                    <i class="bi bi-book"></i> Documentation
+                </a>
+                
                 <a class="nav-link text-white" href="<?= base_url('/') ?>" target="_blank">
                     <i class="bi bi-box-arrow-up-right"></i> Voir le site
                 </a>
