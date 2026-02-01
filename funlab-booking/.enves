@@ -1,0 +1,5 @@
+# Remplacez :
+app.baseURL = 'http://localhost:8080/'
+
+# Par :
+app.baseURL = 'https://funlab.faltaagency.com/'
