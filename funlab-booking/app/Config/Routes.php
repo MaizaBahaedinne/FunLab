@@ -198,6 +198,23 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'ad
     $routes->get('settings/contact', 'SettingsController::contact');
     $routes->post('settings/contact', 'SettingsController::contact');
     $routes->get('settings/oauth', 'SettingsController::oauth');
+    
+    // Gestion du thème (comme WordPress)
+    $routes->get('theme', 'ThemeController::index');
+    $routes->get('theme/branding', 'ThemeController::branding');
+    $routes->get('theme/colors', 'ThemeController::colors');
+    $routes->get('theme/typography', 'ThemeController::typography');
+    $routes->get('theme/header', 'ThemeController::header');
+    $routes->get('theme/footer', 'ThemeController::footer');
+    $routes->post('theme/save', 'ThemeController::save');
+    
+    // Gestion des pages (comme WordPress)
+    $routes->get('pages', 'PageController::index');
+    $routes->get('pages/create', 'PageController::create');
+    $routes->get('pages/edit/(:num)', 'PageController::edit/$1');
+    $routes->post('pages/save/(:num)', 'PageController::save/$1');
+    $routes->post('pages/save', 'PageController::save');
+    $routes->get('pages/delete/(:num)', 'PageController::delete/$1');
     $routes->get('settings/users', 'SettingsController::users');
     $routes->get('settings/roles', 'SettingsController::roles');
     $routes->post('settings/save', 'SettingsController::save');
