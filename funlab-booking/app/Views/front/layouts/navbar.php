@@ -1,15 +1,15 @@
 <?php 
-$settingModel = new \App\Models\SettingModel();
-$siteLogo = $settingModel->getSetting('site_logo');
-$logoWidth = $settingModel->getSetting('logo_width') ?: 60;
-$logoHeight = $settingModel->getSetting('logo_height') ?: 60;
-
-// Info settings
-$phone = $settingModel->getSetting('footer_phone') ?: '';
-$email = $settingModel->getSetting('footer_email') ?: '';
+helper('theme');
+$logo = theme_setting('site_logo', '/assets/images/logo.png');
+$logoWidth = theme_setting('logo_width', 60);
+$logoHeight = theme_setting('logo_height', 60);
+$phone = theme_setting('header_topbar_phone', theme_setting('footer_phone', ''));
+$email = theme_setting('header_topbar_email', theme_setting('footer_email', ''));
+$showTopbar = theme_setting('header_show_topbar', '1') === '1';
 ?>
 
 <!-- Top Info Bar -->
+<?php if($showTopbar && ($phone || $email)): ?>
 <div class="top-bar d-none d-lg-block">
     <div class="container">
         <div class="row align-items-center">
@@ -33,6 +33,7 @@ $email = $settingModel->getSetting('footer_email') ?: '';
         </div>
     </div>
 </div>
+<?php endif; ?>
 
 <!-- Main Header -->
 <header class="main-header">
@@ -40,9 +41,9 @@ $email = $settingModel->getSetting('footer_email') ?: '';
         <div class="container">
             <!-- Logo -->
             <a class="navbar-brand-logo" href="<?= base_url('/') ?>">
-                <?php if ($siteLogo): ?>
-                    <img src="<?= esc($siteLogo) ?>" 
-                         alt="FunLab Logo" 
+                <?php if ($logo): ?>
+                    <img src="<?= esc($logo) ?>" 
+                         alt="<?= esc(theme_setting('app_name', 'FunLab')) ?> Logo" 
                          width="<?= esc($logoWidth) ?>" 
                          height="<?= esc($logoHeight) ?>">
                 <?php else: ?>

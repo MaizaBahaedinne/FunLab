@@ -1,12 +1,6 @@
 <?php
 $pageTitle = $settings['about_title'] ?? 'À Propos de FunLab Tunisie';
 $additionalStyles = '
-    .about-hero {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 80px 0;
-        margin-bottom: 50px;
-    }
     .about-section {
         padding: 40px 0;
     }
@@ -40,18 +34,16 @@ $additionalStyles = '
 <?= view('front/layouts/navbar', compact('activeMenu')) ?>
 
 <!-- Hero Section -->
-<?php if (!empty($settings['about_hero_image'])): ?>
-<section class="about-hero" style="background-image: url('<?= esc($settings['about_hero_image']) ?>'); background-size: cover; background-position: center;">
-<?php else: ?>
-<section class="about-hero">
-<?php endif; ?>
-    <div class="container text-center">
-        <h1 class="display-4 fw-bold mb-3"><?= esc($settings['about_title'] ?? 'À Propos de FunLab') ?></h1>
-        <?php if (!empty($settings['about_subtitle'])): ?>
-            <p class="lead"><?= esc($settings['about_subtitle']) ?></p>
-        <?php endif; ?>
-    </div>
-</section>
+<?= view('front/components/hero', [
+    'title' => $settings['about_title'] ?? 'À Propos de FunLab',
+    'subtitle' => $settings['about_subtitle'] ?? 'Découvrez qui nous sommes',
+    'breadcrumbs' => [
+        'Accueil' => base_url('/'),
+        'À Propos' => null
+    ],
+    'height' => 'small',
+    'background' => !empty($settings['about_hero_image']) ? $settings['about_hero_image'] : 'gradient'
+]) ?>
 
 <!-- Introduction -->
 <?php if (!empty($settings['about_intro'])): ?>
