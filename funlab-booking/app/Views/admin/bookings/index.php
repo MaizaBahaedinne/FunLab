@@ -775,7 +775,7 @@ $additionalJS = '
         if (!date || !wizardData.game || !wizardData.room) return;
 
         try {
-            const response = await fetch(`${API_BASE_URL}/availability/slots?game_id=${wizardData.game.id}&date=${date}`);
+            const response = await fetch(`${API_BASE_URL}/availability/all-slots?game_id=${wizardData.game.id}&date=${date}`);
             const result = await response.json();
             
             if (result.status === "success") {
@@ -789,7 +789,15 @@ $additionalJS = '
                     return;
                 }
                 
-                roomSlots.forEach(slot => {
+                // Filtrer uniquement les créneaux disponibles
+                const availableSlots = roomSlots.filter(slot => slot.available === true);
+                
+                if (availableSlots.length === 0) {
+                    container.innerHTML = \'<div class="alert alert-warning">Aucun créneau disponible pour cette date</div>\';
+                    return;
+                }
+                
+                availableSlots.forEach(slot => {
                     const timeSlot = document.createElement("div");
                     timeSlot.className = "time-slot d-inline-block";
                     timeSlot.textContent = slot.start_formatted;
