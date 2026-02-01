@@ -724,13 +724,13 @@ $additionalJS = '
                     
                     const card = document.createElement("div");
                     card.className = "card room-card h-100";
-                    card.dataset.roomId = room.id;
-                    card.dataset.roomName = room.name;
+                    card.dataset.roomId = room.room_id;
+                    card.dataset.roomName = room.room_name;
                     card.dataset.roomCapacity = room.capacity;
                     
                     card.innerHTML = `
                         <div class="card-body text-center">
-                            <h5 class="card-title">${room.name}</h5>
+                            <h5 class="card-title">${room.room_name}</h5>
                             <p class="card-text">
                                 <i class="bi bi-people"></i> Capacité: ${room.capacity}
                             </p>
