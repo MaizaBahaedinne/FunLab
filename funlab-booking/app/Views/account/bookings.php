@@ -1,17 +1,7 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mes réservations - FunLab Tunisie</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <style>
-        body { background: #f8f9fa; }
-        .navbar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
+<?php
+$title = 'Mes réservations - FunLab Tunisie';
+$activeMenu = 'account';
+$additionalStyles = '
         .sidebar {
             background: white;
             border-radius: 10px;
@@ -74,44 +64,48 @@
             border-bottom-color: #667eea;
             background: transparent;
         }
-    </style>
-</head>
-<body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
-        <div class="container">
-            <a class="navbar-brand" href="<?= base_url('/') ?>">
-                <i class="bi bi-joystick"></i> FunLab Tunisie
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url('/') ?>">Accueil</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url('booking') ?>">Réserver</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle"></i>
-                            <?= session()->get('firstName') ?>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="<?= base_url('account') ?>">Mon compte</a></li>
-                            <li><a class="dropdown-item" href="<?= base_url('account/bookings') ?>">Mes réservations</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="<?= base_url('auth/logout') ?>">Déconnexion</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+';
 
-    <div class="container">
+$additionalJS = '
+<script>
+    // Filtrage des réservations
+    document.querySelectorAll(".filter-tabs .nav-link").forEach(link => {
+        link.addEventListener("click", function(e) {
+            e.preventDefault();
+            
+            // Activer l\'onglet
+            document.querySelectorAll(".filter-tabs .nav-link").forEach(l => l.classList.remove("active"));
+            this.classList.add("active");
+            
+            const filter = this.dataset.filter;
+            const bookings = document.querySelectorAll(".booking-card");
+            
+            bookings.forEach(booking => {
+                const status = booking.dataset.status;
+                const isUpcoming = booking.dataset.upcoming === "true";
+                
+                let show = false;
+                
+                if (filter === "all") {
+                    show = true;
+                } else if (filter === "upcoming") {
+                    show = isUpcoming;
+                } else {
+                    show = status === filter;
+                }
+                
+                booking.style.display = show ? "block" : "none";
+            });
+        });
+    });
+</script>
+';
+?>
+
+<?= view('front/layouts/header', compact('title', 'additionalStyles')) ?>
+<?= view('front/layouts/navbar', compact('activeMenu')) ?>
+
+    <div class="container mt-5">
         <div class="row">
             <!-- Sidebar -->
             <div class="col-lg-3">
@@ -144,7 +138,7 @@
                             <i class="bi bi-key"></i> Mot de passe
                         </a>
                         <hr>
-                        <a class="nav-link text-danger" href="<?= base_url('auth/logout') ?>">
+                        <a class="nav-link text-danger" href="<?= base_url('logout') ?>">
                             <i class="bi bi-box-arrow-right"></i> Déconnexion
                         </a>
                     </nav>
@@ -164,7 +158,7 @@
                 <div class="content-card">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h4><i class="bi bi-calendar-event"></i> Mes réservations</h4>
-                        <a href="<?= base_url('booking/create') ?>" class="btn btn-primary">
+                        <a href="<?= base_url('booking') ?>" class="btn-primary-modern">
                             <i class="bi bi-plus-circle"></i> Nouvelle réservation
                         </a>
                     </div>
@@ -190,7 +184,7 @@
                             <i class="bi bi-calendar-x display-1 text-muted"></i>
                             <h5 class="mt-3 text-muted">Aucune réservation</h5>
                             <p class="text-muted">Vous n'avez pas encore effectué de réservation</p>
-                            <a href="<?= base_url('booking/create') ?>" class="btn btn-primary">
+                            <a href="<?= base_url('booking') ?>" class="btn-primary-modern">
                                 <i class="bi bi-plus-circle"></i> Réserver maintenant
                             </a>
                         </div>
@@ -260,38 +254,4 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Filtrage des réservations
-        document.querySelectorAll('.filter-tabs .nav-link').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                // Activer l'onglet
-                document.querySelectorAll('.filter-tabs .nav-link').forEach(l => l.classList.remove('active'));
-                this.classList.add('active');
-                
-                const filter = this.dataset.filter;
-                const bookings = document.querySelectorAll('.booking-card');
-                
-                bookings.forEach(booking => {
-                    const status = booking.dataset.status;
-                    const isUpcoming = booking.dataset.upcoming === 'true';
-                    
-                    let show = false;
-                    
-                    if (filter === 'all') {
-                        show = true;
-                    } else if (filter === 'upcoming') {
-                        show = isUpcoming;
-                    } else {
-                        show = status === filter;
-                    }
-                    
-                    booking.style.display = show ? 'block' : 'none';
-                });
-            });
-        });
-    </script>
-</body>
-</html>
+<?= view('front/layouts/footer', compact('additionalJS')) ?>

@@ -62,79 +62,161 @@ if (empty($hoursDisplay)) {
 }
 ?>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white py-4 mt-5">
+    <!-- Footer Moderne -->
+    <footer class="bg-dark text-white py-5 mt-5" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
         <div class="container">
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <h5><i class="bi bi-joystick"></i> <?= esc($companyName) ?></h5>
-                    <?php if ($description): ?>
-                        <p><?= nl2br(esc($description)) ?></p>
-                    <?php endif; ?>
-                    
-                    <?php if ($facebook || $instagram || $twitter || $tiktok || $whatsapp): ?>
-                    <div class="mt-3">
-                        <?php if ($facebook): ?>
-                            <a href="<?= esc($facebook) ?>" target="_blank" class="text-white me-3" title="Facebook">
-                                <i class="bi bi-facebook fs-5"></i>
-                            </a>
+            <div class="row g-4">
+                <!-- À Propos -->
+                <div class="col-lg-4 mb-4" data-aos="fade-up">
+                    <div class="footer-section">
+                        <h5 class="mb-4" style="font-weight: 700; position: relative; padding-bottom: 12px;">
+                            <i class="bi bi-joystick me-2" style="color: #667eea;"></i><?= esc($companyName) ?>
+                            <div style="position: absolute; bottom: 0; left: 0; width: 60px; height: 3px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px;"></div>
+                        </h5>
+                        <?php if ($description): ?>
+                            <p style="color: #b8b8b8; line-height: 1.8;"><?= nl2br(esc($description)) ?></p>
                         <?php endif; ?>
-                        <?php if ($instagram): ?>
-                            <a href="<?= esc($instagram) ?>" target="_blank" class="text-white me-3" title="Instagram">
-                                <i class="bi bi-instagram fs-5"></i>
-                            </a>
-                        <?php endif; ?>
-                        <?php if ($twitter): ?>
-                            <a href="<?= esc($twitter) ?>" target="_blank" class="text-white me-3" title="Twitter">
-                                <i class="bi bi-twitter fs-5"></i>
-                            </a>
-                        <?php endif; ?>
-                        <?php if ($tiktok): ?>
-                            <a href="<?= esc($tiktok) ?>" target="_blank" class="text-white me-3" title="TikTok">
-                                <i class="bi bi-tiktok fs-5"></i>
-                            </a>
-                        <?php endif; ?>
-                        <?php if ($whatsapp): ?>
-                            <a href="https://wa.me/<?= preg_replace('/[^0-9+]/', '', esc($whatsapp)) ?>" target="_blank" class="text-white me-3" title="WhatsApp">
-                                <i class="bi bi-whatsapp fs-5"></i>
-                            </a>
+                        
+                        <?php if ($facebook || $instagram || $twitter || $tiktok || $whatsapp): ?>
+                        <div class="mt-4 d-flex gap-3">
+                            <?php if ($facebook): ?>
+                                <a href="<?= esc($facebook) ?>" target="_blank" 
+                                   class="social-icon" title="Facebook"
+                                   style="display: flex; align-items: center; justify-content: center; width: 45px; height: 45px; background: rgba(255,255,255,0.1); border-radius: 12px; color: white; text-decoration: none; transition: all 0.3s ease;">
+                                    <i class="bi bi-facebook fs-5"></i>
+                                </a>
+                            <?php endif; ?>
+                            <?php if ($instagram): ?>
+                                <a href="<?= esc($instagram) ?>" target="_blank" 
+                                   class="social-icon" title="Instagram"
+                                   style="display: flex; align-items: center; justify-content: center; width: 45px; height: 45px; background: rgba(255,255,255,0.1); border-radius: 12px; color: white; text-decoration: none; transition: all 0.3s ease;">
+                                    <i class="bi bi-instagram fs-5"></i>
+                                </a>
+                            <?php endif; ?>
+                            <?php if ($twitter): ?>
+                                <a href="<?= esc($twitter) ?>" target="_blank" 
+                                   class="social-icon" title="Twitter"
+                                   style="display: flex; align-items: center; justify-content: center; width: 45px; height: 45px; background: rgba(255,255,255,0.1); border-radius: 12px; color: white; text-decoration: none; transition: all 0.3s ease;">
+                                    <i class="bi bi-twitter fs-5"></i>
+                                </a>
+                            <?php endif; ?>
+                            <?php if ($tiktok): ?>
+                                <a href="<?= esc($tiktok) ?>" target="_blank" 
+                                   class="social-icon" title="TikTok"
+                                   style="display: flex; align-items: center; justify-content: center; width: 45px; height: 45px; background: rgba(255,255,255,0.1); border-radius: 12px; color: white; text-decoration: none; transition: all 0.3s ease;">
+                                    <i class="bi bi-tiktok fs-5"></i>
+                                </a>
+                            <?php endif; ?>
+                            <?php if ($whatsapp): ?>
+                                <a href="https://wa.me/<?= preg_replace('/[^0-9+]/', '', esc($whatsapp)) ?>" target="_blank" 
+                                   class="social-icon" title="WhatsApp"
+                                   style="display: flex; align-items: center; justify-content: center; width: 45px; height: 45px; background: rgba(255,255,255,0.1); border-radius: 12px; color: white; text-decoration: none; transition: all 0.3s ease;">
+                                    <i class="bi bi-whatsapp fs-5"></i>
+                                </a>
+                            <?php endif; ?>
+                        </div>
                         <?php endif; ?>
                     </div>
-                    <?php endif; ?>
                 </div>
                 
-                <div class="col-md-4 mb-3">
-                    <h5>Contact</h5>
-                    <p>
-                        <?php if ($address): ?>
-                            <i class="bi bi-geo-alt"></i> <?= esc($address) ?><br>
-                        <?php endif; ?>
-                        <?php if ($email): ?>
-                            <i class="bi bi-envelope"></i> <a href="mailto:<?= esc($email) ?>" class="text-white text-decoration-none"><?= esc($email) ?></a><br>
-                        <?php endif; ?>
-                        <?php if ($phone): ?>
-                            <i class="bi bi-telephone"></i> <a href="tel:<?= esc($phone) ?>" class="text-white text-decoration-none"><?= esc($phone) ?></a>
-                        <?php endif; ?>
-                    </p>
+                <!-- Contact -->
+                <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="footer-section">
+                        <h5 class="mb-4" style="font-weight: 700; position: relative; padding-bottom: 12px;">
+                            Contact
+                            <div style="position: absolute; bottom: 0; left: 0; width: 60px; height: 3px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px;"></div>
+                        </h5>
+                        <div class="contact-info">
+                            <?php if ($address): ?>
+                                <div class="mb-3 d-flex align-items-start">
+                                    <i class="bi bi-geo-alt-fill me-3" style="color: #667eea; font-size: 1.2rem;"></i>
+                                    <span style="color: #b8b8b8;"><?= esc($address) ?></span>
+                                </div>
+                            <?php endif; ?>
+                            <?php if ($email): ?>
+                                <div class="mb-3 d-flex align-items-center">
+                                    <i class="bi bi-envelope-fill me-3" style="color: #667eea; font-size: 1.2rem;"></i>
+                                    <a href="mailto:<?= esc($email) ?>" 
+                                       style="color: #b8b8b8; text-decoration: none; transition: color 0.3s ease;">
+                                        <?= esc($email) ?>
+                                    </a>
+                                </div>
+                            <?php endif; ?>
+                            <?php if ($phone): ?>
+                                <div class="mb-3 d-flex align-items-center">
+                                    <i class="bi bi-telephone-fill me-3" style="color: #667eea; font-size: 1.2rem;"></i>
+                                    <a href="tel:<?= esc($phone) ?>" 
+                                       style="color: #b8b8b8; text-decoration: none; transition: color 0.3s ease;">
+                                        <?= esc($phone) ?>
+                                    </a>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h6 style="font-weight: 600; margin-bottom: 15px;">Horaires</h6>
+                            <div style="color: #b8b8b8; line-height: 2;"><?= $hoursDisplay ?></div>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="col-md-4 mb-3">
-                    <h5>Horaires</h5>
-                    <p><?= $hoursDisplay ?></p>
-                    
-                    <h6 class="mt-3">Liens Utiles</h6>
-                    <ul class="list-unstyled">
-                        <li><a href="<?= base_url('/') ?>" class="text-white text-decoration-none">Accueil</a></li>
-                        <li><a href="<?= base_url('about') ?>" class="text-white text-decoration-none">À Propos</a></li>
-                        <li><a href="<?= base_url('games') ?>" class="text-white text-decoration-none">Jeux</a></li>
-                        <li><a href="<?= base_url('booking') ?>" class="text-white text-decoration-none">Réservation</a></li>
-                        <li><a href="<?= base_url('contact') ?>" class="text-white text-decoration-none">Contact</a></li>
-                    </ul>
+                <!-- Liens Rapides -->
+                <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="footer-section">
+                        <h5 class="mb-4" style="font-weight: 700; position: relative; padding-bottom: 12px;">
+                            Liens Rapides
+                            <div style="position: absolute; bottom: 0; left: 0; width: 60px; height: 3px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px;"></div>
+                        </h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <a href="<?= base_url('/') ?>" class="footer-link" 
+                                   style="color: #b8b8b8; text-decoration: none; transition: all 0.3s ease; display: flex; align-items: center;">
+                                    <i class="bi bi-chevron-right me-2" style="color: #667eea;"></i>Accueil
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="<?= base_url('about') ?>" class="footer-link" 
+                                   style="color: #b8b8b8; text-decoration: none; transition: all 0.3s ease; display: flex; align-items: center;">
+                                    <i class="bi bi-chevron-right me-2" style="color: #667eea;"></i>À Propos
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="<?= base_url('games') ?>" class="footer-link" 
+                                   style="color: #b8b8b8; text-decoration: none; transition: all 0.3s ease; display: flex; align-items: center;">
+                                    <i class="bi bi-chevron-right me-2" style="color: #667eea;"></i>Nos Jeux
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="<?= base_url('booking') ?>" class="footer-link" 
+                                   style="color: #b8b8b8; text-decoration: none; transition: all 0.3s ease; display: flex; align-items: center;">
+                                    <i class="bi bi-chevron-right me-2" style="color: #667eea;"></i>Réservation
+                                </a>
+                            </li>
+                            <li class="mb-2">
+                                <a href="<?= base_url('contact') ?>" class="footer-link" 
+                                   style="color: #b8b8b8; text-decoration: none; transition: all 0.3s ease; display: flex; align-items: center;">
+                                    <i class="bi bi-chevron-right me-2" style="color: #667eea;"></i>Contact
+                                </a>
+                            </li>
+                            <?php if (session()->get('isLoggedIn')): ?>
+                            <li class="mb-2">
+                                <a href="<?= base_url('account') ?>" class="footer-link" 
+                                   style="color: #b8b8b8; text-decoration: none; transition: all 0.3s ease; display: flex; align-items: center;">
+                                    <i class="bi bi-chevron-right me-2" style="color: #667eea;"></i>Mon Compte
+                                </a>
+                            </li>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
                 </div>
             </div>
-            <hr class="my-3">
+            
+            <!-- Copyright -->
+            <hr style="border-color: rgba(255, 255, 255, 0.1); margin: 3rem 0 1.5rem;">
             <div class="text-center">
-                <p class="mb-0"><?= $copyright ?></p>
+                <p class="mb-0" style="color: #b8b8b8;">
+                    <?= $copyright ?>
+                </p>
             </div>
         </div>
     </footer>
@@ -144,6 +226,23 @@ if (empty($hoursDisplay)) {
     
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        .social-icon:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .footer-link:hover {
+            color: #667eea !important;
+            padding-left: 5px;
+        }
+        
+        .contact-info a:hover {
+            color: #667eea !important;
+        }
+    </style>
     
     <?= $additionalJS ?? '' ?>
 </body>

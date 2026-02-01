@@ -1,7 +1,17 @@
-<?php
-$title = 'Changer mon mot de passe - FunLab Tunisie';
-$activeMenu = 'account';
-$additionalStyles = '
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Changer mon mot de passe - FunLab Tunisie</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body { background: #f8f9fa; }
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
         .sidebar {
             background: white;
             border-radius: 10px;
@@ -47,58 +57,44 @@ $additionalStyles = '
             margin: 10px 0 0 0;
             padding-left: 20px;
         }
-';
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="<?= base_url('/') ?>">
+                <i class="bi bi-joystick"></i> FunLab Tunisie
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= base_url('/') ?>">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= base_url('booking') ?>">Réserver</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i>
+                            <?= session()->get('firstName') ?>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="<?= base_url('account') ?>">Mon compte</a></li>
+                            <li><a class="dropdown-item" href="<?= base_url('account/bookings') ?>">Mes réservations</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="<?= base_url('auth/logout') ?>">Déconnexion</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-$additionalJS = '
-<script>
-    function togglePassword(fieldId) {
-        const field = document.getElementById(fieldId);
-        const icon = document.getElementById(fieldId + "-icon");
-        
-        if (field.type === "password") {
-            field.type = "text";
-            icon.classList.remove("bi-eye");
-            icon.classList.add("bi-eye-slash");
-        } else {
-            field.type = "password";
-            icon.classList.remove("bi-eye-slash");
-            icon.classList.add("bi-eye");
-        }
-    }
-
-    // Validation côté client
-    document.getElementById("passwordForm").addEventListener("submit", function(e) {
-        const newPassword = document.getElementById("new_password").value;
-        const confirm = document.getElementById("confirm_password").value;
-
-        if (newPassword !== confirm) {
-            e.preventDefault();
-            Swal.fire({
-                icon: "error",
-                title: "Erreur",
-                text: "Les mots de passe ne correspondent pas."
-            });
-            return false;
-        }
-
-        if (newPassword.length < 8) {
-            e.preventDefault();
-            Swal.fire({
-                icon: "error",
-                title: "Erreur",
-                text: "Le mot de passe doit contenir au moins 8 caractères."
-            });
-            return false;
-        }
-    });
-</script>
-';
-?>
-
-<?= view('front/layouts/header', compact('title', 'additionalStyles')) ?>
-<?= view('front/layouts/navbar', compact('activeMenu')) ?>
-
-    <div class="container mt-5">
+    <div class="container">
         <div class="row">
             <!-- Sidebar -->
             <div class="col-lg-3">
@@ -131,7 +127,7 @@ $additionalJS = '
                             <i class="bi bi-key"></i> Mot de passe
                         </a>
                         <hr>
-                        <a class="nav-link text-danger" href="<?= base_url('logout') ?>">
+                        <a class="nav-link text-danger" href="<?= base_url('auth/logout') ?>">
                             <i class="bi bi-box-arrow-right"></i> Déconnexion
                         </a>
                     </nav>
@@ -219,7 +215,7 @@ $additionalJS = '
                         </div>
 
                         <div class="d-flex gap-2 mt-4">
-                            <button type="submit" class="btn-primary-modern">
+                            <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-check-circle"></i> Changer le mot de passe
                             </button>
                             <a href="<?= base_url('account') ?>" class="btn btn-outline-secondary">
@@ -232,4 +228,40 @@ $additionalJS = '
         </div>
     </div>
 
-<?= view('front/layouts/footer', compact('additionalJS')) ?>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            const icon = document.getElementById(fieldId + '-icon');
+            
+            if (field.type === 'password') {
+                field.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                field.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        }
+
+        // Validation côté client
+        document.getElementById('passwordForm').addEventListener('submit', function(e) {
+            const newPassword = document.getElementById('new_password').value;
+            const confirm = document.getElementById('confirm_password').value;
+
+            if (newPassword !== confirm) {
+                e.preventDefault();
+                alert('Les mots de passe ne correspondent pas.');
+                return false;
+            }
+
+            if (newPassword.length < 8) {
+                e.preventDefault();
+                alert('Le mot de passe doit contenir au moins 8 caractères.');
+                return false;
+            }
+        });
+    </script>
+</body>
+</html>
