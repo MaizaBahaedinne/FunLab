@@ -11,6 +11,7 @@ class ThemeController extends BaseController
 
     public function __construct()
     {
+        helper('permission');
         $this->settingModel = new SettingModel();
     }
 

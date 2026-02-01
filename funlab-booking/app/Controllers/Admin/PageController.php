@@ -11,6 +11,7 @@ class PageController extends BaseController
 
     public function __construct()
     {
+        helper('permission');
         $this->pageModel = new PageModel();
     }
 
