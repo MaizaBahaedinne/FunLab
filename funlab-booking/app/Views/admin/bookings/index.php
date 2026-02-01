@@ -402,10 +402,11 @@ $additionalJS = '
 
     async function loadFilterOptions() {
         try {
-            const roomsResponse = await fetch(`${API_BASE_URL}/availability/rooms`);
+            // Charger toutes les salles via l'endpoint admin
+            const roomsResponse = await fetch("/admin/bookings/rooms");
             const roomsResult = await roomsResponse.json();
             
-            if (roomsResult.status === "success") {
+            if (roomsResult.success && roomsResult.data) {
                 const roomSelect = document.getElementById("filter-room");
                 roomsResult.data.forEach(room => {
                     const option = document.createElement("option");

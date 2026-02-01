@@ -316,4 +316,27 @@ class BookingsController extends BaseController
 
         return redirect()->back()->withInput()->with('error', 'Erreur lors de la création de la réservation');
     }
+
+    /**
+     * API : Récupérer toutes les salles (pour les filtres)
+     */
+    public function rooms()
+    {
+        try {
+            $rooms = $this->roomModel
+                ->where('status', 'active')
+                ->orderBy('name', 'ASC')
+                ->findAll();
+
+            return $this->response->setJSON([
+                'success' => true,
+                'data' => $rooms
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Erreur lors du chargement des salles'
+            ])->setStatusCode(500);
+        }
+    }
 }
