@@ -152,17 +152,23 @@
                 </div>
                 
                 <!-- Pages & Contenu (ADMIN ONLY) -->
-                <a class="nav-link text-white <?= in_array($activeMenu ?? '', ['settings-about', 'settings-footer', 'settings-seo']) ? 'active bg-primary rounded' : '' ?>" 
+                <a class="nav-link text-white <?= in_array($activeMenu ?? '', ['settings-about', 'settings-footer', 'settings-seo', 'pages', 'theme']) ? 'active bg-primary rounded' : '' ?>" 
                    data-bs-toggle="collapse" 
                    href="#contentMenu" 
                    role="button" 
-                   aria-expanded="<?= in_array($activeMenu ?? '', ['settings-about', 'settings-footer', 'settings-seo']) ? 'true' : 'false' ?>"
+                   aria-expanded="<?= in_array($activeMenu ?? '', ['settings-about', 'settings-footer', 'settings-seo', 'pages', 'theme']) ? 'true' : 'false' ?>"
                    aria-controls="contentMenu">
                     <i class="bi bi-file-earmark-text"></i> Pages & Contenu
                     <i class="bi bi-chevron-down float-end"></i>
                 </a>
-                <div class="collapse <?= in_array($activeMenu ?? '', ['settings-about', 'settings-footer', 'settings-seo']) ? 'show' : '' ?>" id="contentMenu">
+                <div class="collapse <?= in_array($activeMenu ?? '', ['settings-about', 'settings-footer', 'settings-seo', 'pages', 'theme']) ? 'show' : '' ?>" id="contentMenu">
                     <ul class="nav flex-column ms-3">
+                        <li class="nav-item">
+                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'pages' ? 'text-white' : '' ?>" 
+                               href="<?= base_url('admin/pages') ?>">
+                                <i class="bi bi-file-earmark"></i> Pages
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-about' ? 'text-white' : '' ?>" 
                                href="<?= base_url('admin/settings/about') ?>">
@@ -185,6 +191,51 @@
                             <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-seo' ? 'text-white' : '' ?>" 
                                href="<?= base_url('admin/settings/seo') ?>">
                                 <i class="bi bi-search"></i> SEO
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Apparence / Thème (ADMIN ONLY) -->
+                <a class="nav-link text-white <?= str_starts_with($activeMenu ?? '', 'theme-') ? 'active bg-primary rounded' : '' ?>" 
+                   data-bs-toggle="collapse" 
+                   href="#themeMenu" 
+                   role="button" 
+                   aria-expanded="<?= str_starts_with($activeMenu ?? '', 'theme-') ? 'true' : 'false' ?>"
+                   aria-controls="themeMenu">
+                    <i class="bi bi-palette"></i> Apparence
+                    <i class="bi bi-chevron-down float-end"></i>
+                </a>
+                <div class="collapse <?= str_starts_with($activeMenu ?? '', 'theme-') ? 'show' : '' ?>" id="themeMenu">
+                    <ul class="nav flex-column ms-3">
+                        <li class="nav-item">
+                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'theme-branding' ? 'text-white' : '' ?>" 
+                               href="<?= base_url('admin/theme/branding') ?>">
+                                <i class="bi bi-image"></i> Logo & Branding
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'theme-colors' ? 'text-white' : '' ?>" 
+                               href="<?= base_url('admin/theme/colors') ?>">
+                                <i class="bi bi-palette-fill"></i> Couleurs
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'theme-typography' ? 'text-white' : '' ?>" 
+                               href="<?= base_url('admin/theme/typography') ?>">
+                                <i class="bi bi-fonts"></i> Typographie
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'theme-header' ? 'text-white' : '' ?>" 
+                               href="<?= base_url('admin/theme/header') ?>">
+                                <i class="bi bi-layout-text-window"></i> En-tête
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'theme-footer' ? 'text-white' : '' ?>" 
+                               href="<?= base_url('admin/theme/footer') ?>">
+                                <i class="bi bi-layout-text-window-reverse"></i> Pied de page
                             </a>
                         </li>
                     </ul>
