@@ -570,7 +570,7 @@ $additionalJS = '
     // Charger les salles disponibles pour un jeu
     async function loadRoomsForGame(gameId) {
         const roomSelect = document.getElementById("room_id");
-        roomSelect.innerHTML = '<option value="">Sélectionner une salle</option>';
+        roomSelect.innerHTML = '<option value=\"\">Sélectionner une salle</option>';
         
         if (!gameId) return;
 
