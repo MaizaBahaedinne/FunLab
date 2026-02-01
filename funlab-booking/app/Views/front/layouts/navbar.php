@@ -1,45 +1,74 @@
-<!-- Navigation Moderne -->
-<nav class="modern-navbar">
+<?php 
+$settingModel = new \App\Models\SettingModel();
+$siteLogo = $settingModel->getSetting('site_logo');
+$logoWidth = $settingModel->getSetting('logo_width') ?: 60;
+$logoHeight = $settingModel->getSetting('logo_height') ?: 60;
+
+// Info settings
+$phone = $settingModel->getSetting('footer_phone') ?: '';
+$email = $settingModel->getSetting('footer_email') ?: '';
+?>
+
+<!-- Top Info Bar -->
+<div class="top-bar d-none d-lg-block">
     <div class="container">
-        <div class="d-flex justify-content-between align-items-center">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="d-flex gap-3">
+                    <?php if($phone): ?>
+                    <span><i class="bi bi-telephone-fill"></i> <?= esc($phone) ?></span>
+                    <?php endif; ?>
+                    <?php if($email): ?>
+                    <span><i class="bi bi-envelope-fill"></i> <?= esc($email) ?></span>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <div class="col-md-6 text-end">
+                <?php if (session()->get('isLoggedIn')): ?>
+                    <span><i class="bi bi-person-circle"></i> Bonjour, <?= esc(session()->get('firstName')) ?></span>
+                <?php else: ?>
+                    <a href="<?= base_url('login') ?>"><i class="bi bi-box-arrow-in-right"></i> Connexion</a>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Header -->
+<header class="main-header">
+    <nav class="navbar navbar-expand-lg main-nav">
+        <div class="container">
             <!-- Logo -->
             <a class="navbar-brand-logo" href="<?= base_url('/') ?>">
-                <?php 
-                $settingModel = new \App\Models\SettingModel();
-                $siteLogo = $settingModel->getSetting('site_logo');
-                $logoWidth = $settingModel->getSetting('logo_width') ?: 50;
-                $logoHeight = $settingModel->getSetting('logo_height') ?: 50;
-                
-                if ($siteLogo): 
-                ?>
+                <?php if ($siteLogo): ?>
                     <img src="<?= esc($siteLogo) ?>" 
                          alt="FunLab Logo" 
                          width="<?= esc($logoWidth) ?>" 
                          height="<?= esc($logoHeight) ?>">
                 <?php else: ?>
-                    <i class="bi bi-joystick" style="font-size: 2rem; color: #667eea;"></i>
+                    <i class="bi bi-joystick" style="font-size: 2.5rem; color: var(--primary-color);"></i>
                 <?php endif; ?>
                 <span class="brand-text">FunLab</span>
             </a>
             
-            <!-- Toggle Button Mobile -->
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#modernNav">
-                <i class="bi bi-list" style="font-size: 1.8rem; color: #333;"></i>
+            <!-- Toggle Button -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <i class="bi bi-list" style="font-size: 1.8rem;"></i>
             </button>
             
             <!-- Menu -->
-            <div class="collapse navbar-collapse" id="modernNav">
-                <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item">
                         <a class="nav-link-modern <?= ($activeMenu ?? '') === 'home' ? 'active' : '' ?>" 
                            href="<?= base_url('/') ?>">
-                            <i class="bi bi-house-door"></i>Accueil
+                            Accueil
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link-modern <?= ($activeMenu ?? '') === 'about' ? 'active' : '' ?>" 
                            href="<?= base_url('about') ?>">
-                            <i class="bi bi-info-circle"></i>À Propos
+                            À Propos
                         </a>
                     </li>
                     <li class="nav-item dropdown">
@@ -47,12 +76,12 @@
                            href="<?= base_url('games') ?>" 
                            role="button" 
                            data-bs-toggle="dropdown">
-                            <i class="bi bi-controller"></i>Jeux
+                            Activités
                         </a>
                         <ul class="dropdown-menu dropdown-menu-modern">
                             <li>
                                 <a class="dropdown-item-modern" href="<?= base_url('games') ?>">
-                                    <i class="bi bi-grid-3x3-gap me-2"></i>Tous les Jeux
+                                    <i class="bi bi-grid-3x3-gap me-2"></i>Toutes les Activités
                                 </a>
                             </li>
                             <?php 
@@ -75,17 +104,14 @@
                     <li class="nav-item">
                         <a class="nav-link-modern <?= ($activeMenu ?? '') === 'contact' ? 'active' : '' ?>" 
                            href="<?= base_url('contact') ?>">
-                            <i class="bi bi-envelope"></i>Contact
+                            Contact
                         </a>
                     </li>
-                </ul>
-                
-                <!-- User Menu & Réserver -->
-                <div class="d-flex align-items-center gap-3">
+                    
                     <?php if (session()->get('isLoggedIn')): ?>
-                    <div class="dropdown">
+                    <li class="nav-item dropdown">
                         <a class="nav-link-modern dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle"></i><?= esc(session()->get('username')) ?>
+                            <i class="bi bi-person-circle"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-modern dropdown-menu-end">
                             <li>
@@ -113,34 +139,32 @@
                                 </a>
                             </li>
                         </ul>
-                    </div>
-                    <?php else: ?>
-                    <a class="nav-link-modern" href="<?= base_url('login') ?>">
-                        <i class="bi bi-box-arrow-in-right"></i>Connexion
-                    </a>
+                    </li>
                     <?php endif; ?>
                     
-                    <a href="<?= base_url('booking') ?>" class="btn-reserve-modern">
-                        <i class="bi bi-calendar-check me-2"></i>Réserver
-                    </a>
-                </div>
+                    <li class="nav-item ms-3">
+                        <a href="<?= base_url('booking') ?>" class="btn-book-now">
+                            Réserver
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
-    </div>
-</nav>
+    </nav>
+</header>
 
 <script>
-// Animation navbar au scroll
+// Sticky header effect
 window.addEventListener('scroll', function() {
-    const navbar = document.querySelector('.modern-navbar');
+    const header = document.querySelector('.main-header');
     if (window.scrollY > 50) {
-        navbar.classList.add('scrolled');
+        header.classList.add('scrolled');
     } else {
-        navbar.classList.remove('scrolled');
+        header.classList.remove('scrolled');
     }
 });
 
-// Smooth scroll pour les ancres
+// Smooth scroll
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
