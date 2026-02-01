@@ -6,18 +6,27 @@ use App\Controllers\BaseController;
 use App\Models\BookingModel;
 use App\Models\ParticipantModel;
 use App\Models\PaymentModel;
+use App\Models\GameModel;
+use App\Models\RoomModel;
+use App\Models\UserModel;
 
 class BookingsController extends BaseController
 {
     protected $bookingModel;
     protected $participantModel;
     protected $paymentModel;
+    protected $gameModel;
+    protected $roomModel;
+    protected $userModel;
 
     public function __construct()
     {
         $this->bookingModel = new BookingModel();
         $this->participantModel = new ParticipantModel();
         $this->paymentModel = new PaymentModel();
+        $this->gameModel = new GameModel();
+        $this->roomModel = new RoomModel();
+        $this->userModel = new UserModel();
     }
 
     public function index()
@@ -188,5 +197,120 @@ class BookingsController extends BaseController
     {
         $this->bookingModel->delete($id);
         return redirect()->to('/admin/bookings')->with('success', 'Réservation supprimée');
+    }
+
+    /**
+     * Créer une nouvelle réservation depuis l'admin
+     */
+    public function create()
+    {
+        helper('permission');
+        
+        // Vérifier la permission de créer des réservations
+        if ($redirect = checkPermissionOrRedirect('bookings', 'create')) {
+            return $redirect;
+        }
+
+        $validation = \Config\Services::validation();
+        
+        $validation->setRules([
+            'game_id' => 'required|integer',
+            'room_id' => 'required|integer',
+            'booking_date' => 'required|valid_date',
+            'start_time' => 'required',
+            'num_participants' => 'required|integer|greater_than[0]',
+            'customer_name' => 'required',
+            'customer_email' => 'required|valid_email',
+            'customer_phone' => 'required',
+            'total_price' => 'required|decimal'
+        ]);
+
+        if (!$validation->withRequest($this->request)->run()) {
+            return redirect()->back()->withInput()->with('error', implode('<br>', $validation->getErrors()));
+        }
+
+        $gameId = $this->request->getPost('game_id');
+        $roomId = $this->request->getPost('room_id');
+        $bookingDate = $this->request->getPost('booking_date');
+        $startTime = $this->request->getPost('start_time');
+        $numParticipants = $this->request->getPost('num_participants');
+        $status = $this->request->getPost('status') ?? 'confirmed';
+
+        // Récupérer les infos du jeu pour calculer l'heure de fin
+        $game = $this->gameModel->find($gameId);
+        if (!$game) {
+            return redirect()->back()->with('error', 'Jeu introuvable');
+        }
+
+        // Calculer l'heure de fin (durée du jeu en minutes)
+        $duration = $game['duration'] ?? 60;
+        $endTime = date('H:i:s', strtotime($startTime) + ($duration * 60));
+
+        // Vérifier la disponibilité de la salle
+        $existingBookings = $this->bookingModel
+            ->where('room_id', $roomId)
+            ->where('booking_date', $bookingDate)
+            ->where('status !=', 'cancelled')
+            ->where("((start_time <= '$startTime' AND end_time > '$startTime') OR (start_time < '$endTime' AND end_time >= '$endTime') OR (start_time >= '$startTime' AND end_time <= '$endTime'))")
+            ->findAll();
+
+        if (!empty($existingBookings)) {
+            return redirect()->back()->withInput()->with('error', 'Cette salle est déjà réservée sur ce créneau horaire');
+        }
+
+        // Chercher ou créer l'utilisateur
+        $customerEmail = $this->request->getPost('customer_email');
+        $user = $this->userModel->where('email', $customerEmail)->first();
+        
+        if (!$user) {
+            // Créer un nouvel utilisateur
+            $nameParts = explode(' ', $this->request->getPost('customer_name'), 2);
+            $firstName = $nameParts[0] ?? '';
+            $lastName = $nameParts[1] ?? '';
+            
+            $userId = $this->userModel->insert([
+                'username' => strtolower(str_replace(' ', '_', $this->request->getPost('customer_name'))),
+                'email' => $customerEmail,
+                'first_name' => $firstName,
+                'last_name' => $lastName,
+                'phone' => $this->request->getPost('customer_phone'),
+                'password' => password_hash(bin2hex(random_bytes(16)), PASSWORD_DEFAULT), // Mot de passe aléatoire
+                'role' => 'user',
+                'email_verified' => 1
+            ]);
+        } else {
+            $userId = $user['id'];
+        }
+
+        // Générer un code de réservation unique
+        $bookingCode = 'BK-' . strtoupper(substr(uniqid(), -8));
+
+        // Créer la réservation
+        $bookingData = [
+            'user_id' => $userId,
+            'game_id' => $gameId,
+            'room_id' => $roomId,
+            'booking_date' => $bookingDate,
+            'start_time' => $startTime,
+            'end_time' => $endTime,
+            'num_players' => $numParticipants,
+            'total_price' => $this->request->getPost('total_price'),
+            'status' => $status,
+            'customer_name' => $this->request->getPost('customer_name'),
+            'customer_email' => $customerEmail,
+            'customer_phone' => $this->request->getPost('customer_phone'),
+            'booking_code' => $bookingCode,
+            'qr_code' => $bookingCode,
+            'notes' => $this->request->getPost('notes') ?? null,
+            'created_by' => 'admin'
+        ];
+
+        $bookingId = $this->bookingModel->insert($bookingData);
+
+        if ($bookingId) {
+            return redirect()->to('/admin/bookings/view/' . $bookingId)->with('success', 'Réservation créée avec succès');
+        }
+
+        return redirect()->back()->withInput()->with('error', 'Erreur lors de la création de la réservation');
     }
 }

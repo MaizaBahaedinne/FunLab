@@ -133,6 +133,7 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'ad
     
     // Gestion des réservations
     $routes->get('bookings', 'BookingsController::index');
+    $routes->post('bookings/create', 'BookingsController::create');
     $routes->get('bookings/view/(:num)', 'BookingsController::view/$1');
     $routes->get('bookings/edit/(:num)', 'BookingsController::edit/$1');
     $routes->post('bookings/update/(:num)', 'BookingsController::update/$1');

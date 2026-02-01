@@ -107,21 +107,98 @@ $additionalCSS = '<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/i
 
     <!-- Modal Nouvelle Réservation -->
     <div class="modal fade" id="addBookingModal" tabindex="-1">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Nouvelle Réservation</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="alert alert-info">
-                        <i class="bi bi-info-circle"></i>
-                        Pour créer une nouvelle réservation, utilisez l'interface client ou l'API.
+                <form action="/admin/bookings/create" method="POST" id="createBookingForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Nouvelle Réservation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    <a href="<?= base_url('booking') ?>" class="btn btn-primary w-100" target="_blank">
-                        <i class="bi bi-box-arrow-up-right"></i> Ouvrir l'interface de réservation
-                    </a>
-                </div>
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <!-- Jeu -->
+                            <div class="col-md-6">
+                                <label class="form-label">Jeu <span class="text-danger">*</span></label>
+                                <select class="form-select" name="game_id" id="game_id" required>
+                                    <option value="">Sélectionner un jeu</option>
+                                </select>
+                            </div>
+
+                            <!-- Salle -->
+                            <div class="col-md-6">
+                                <label class="form-label">Salle <span class="text-danger">*</span></label>
+                                <select class="form-select" name="room_id" id="room_id" required>
+                                    <option value="">Sélectionner une salle</option>
+                                </select>
+                            </div>
+
+                            <!-- Date -->
+                            <div class="col-md-6">
+                                <label class="form-label">Date <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" name="booking_date" id="booking_date" required>
+                            </div>
+
+                            <!-- Heure de début -->
+                            <div class="col-md-6">
+                                <label class="form-label">Heure de début <span class="text-danger">*</span></label>
+                                <input type="time" class="form-control" name="start_time" id="start_time" required>
+                            </div>
+
+                            <!-- Nombre de participants -->
+                            <div class="col-md-6">
+                                <label class="form-label">Nombre de participants <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" name="num_participants" id="num_participants" min="1" required>
+                            </div>
+
+                            <!-- Statut -->
+                            <div class="col-md-6">
+                                <label class="form-label">Statut</label>
+                                <select class="form-select" name="status">
+                                    <option value="pending">En attente</option>
+                                    <option value="confirmed" selected>Confirmé</option>
+                                </select>
+                            </div>
+
+                            <!-- Informations client -->
+                            <div class="col-12">
+                                <h6 class="border-top pt-3">Informations du client</h6>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Nom <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="customer_name" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Email <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control" name="customer_email" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Téléphone <span class="text-danger">*</span></label>
+                                <input type="tel" class="form-control" name="customer_phone" required>
+                            </div>
+
+                            <!-- Prix total (calculé automatiquement) -->
+                            <div class="col-md-6">
+                                <label class="form-label">Prix total (TND)</label>
+                                <input type="number" class="form-control" name="total_price" id="total_price" step="0.01" readonly>
+                            </div>
+
+                            <!-- Notes -->
+                            <div class="col-12">
+                                <label class="form-label">Notes</label>
+                                <textarea class="form-control" name="notes" rows="2"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Créer la réservation
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -461,6 +538,73 @@ $additionalJS = '
             day: "numeric" 
         });
     }
+
+    // Charger les jeux et salles dans le formulaire de création
+    async function loadCreateFormOptions() {
+        try {
+            // Charger les jeux
+            const gamesResponse = await fetch(`${API_BASE_URL}/games`);
+            const gamesResult = await gamesResponse.json();
+            
+            if (gamesResult.status === "success") {
+                const gameSelect = document.getElementById("game_id");
+                gamesResult.data.forEach(game => {
+                    const option = document.createElement("option");
+                    option.value = game.id;
+                    option.textContent = `${game.name} (${game.price} TND)`;
+                    option.dataset.price = game.price;
+                    option.dataset.duration = game.duration;
+                    gameSelect.appendChild(option);
+                });
+            }
+
+            // Charger les salles
+            const roomsResponse = await fetch(`${API_BASE_URL}/rooms`);
+            const roomsResult = await roomsResponse.json();
+            
+            if (roomsResult.status === "success") {
+                const roomSelect = document.getElementById("room_id");
+                roomsResult.data.forEach(room => {
+                    const option = document.createElement("option");
+                    option.value = room.id;
+                    option.textContent = `${room.name} (Capacité: ${room.capacity})`;
+                    roomSelect.appendChild(option);
+                });
+            }
+        } catch (error) {
+            console.error("Erreur lors du chargement des options:", error);
+        }
+    }
+
+    // Calculer le prix total automatiquement
+    document.addEventListener("DOMContentLoaded", function() {
+        loadCreateFormOptions();
+
+        const gameSelect = document.getElementById("game_id");
+        const numParticipants = document.getElementById("num_participants");
+        const totalPriceInput = document.getElementById("total_price");
+
+        function updatePrice() {
+            const selectedOption = gameSelect.options[gameSelect.selectedIndex];
+            if (selectedOption && selectedOption.dataset.price) {
+                const price = parseFloat(selectedOption.dataset.price);
+                const participants = parseInt(numParticipants.value) || 1;
+                totalPriceInput.value = (price * participants).toFixed(2);
+            }
+        }
+
+        gameSelect.addEventListener("change", updatePrice);
+        numParticipants.addEventListener("input", updatePrice);
+
+        // Définir la date minimale à aujourd'hui
+        const bookingDateInput = document.getElementById("booking_date");
+        const today = new Date().toISOString().split("T")[0];
+        bookingDateInput.min = today;
+        bookingDateInput.value = today;
+
+        // Définir l'heure par défaut
+        document.getElementById("start_time").value = "10:00";
+    });
 </script>
 ';
 ?>
