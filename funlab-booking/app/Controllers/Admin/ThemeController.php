@@ -120,8 +120,16 @@ class ThemeController extends BaseController
         
         try {
             foreach ($postData as $key => $value) {
-                if ($key !== 'csrf_test_name') {
-                    $this->settingModel->updateSetting($key, $value);
+                if ($key !== 'csrf_test_name' && $key !== 'csrf_token_name') {
+                    // Déterminer le type en fonction de la valeur
+                    $type = 'text';
+                    if (is_numeric($value) && strpos($key, 'width') !== false || strpos($key, 'height') !== false || strpos($key, 'columns') !== false || strpos($key, 'size') !== false) {
+                        $type = 'number';
+                    } elseif ($value === '0' || $value === '1' || strpos($key, 'show_') !== false || strpos($key, '_sticky') !== false) {
+                        $type = 'boolean';
+                    }
+                    
+                    $this->settingModel->updateSetting($key, $value, $type);
                 }
             }
 
@@ -130,9 +138,10 @@ class ThemeController extends BaseController
                 'message' => 'Options sauvegardées avec succès'
             ]);
         } catch (\Exception $e) {
+            log_message('error', 'Theme save error: ' . $e->getMessage());
             return $this->response->setJSON([
                 'status' => 'error',
-                'message' => $e->getMessage()
+                'message' => 'Erreur: ' . $e->getMessage()
             ]);
         }
     }

@@ -12,7 +12,6 @@ CREATE TABLE IF NOT EXISTS `pages` (
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `slug` (`slug`),
   KEY `status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -25,15 +24,15 @@ INSERT INTO settings (`key`, `value`, `type`, `category`, `description`) VALUES
 ('site_favicon', '/assets/images/favicon.ico', 'text', 'branding', 'Favicon du site'),
 
 -- Couleurs
-('color_primary', '#ff6b35', 'color', 'colors', 'Couleur primaire'),
-('color_secondary', '#004e89', 'color', 'colors', 'Couleur secondaire'),
-('color_dark', '#1a1a1a', 'color', 'colors', 'Couleur sombre'),
-('color_light', '#f7f7f7', 'color', 'colors', 'Couleur claire'),
-('color_text', '#333333', 'color', 'colors', 'Couleur du texte'),
+('color_primary', '#ff6b35', 'text', 'colors', 'Couleur primaire'),
+('color_secondary', '#004e89', 'text', 'colors', 'Couleur secondaire'),
+('color_dark', '#1a1a1a', 'text', 'colors', 'Couleur sombre'),
+('color_light', '#f7f7f7', 'text', 'colors', 'Couleur claire'),
+('color_text', '#333333', 'text', 'colors', 'Couleur du texte'),
 
 -- Typographie
-('font_heading', 'Oswald', 'select', 'typography', 'Police des titres'),
-('font_body', 'Roboto', 'select', 'typography', 'Police du texte'),
+('font_heading', 'Oswald', 'text', 'typography', 'Police des titres'),
+('font_body', 'Roboto', 'text', 'typography', 'Police du texte'),
 ('font_size_base', '16', 'number', 'typography', 'Taille de police de base (px)'),
 
 -- Header

@@ -114,4 +114,25 @@ class SettingModel extends Model
 
         return $result;
     }
+
+    /**
+     * Mettre à jour un paramètre (ou le créer s'il n'existe pas)
+     */
+    public function updateSetting($key, $value, $type = 'text', $category = null)
+    {
+        // Si pas de catégorie spécifiée, essayer de trouver le setting existant
+        if ($category === null) {
+            $existing = $this->where('key', $key)->first();
+            if ($existing) {
+                $category = $existing['category'];
+                $type = $existing['type'];
+            } else {
+                // Déterminer la catégorie par le préfixe de la clé
+                $parts = explode('_', $key);
+                $category = $parts[0] ?? 'general';
+            }
+        }
+
+        return $this->setSetting($key, $value, $type, $category);
+    }
 }
