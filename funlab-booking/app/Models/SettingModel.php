@@ -65,9 +65,7 @@ class SettingModel extends Model
      */
     public function setSetting($key, $value, $type = 'text', $category = 'general')
     {
-        $setting = $this->where('key', $key)
-                        ->where('category', $category)
-                        ->first();
+        $setting = $this->where('key', $key)->first();
 
         // Encoder selon le type
         if ($type === 'json') {
@@ -77,6 +75,8 @@ class SettingModel extends Model
         }
 
         if ($setting) {
+            // Désactiver validation pour update
+            $this->skipValidation = true;
             return $this->update($setting['id'], [
                 'value' => $value,
                 'type' => $type,
@@ -84,6 +84,8 @@ class SettingModel extends Model
             ]);
         }
 
+        // Désactiver validation pour insert aussi
+        $this->skipValidation = true;
         return $this->insert([
             'key' => $key,
             'value' => $value,
