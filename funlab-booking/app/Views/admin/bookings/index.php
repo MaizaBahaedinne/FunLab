@@ -503,7 +503,7 @@ $additionalJS = '
                 Swal.fire({
                     icon: "error",
                     title: "Erreur",
-                    text: data.message || "Erreur lors de l\\'annulation"
+                    text: data.message || "Erreur lors de l\'annulation"
                 });
             }
 
@@ -512,7 +512,7 @@ $additionalJS = '
             Swal.fire({
                 icon: "error",
                 title: "Erreur",
-                text: "Erreur lors de l\\'annulation"
+                text: "Erreur lors de l\'annulation"
             });
         }
     }
@@ -635,7 +635,7 @@ $additionalJS = '
             return false;
         } catch (error) {
             console.error("Erreur lors de la vérification de disponibilité:", error);
-            return true; // En cas d\\'erreur, laisser passer pour ne pas bloquer
+            return true; // En cas d'erreur, laisser passer pour ne pas bloquer
         }
     }
 
@@ -685,13 +685,13 @@ $additionalJS = '
             this.submit();
         });
 
-        // Définir la date minimale à aujourd\\'hui
+        // Définir la date minimale à aujourd'hui
         const bookingDateInput = document.getElementById("booking_date");
         const today = new Date().toISOString().split("T")[0];
         bookingDateInput.min = today;
         bookingDateInput.value = today;
 
-        // Définir l\\'heure par défaut
+        // Définir l'heure par défaut
         document.getElementById("start_time").value = "10:00";
     });
     
