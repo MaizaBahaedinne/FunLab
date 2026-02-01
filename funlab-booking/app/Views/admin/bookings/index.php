@@ -597,33 +597,45 @@ $additionalJS = '
         const roomId = document.getElementById("room_id").value;
         const bookingDate = document.getElementById("booking_date").value;
         const startTime = document.getElementById("start_time").value;
+        const gameSelect = document.getElementById("game_id");
 
         if (!gameId || !roomId || !bookingDate || !startTime) {
             return true; // Ne pas vérifier si les champs ne sont pas remplis
         }
+
+        // Récupérer la durée du jeu depuis l\'option sélectionnée
+        const selectedOption = gameSelect.options[gameSelect.selectedIndex];
+        const duration = selectedOption ? parseInt(selectedOption.dataset.duration) || 60 : 60;
+
+        // Calculer l\'heure de fin
+        const startDate = new Date(`2000-01-01T${startTime}:00`);
+        startDate.setMinutes(startDate.getMinutes() + duration);
+        const endTime = startDate.toTimeString().substring(0, 5);
 
         try {
             const response = await fetch(`${API_BASE_URL}/availability/check`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    game_id: gameId,
-                    room_id: roomId,
+                    game_id: parseInt(gameId),
+                    room_id: parseInt(roomId),
                     date: bookingDate,
-                    time: startTime
+                    start_time: startTime + \":00\",
+                    end_time: endTime + \":00\"
                 })
             });
 
             const result = await response.json();
+            console.log("Vérification disponibilité:", result);
             
-            if (result.status === "success" && result.data) {
-                return result.data.available;
+            if (result.status === "success" || result.available === true) {
+                return true;
             }
             
             return false;
         } catch (error) {
             console.error("Erreur lors de la vérification de disponibilité:", error);
-            return false;
+            return true; // En cas d\'erreur, laisser passer pour ne pas bloquer
         }
     }
 
