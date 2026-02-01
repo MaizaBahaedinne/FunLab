@@ -74,6 +74,11 @@ $breadcrumbs = ['Admin' => base_url('admin'), 'Paramètres' => base_url('admin/s
                                                 <i class="bi bi-pencil"></i>
                                             </button>
                                             <?php if ($user['id'] != session()->get('userId')): ?>
+                                                <a href="/admin/settings/impersonate/<?= $user['id'] ?>" 
+                                                    class="btn btn-sm btn-outline-info"
+                                                    title="Se connecter en tant que">
+                                                    <i class="bi bi-person-badge"></i>
+                                                </a>
                                                 <a href="/admin/settings/delete-user/<?= $user['id'] ?>" 
                                                     class="btn btn-sm btn-outline-danger"
                                                     onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')">

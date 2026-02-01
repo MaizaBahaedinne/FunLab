@@ -204,6 +204,8 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'ad
     $routes->post('settings/create-user', 'SettingsController::createUser');
     $routes->post('settings/update-user/(:num)', 'SettingsController::updateUser/$1');
     $routes->get('settings/delete-user/(:num)', 'SettingsController::deleteUser/$1');
+    $routes->get('settings/impersonate/(:num)', 'SettingsController::impersonate/$1');
+    $routes->get('settings/stop-impersonation', 'SettingsController::stopImpersonation');
     $routes->post('settings/update-role-permissions', 'SettingsController::updateRolePermissions');
 });
 

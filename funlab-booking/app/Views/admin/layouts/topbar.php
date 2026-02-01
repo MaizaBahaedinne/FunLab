@@ -24,6 +24,16 @@
                     </div>
                     
                     <div class="d-flex align-items-center gap-3">
+                        <?php if (session()->get('impersonating_admin_id')): ?>
+                            <div class="alert alert-warning mb-0 py-1 px-3 d-flex align-items-center gap-2">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                <span>Mode impersonation actif</span>
+                                <a href="/admin/settings/stop-impersonation" class="btn btn-sm btn-warning">
+                                    <i class="bi bi-arrow-left-circle"></i> Retour au compte admin
+                                </a>
+                            </div>
+                        <?php endif; ?>
+                        
                         <div class="dropdown">
                             <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                 <i class="bi bi-person-circle"></i>

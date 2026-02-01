@@ -841,4 +841,67 @@ class SettingsController extends BaseController
             );
         }
     }
+
+    /**
+     * Se connecter en tant qu'un autre utilisateur (impersonation)
+     */
+    public function impersonate($userId)
+    {
+        // Vérifier que l'utilisateur actuel est admin
+        if (session()->get('role') !== 'admin') {
+            return redirect()->to('/admin/dashboard')->with('error', 'Accès refusé');
+        }
+
+        // Récupérer l'utilisateur cible
+        $targetUser = $this->userModel->find($userId);
+        
+        if (!$targetUser) {
+            return redirect()->back()->with('error', 'Utilisateur introuvable');
+        }
+
+        // Sauvegarder l'ID de l'admin original pour pouvoir revenir
+        session()->set('impersonating_admin_id', session()->get('userId'));
+        
+        // Changer la session pour se connecter en tant que l'utilisateur cible
+        session()->set([
+            'userId' => $targetUser['id'],
+            'username' => $targetUser['username'],
+            'email' => $targetUser['email'],
+            'role' => $targetUser['role'],
+            'isLoggedIn' => true
+        ]);
+
+        return redirect()->to('/admin/dashboard')->with('success', 'Vous êtes maintenant connecté en tant que ' . esc($targetUser['username']));
+    }
+
+    /**
+     * Revenir à son compte admin après impersonation
+     */
+    public function stopImpersonation()
+    {
+        $adminId = session()->get('impersonating_admin_id');
+        
+        if (!$adminId) {
+            return redirect()->to('/admin/dashboard')->with('error', 'Aucune session d\'impersonation active');
+        }
+
+        // Récupérer les infos de l'admin original
+        $adminUser = $this->userModel->find($adminId);
+        
+        if (!$adminUser) {
+            return redirect()->to('/admin/login')->with('error', 'Erreur lors du retour au compte admin');
+        }
+
+        // Restaurer la session admin
+        session()->remove('impersonating_admin_id');
+        session()->set([
+            'userId' => $adminUser['id'],
+            'username' => $adminUser['username'],
+            'email' => $adminUser['email'],
+            'role' => $adminUser['role'],
+            'isLoggedIn' => true
+        ]);
+
+        return redirect()->to('/admin/settings/users')->with('success', 'Vous êtes de retour sur votre compte admin');
+    }
 }
