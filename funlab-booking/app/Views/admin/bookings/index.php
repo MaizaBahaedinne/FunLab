@@ -165,8 +165,13 @@ $additionalCSS = '<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/i
                             </div>
 
                             <div class="col-md-6">
+                                <label class="form-label">Prénom <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="customer_first_name" required>
+                            </div>
+
+                            <div class="col-md-6">
                                 <label class="form-label">Nom <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="customer_name" required>
+                                <input type="text" class="form-control" name="customer_last_name" required>
                             </div>
 
                             <div class="col-md-6">
@@ -557,14 +562,24 @@ $additionalJS = '
                     gameSelect.appendChild(option);
                 });
             }
+        } catch (error) {
+            console.error("Erreur lors du chargement des jeux:", error);
+        }
+    }
 
-            // Charger les salles
-            const roomsResponse = await fetch(`${API_BASE_URL}/rooms`);
-            const roomsResult = await roomsResponse.json();
+    // Charger les salles disponibles pour un jeu
+    async function loadRoomsForGame(gameId) {
+        const roomSelect = document.getElementById("room_id");
+        roomSelect.innerHTML = '<option value="">Sélectionner une salle</option>';
+        
+        if (!gameId) return;
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/availability/rooms?game_id=${gameId}`);
+            const result = await response.json();
             
-            if (roomsResult.status === "success") {
-                const roomSelect = document.getElementById("room_id");
-                roomsResult.data.forEach(room => {
+            if (result.status === "success" && result.data) {
+                result.data.forEach(room => {
                     const option = document.createElement("option");
                     option.value = room.id;
                     option.textContent = `${room.name} (Capacité: ${room.capacity})`;
@@ -572,7 +587,43 @@ $additionalJS = '
                 });
             }
         } catch (error) {
-            console.error("Erreur lors du chargement des options:", error);
+            console.error("Erreur lors du chargement des salles:", error);
+        }
+    }
+
+    // Vérifier la disponibilité d\'un créneau
+    async function checkAvailability() {
+        const gameId = document.getElementById("game_id").value;
+        const roomId = document.getElementById("room_id").value;
+        const bookingDate = document.getElementById("booking_date").value;
+        const startTime = document.getElementById("start_time").value;
+
+        if (!gameId || !roomId || !bookingDate || !startTime) {
+            return true; // Ne pas vérifier si les champs ne sont pas remplis
+        }
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/availability/check`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    game_id: gameId,
+                    room_id: roomId,
+                    date: bookingDate,
+                    time: startTime
+                })
+            });
+
+            const result = await response.json();
+            
+            if (result.status === "success" && result.data) {
+                return result.data.available;
+            }
+            
+            return false;
+        } catch (error) {
+            console.error("Erreur lors de la vérification de disponibilité:", error);
+            return false;
         }
     }
 
@@ -581,8 +632,10 @@ $additionalJS = '
         loadCreateFormOptions();
 
         const gameSelect = document.getElementById("game_id");
+        const roomSelect = document.getElementById("room_id");
         const numParticipants = document.getElementById("num_participants");
         const totalPriceInput = document.getElementById("total_price");
+        const bookingForm = document.getElementById("createBookingForm");
 
         function updatePrice() {
             const selectedOption = gameSelect.options[gameSelect.selectedIndex];
@@ -593,8 +646,32 @@ $additionalJS = '
             }
         }
 
-        gameSelect.addEventListener("change", updatePrice);
+        // Charger les salles quand un jeu est sélectionné
+        gameSelect.addEventListener("change", function() {
+            loadRoomsForGame(this.value);
+            updatePrice();
+        });
+        
         numParticipants.addEventListener("input", updatePrice);
+
+        // Vérifier la disponibilité avant soumission
+        bookingForm.addEventListener("submit", async function(e) {
+            e.preventDefault();
+            
+            const isAvailable = await checkAvailability();
+            
+            if (!isAvailable) {
+                await Swal.fire({
+                    icon: "error",
+                    title: "Créneau non disponible",
+                    text: "Ce créneau horaire est déjà réservé ou indisponible. Veuillez choisir une autre date/heure."
+                });
+                return;
+            }
+            
+            // Si disponible, soumettre le formulaire
+            this.submit();
+        });
 
         // Définir la date minimale à aujourd\'hui
         const bookingDateInput = document.getElementById("booking_date");
@@ -604,6 +681,13 @@ $additionalJS = '
 
         // Définir l\'heure par défaut
         document.getElementById("start_time").value = "10:00";
+    });
+    
+    // Recharger le calendrier après création
+    document.getElementById("addBookingModal").addEventListener("hidden.bs.modal", function() {
+        if (calendar) {
+            calendar.refetchEvents();
+        }
     });
 </script>
 ';

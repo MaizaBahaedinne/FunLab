@@ -219,7 +219,8 @@ class BookingsController extends BaseController
             'booking_date' => 'required|valid_date',
             'start_time' => 'required',
             'num_participants' => 'required|integer|greater_than[0]',
-            'customer_name' => 'required',
+            'customer_first_name' => 'required',
+            'customer_last_name' => 'required',
             'customer_email' => 'required|valid_email',
             'customer_phone' => 'required',
             'total_price' => 'required|decimal'
@@ -264,12 +265,11 @@ class BookingsController extends BaseController
         
         if (!$user) {
             // Créer un nouvel utilisateur
-            $nameParts = explode(' ', $this->request->getPost('customer_name'), 2);
-            $firstName = $nameParts[0] ?? '';
-            $lastName = $nameParts[1] ?? '';
+            $firstName = $this->request->getPost('customer_first_name');
+            $lastName = $this->request->getPost('customer_last_name');
             
             $userId = $this->userModel->insert([
-                'username' => strtolower(str_replace(' ', '_', $this->request->getPost('customer_name'))),
+                'username' => strtolower($firstName . '_' . $lastName . '_' . substr(uniqid(), -4)),
                 'email' => $customerEmail,
                 'first_name' => $firstName,
                 'last_name' => $lastName,
@@ -284,6 +284,9 @@ class BookingsController extends BaseController
 
         // Générer un code de réservation unique
         $bookingCode = 'BK-' . strtoupper(substr(uniqid(), -8));
+        
+        // Construire le nom complet du client
+        $customerName = $this->request->getPost('customer_first_name') . ' ' . $this->request->getPost('customer_last_name');
 
         // Créer la réservation
         $bookingData = [
@@ -296,7 +299,7 @@ class BookingsController extends BaseController
             'num_players' => $numParticipants,
             'total_price' => $this->request->getPost('total_price'),
             'status' => $status,
-            'customer_name' => $this->request->getPost('customer_name'),
+            'customer_name' => $customerName,
             'customer_email' => $customerEmail,
             'customer_phone' => $this->request->getPost('customer_phone'),
             'booking_code' => $bookingCode,
