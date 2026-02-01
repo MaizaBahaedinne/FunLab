@@ -614,8 +614,8 @@ $additionalJS = '
                     game_id: parseInt(gameId),
                     room_id: parseInt(roomId),
                     date: bookingDate,
-                    start_time: startTime + \":00\",
-                    end_time: endTime + \":00\"
+                    start_time: startTime + ":00",
+                    end_time: endTime + ":00"
                 })
             });
 
