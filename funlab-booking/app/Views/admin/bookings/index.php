@@ -596,13 +596,13 @@ $additionalJS = '
         gameSelect.addEventListener("change", updatePrice);
         numParticipants.addEventListener("input", updatePrice);
 
-        // Définir la date minimale à aujourd'hui
+        // Définir la date minimale à aujourd\'hui
         const bookingDateInput = document.getElementById("booking_date");
         const today = new Date().toISOString().split("T")[0];
         bookingDateInput.min = today;
         bookingDateInput.value = today;
 
-        // Définir l'heure par défaut
+        // Définir l\'heure par défaut
         document.getElementById("start_time").value = "10:00";
     });
 </script>
