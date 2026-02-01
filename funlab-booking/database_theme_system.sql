@@ -29,6 +29,7 @@ INSERT INTO settings (`key`, `value`, `type`, `category`, `description`) VALUES
 ('color_dark', '#1a1a1a', 'text', 'colors', 'Couleur sombre'),
 ('color_light', '#f7f7f7', 'text', 'colors', 'Couleur claire'),
 ('color_text', '#333333', 'text', 'colors', 'Couleur du texte'),
+('color_link', '#ff6b35', 'text', 'colors', 'Couleur des liens'),
 
 -- Typographie
 ('font_heading', 'Oswald', 'text', 'typography', 'Police des titres'),

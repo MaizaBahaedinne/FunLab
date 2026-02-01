@@ -79,6 +79,18 @@ $breadcrumbs = ['Admin' => base_url('admin/dashboard'), 'Apparence' => null, 'Co
                                 </div>
                                 <small class="text-muted">Texte principal</small>
                             </div>
+
+                            <!-- Couleur des liens -->
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label">Couleur des liens</label>
+                                <div class="input-group">
+                                    <input type="color" class="form-control form-control-color" id="color_link_picker" 
+                                           value="<?= $settings['color_link'] ?? '#ff6b35' ?>">
+                                    <input type="text" class="form-control" name="color_link"
+                                           value="<?= $settings['color_link'] ?? '#ff6b35' ?>">
+                                </div>
+                                <small class="text-muted">Liens hypertexte</small>
+                            </div>
                         </div>
 
                         <hr class="my-4">
