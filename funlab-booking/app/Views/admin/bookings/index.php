@@ -402,7 +402,7 @@ $additionalJS = '
 
     async function loadFilterOptions() {
         try {
-            // Charger toutes les salles via l'endpoint admin
+            // Charger toutes les salles via endpoint admin
             const roomsResponse = await fetch("/admin/bookings/rooms");
             const roomsResult = await roomsResponse.json();
             
