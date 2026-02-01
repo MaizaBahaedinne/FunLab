@@ -472,49 +472,10 @@ class SettingsController extends BaseController
                 'settings' => 'Paramètres',
                 'users' => 'Utilisateurs'
             ],
-            'permissions' => $this->getRolePermissions()
+            'permissions' => getRolePermissions()
         ];
 
         return view('admin/settings/roles', $data);
-    }
-
-    /**
-     * Récupérer les permissions par rôle
-     */
-    private function getRolePermissions()
-    {
-        return [
-            'admin' => [
-                'dashboard' => ['view', 'create', 'edit', 'delete'],
-                'bookings' => ['view', 'create', 'edit', 'delete'],
-                'games' => ['view', 'create', 'edit', 'delete'],
-                'rooms' => ['view', 'create', 'edit', 'delete'],
-                'closures' => ['view', 'create', 'edit', 'delete'],
-                'scanner' => ['view', 'scan'],
-                'settings' => ['view', 'edit'],
-                'users' => ['view', 'create', 'edit', 'delete']
-            ],
-            'staff' => [
-                'dashboard' => ['view'],
-                'bookings' => ['view', 'edit'],
-                'games' => ['view'],
-                'rooms' => ['view'],
-                'closures' => ['view'],
-                'scanner' => ['view', 'scan'],
-                'settings' => [],
-                'users' => []
-            ],
-            'user' => [
-                'dashboard' => [],
-                'bookings' => ['view'],
-                'games' => ['view'],
-                'rooms' => ['view'],
-                'closures' => [],
-                'scanner' => [],
-                'settings' => [],
-                'users' => []
-            ]
-        ];
     }
 
     /**
