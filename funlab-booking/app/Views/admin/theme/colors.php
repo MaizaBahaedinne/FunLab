@@ -24,11 +24,10 @@ $breadcrumbs = ['Admin' => base_url('admin/dashboard'), 'Apparence' => null, 'Co
                             <div class="col-md-6 mb-4">
                                 <label class="form-label">Couleur primaire</label>
                                 <div class="input-group">
-                                    <input type="color" class="form-control form-control-color" name="color_primary" 
+                                    <input type="color" class="form-control form-control-color" id="color_primary_picker" 
                                            value="<?= $settings['color_primary'] ?? '#ff6b35' ?>">
-                                    <input type="text" class="form-control" 
-                                           value="<?= $settings['color_primary'] ?? '#ff6b35' ?>"
-                                           onchange="this.previousElementSibling.value = this.value">
+                                    <input type="text" class="form-control" name="color_primary"
+                                           value="<?= $settings['color_primary'] ?? '#ff6b35' ?>">
                                 </div>
                                 <small class="text-muted">Boutons, liens, éléments principaux</small>
                             </div>
@@ -37,11 +36,10 @@ $breadcrumbs = ['Admin' => base_url('admin/dashboard'), 'Apparence' => null, 'Co
                             <div class="col-md-6 mb-4">
                                 <label class="form-label">Couleur secondaire</label>
                                 <div class="input-group">
-                                    <input type="color" class="form-control form-control-color" name="color_secondary" 
+                                    <input type="color" class="form-control form-control-color" id="color_secondary_picker" 
                                            value="<?= $settings['color_secondary'] ?? '#004e89' ?>">
-                                    <input type="text" class="form-control" 
-                                           value="<?= $settings['color_secondary'] ?? '#004e89' ?>"
-                                           onchange="this.previousElementSibling.value = this.value">
+                                    <input type="text" class="form-control" name="color_secondary"
+                                           value="<?= $settings['color_secondary'] ?? '#004e89' ?>">
                                 </div>
                                 <small class="text-muted">Éléments secondaires</small>
                             </div>
@@ -50,11 +48,10 @@ $breadcrumbs = ['Admin' => base_url('admin/dashboard'), 'Apparence' => null, 'Co
                             <div class="col-md-6 mb-4">
                                 <label class="form-label">Couleur sombre</label>
                                 <div class="input-group">
-                                    <input type="color" class="form-control form-control-color" name="color_dark" 
+                                    <input type="color" class="form-control form-control-color" id="color_dark_picker" 
                                            value="<?= $settings['color_dark'] ?? '#1a1a1a' ?>">
-                                    <input type="text" class="form-control" 
-                                           value="<?= $settings['color_dark'] ?? '#1a1a1a' ?>"
-                                           onchange="this.previousElementSibling.value = this.value">
+                                    <input type="text" class="form-control" name="color_dark"
+                                           value="<?= $settings['color_dark'] ?? '#1a1a1a' ?>">
                                 </div>
                                 <small class="text-muted">Texte, bordures sombres</small>
                             </div>
@@ -63,11 +60,10 @@ $breadcrumbs = ['Admin' => base_url('admin/dashboard'), 'Apparence' => null, 'Co
                             <div class="col-md-6 mb-4">
                                 <label class="form-label">Couleur claire</label>
                                 <div class="input-group">
-                                    <input type="color" class="form-control form-control-color" name="color_light" 
+                                    <input type="color" class="form-control form-control-color" id="color_light_picker" 
                                            value="<?= $settings['color_light'] ?? '#f7f7f7' ?>">
-                                    <input type="text" class="form-control" 
-                                           value="<?= $settings['color_light'] ?? '#f7f7f7' ?>"
-                                           onchange="this.previousElementSibling.value = this.value">
+                                    <input type="text" class="form-control" name="color_light"
+                                           value="<?= $settings['color_light'] ?? '#f7f7f7' ?>">
                                 </div>
                                 <small class="text-muted">Fond clair, sections</small>
                             </div>
@@ -76,11 +72,10 @@ $breadcrumbs = ['Admin' => base_url('admin/dashboard'), 'Apparence' => null, 'Co
                             <div class="col-md-6 mb-4">
                                 <label class="form-label">Couleur du texte</label>
                                 <div class="input-group">
-                                    <input type="color" class="form-control form-control-color" name="color_text" 
+                                    <input type="color" class="form-control form-control-color" id="color_text_picker" 
                                            value="<?= $settings['color_text'] ?? '#333333' ?>">
-                                    <input type="text" class="form-control" 
-                                           value="<?= $settings['color_text'] ?? '#333333' ?>"
-                                           onchange="this.previousElementSibling.value = this.value">
+                                    <input type="text" class="form-control" name="color_text"
+                                           value="<?= $settings['color_text'] ?? '#333333' ?>">
                                 </div>
                                 <small class="text-muted">Texte principal</small>
                             </div>
@@ -168,8 +163,13 @@ document.getElementById('colorsForm').addEventListener('submit', async function(
 
 // Sync color picker with text input
 document.querySelectorAll('input[type="color"]').forEach(picker => {
+    const textInput = picker.nextElementSibling;
     picker.addEventListener('input', function() {
-        this.nextElementSibling.value = this.value;
+        textInput.value = this.value;
+        updatePreview();
+    });
+    textInput.addEventListener('input', function() {
+        picker.value = this.value;
         updatePreview();
     });
 });
