@@ -105,108 +105,202 @@ $additionalCSS = '<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/i
         </div>
     </div>
 
-    <!-- Modal Nouvelle Réservation -->
+    <!-- Modal Nouvelle Réservation - Wizard -->
     <div class="modal fade" id="addBookingModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
             <div class="modal-content">
-                <form action="/admin/bookings/create" method="POST" id="createBookingForm">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Nouvelle Réservation</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row g-3">
-                            <!-- Jeu -->
-                            <div class="col-md-6">
-                                <label class="form-label">Jeu <span class="text-danger">*</span></label>
-                                <select class="form-select" name="game_id" id="game_id" required>
-                                    <option value="">Sélectionner un jeu</option>
-                                </select>
+                <div class="modal-header">
+                    <h5 class="modal-title">Nouvelle Réservation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Progress Steps -->
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between">
+                            <div class="wizard-step active" data-step="1">
+                                <div class="wizard-step-number">1</div>
+                                <div class="wizard-step-label">Jeu</div>
                             </div>
-
-                            <!-- Salle -->
-                            <div class="col-md-6">
-                                <label class="form-label">Salle <span class="text-danger">*</span></label>
-                                <select class="form-select" name="room_id" id="room_id" required>
-                                    <option value="">Sélectionner une salle</option>
-                                </select>
+                            <div class="wizard-step" data-step="2">
+                                <div class="wizard-step-number">2</div>
+                                <div class="wizard-step-label">Salle</div>
                             </div>
-
-                            <!-- Date -->
-                            <div class="col-md-6">
-                                <label class="form-label">Date <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control" name="booking_date" id="booking_date" required>
+                            <div class="wizard-step" data-step="3">
+                                <div class="wizard-step-number">3</div>
+                                <div class="wizard-step-label">Date & Heure</div>
                             </div>
-
-                            <!-- Heure de début -->
-                            <div class="col-md-6">
-                                <label class="form-label">Heure de début <span class="text-danger">*</span></label>
-                                <input type="time" class="form-control" name="start_time" id="start_time" required>
+                            <div class="wizard-step" data-step="4">
+                                <div class="wizard-step-number">4</div>
+                                <div class="wizard-step-label">Participants</div>
                             </div>
-
-                            <!-- Nombre de participants -->
-                            <div class="col-md-6">
-                                <label class="form-label">Nombre de participants <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control" name="num_participants" id="num_participants" min="1" required>
-                            </div>
-
-                            <!-- Statut -->
-                            <div class="col-md-6">
-                                <label class="form-label">Statut</label>
-                                <select class="form-select" name="status">
-                                    <option value="pending">En attente</option>
-                                    <option value="confirmed" selected>Confirmé</option>
-                                </select>
-                            </div>
-
-                            <!-- Informations client -->
-                            <div class="col-12">
-                                <h6 class="border-top pt-3">Informations du client</h6>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">Prénom <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="customer_first_name" required>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">Nom <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="customer_last_name" required>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">Email <span class="text-danger">*</span></label>
-                                <input type="email" class="form-control" name="customer_email" required>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">Téléphone <span class="text-danger">*</span></label>
-                                <input type="tel" class="form-control" name="customer_phone" required>
-                            </div>
-
-                            <!-- Prix total (calculé automatiquement) -->
-                            <div class="col-md-6">
-                                <label class="form-label">Prix total (TND)</label>
-                                <input type="number" class="form-control" name="total_price" id="total_price" step="0.01" readonly>
-                            </div>
-
-                            <!-- Notes -->
-                            <div class="col-12">
-                                <label class="form-label">Notes</label>
-                                <textarea class="form-control" name="notes" rows="2"></textarea>
+                            <div class="wizard-step" data-step="5">
+                                <div class="wizard-step-number">5</div>
+                                <div class="wizard-step-label">Confirmation</div>
                             </div>
                         </div>
+                        <div class="progress mt-2" style="height: 4px;">
+                            <div class="progress-bar" id="wizardProgress" role="progressbar" style="width: 20%"></div>
+                        </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-check-circle"></i> Créer la réservation
-                        </button>
-                    </div>
-                </form>
+
+                    <form action="/admin/bookings/create" method="POST" id="createBookingForm">
+                        <!-- Step 1: Choix du jeu -->
+                        <div class="wizard-content" data-step="1">
+                            <h5 class="mb-3">Choisissez un jeu</h5>
+                            <div class="row" id="gamesGrid"></div>
+                            <input type="hidden" name="game_id" id="selected_game_id" required>
+                        </div>
+
+                        <!-- Step 2: Choix de la salle -->
+                        <div class="wizard-content d-none" data-step="2">
+                            <h5 class="mb-3">Choisissez une salle</h5>
+                            <div class="row" id="roomsGrid"></div>
+                            <input type="hidden" name="room_id" id="selected_room_id" required>
+                        </div>
+
+                        <!-- Step 3: Date et Heure -->
+                        <div class="wizard-content d-none" data-step="3">
+                            <h5 class="mb-3">Sélectionnez la date et l\'heure</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="form-label">Date <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control form-control-lg" name="booking_date" id="booking_date" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Créneaux disponibles</label>
+                                    <div id="timeSlotsContainer" class="mt-2"></div>
+                                    <input type="hidden" name="start_time" id="selected_time" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 4: Nombre de participants -->
+                        <div class="wizard-content d-none" data-step="4">
+                            <h5 class="mb-3">Nombre de participants et informations</h5>
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label">Nombre de participants <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control form-control-lg" name="num_participants" id="num_participants" min="1" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Prénom <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="customer_first_name" id="customer_first_name" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Nom <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="customer_last_name" id="customer_last_name" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Email <span class="text-danger">*</span></label>
+                                    <input type="email" class="form-control" name="customer_email" id="customer_email" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Téléphone <span class="text-danger">*</span></label>
+                                    <input type="tel" class="form-control" name="customer_phone" id="customer_phone" required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Notes (optionnel)</label>
+                                    <textarea class="form-control" name="notes" id="notes" rows="2"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 5: Confirmation -->
+                        <div class="wizard-content d-none" data-step="5">
+                            <h5 class="mb-3">Récapitulatif de la réservation</h5>
+                            <div class="card">
+                                <div class="card-body">
+                                    <div id="bookingSummary"></div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="total_price" id="total_price">
+                            <input type="hidden" name="status" value="confirmed">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="wizardPrevBtn" style="display:none;">
+                        <i class="bi bi-arrow-left"></i> Précédent
+                    </button>
+                    <button type="button" class="btn btn-primary" id="wizardNextBtn">
+                        Suivant <i class="bi bi-arrow-right"></i>
+                    </button>
+                    <button type="submit" form="createBookingForm" class="btn btn-success d-none" id="wizardSubmitBtn">
+                        <i class="bi bi-check-circle"></i> Confirmer la réservation
+                    </button>
+                </div>
             </div>
         </div>
     </div>
+
+    <style>
+    .wizard-step {
+        text-align: center;
+        flex: 1;
+        position: relative;
+    }
+    .wizard-step-number {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #e9ecef;
+        color: #6c757d;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    .wizard-step.active .wizard-step-number,
+    .wizard-step.completed .wizard-step-number {
+        background: #0d6efd;
+        color: white;
+    }
+    .wizard-step-label {
+        font-size: 12px;
+        color: #6c757d;
+    }
+    .wizard-step.active .wizard-step-label {
+        color: #0d6efd;
+        font-weight: 600;
+    }
+    .game-card, .room-card {
+        cursor: pointer;
+        transition: all 0.3s;
+        border: 2px solid #dee2e6;
+    }
+    .game-card:hover, .room-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .game-card.selected, .room-card.selected {
+        border-color: #0d6efd;
+        background: #e7f1ff;
+    }
+    .time-slot {
+        padding: 10px;
+        margin: 5px;
+        border: 2px solid #dee2e6;
+        border-radius: 8px;
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.3s;
+    }
+    .time-slot:hover {
+        border-color: #0d6efd;
+        background: #f8f9fa;
+    }
+    .time-slot.selected {
+        border-color: #0d6efd;
+        background: #0d6efd;
+        color: white;
+    }
+    .time-slot.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: #f8f9fa;
+    }
+    </style>
 
 <?php
 $additionalJS = '
@@ -538,22 +632,58 @@ $additionalJS = '
         });
     }
 
-    // Charger les jeux et salles dans le formulaire de création
+    // Wizard state
+    let wizardCurrentStep = 1;
+    let wizardData = {
+        game: null,
+        room: null,
+        date: null,
+        time: null,
+        participants: 1
+    };
+
+    // Charger les jeux dans le wizard
     async function loadCreateFormOptions() {
         try {
-            // Charger les jeux
             const gamesResponse = await fetch(`${API_BASE_URL}/games`);
             const gamesResult = await gamesResponse.json();
             
             if (gamesResult.status === "success") {
-                const gameSelect = document.getElementById("game_id");
+                const gamesGrid = document.getElementById("gamesGrid");
+                gamesGrid.innerHTML = "";
+                
                 gamesResult.data.forEach(game => {
-                    const option = document.createElement("option");
-                    option.value = game.id;
-                    option.textContent = `${game.name} (${game.price} TND)`;
-                    option.dataset.price = game.price;
-                    option.dataset.duration = game.duration;
-                    gameSelect.appendChild(option);
+                    const col = document.createElement("div");
+                    col.className = "col-md-4 mb-3";
+                    
+                    const card = document.createElement("div");
+                    card.className = "card game-card h-100";
+                    card.dataset.gameId = game.id;
+                    card.dataset.gameName = game.name;
+                    card.dataset.gamePrice = game.price;
+                    card.dataset.gameDuration = game.duration;
+                    
+                    card.innerHTML = `
+                        <div class="card-body text-center">
+                            <h5 class="card-title">${game.name}</h5>
+                            <p class="card-text">
+                                <strong>${game.price} TND</strong><br>
+                                <small class="text-muted">${game.duration} minutes</small>
+                            </p>
+                        </div>
+                    `;
+                    
+                    card.addEventListener("click", function() {
+                        selectGame(
+                            parseInt(this.dataset.gameId),
+                            this.dataset.gameName,
+                            parseFloat(this.dataset.gamePrice),
+                            parseInt(this.dataset.gameDuration)
+                        );
+                    });
+                    
+                    col.appendChild(card);
+                    gamesGrid.appendChild(col);
                 });
             }
         } catch (error) {
@@ -561,23 +691,61 @@ $additionalJS = '
         }
     }
 
+    // Sélectionner un jeu
+    function selectGame(id, name, price, duration) {
+        wizardData.game = { id, name, price, duration };
+        document.getElementById("selected_game_id").value = id;
+        
+        document.querySelectorAll(".game-card").forEach(card => card.classList.remove("selected"));
+        
+        // Trouver et marquer la carte sélectionnée
+        const selectedCard = document.querySelector(`.game-card[data-game-id="${id}"]`);
+        if (selectedCard) {
+            selectedCard.classList.add("selected");
+        }
+        
+        document.getElementById("wizardNextBtn").disabled = false;
+    }
+
     // Charger les salles disponibles pour un jeu
     async function loadRoomsForGame(gameId) {
-        const roomSelect = document.getElementById("room_id");
-        roomSelect.innerHTML = "<option value=\'\'>Sélectionner une salle</option>";
-        
-        if (!gameId) return;
-
         try {
             const response = await fetch(`${API_BASE_URL}/availability/rooms?game_id=${gameId}`);
             const result = await response.json();
             
             if (result.status === "success" && result.data) {
+                const roomsGrid = document.getElementById("roomsGrid");
+                roomsGrid.innerHTML = "";
+                
                 result.data.forEach(room => {
-                    const option = document.createElement("option");
-                    option.value = room.id;
-                    option.textContent = `${room.name} (Capacité: ${room.capacity})`;
-                    roomSelect.appendChild(option);
+                    const col = document.createElement("div");
+                    col.className = "col-md-4 mb-3";
+                    
+                    const card = document.createElement("div");
+                    card.className = "card room-card h-100";
+                    card.dataset.roomId = room.id;
+                    card.dataset.roomName = room.name;
+                    card.dataset.roomCapacity = room.capacity;
+                    
+                    card.innerHTML = `
+                        <div class="card-body text-center">
+                            <h5 class="card-title">${room.name}</h5>
+                            <p class="card-text">
+                                <i class="bi bi-people"></i> Capacité: ${room.capacity}
+                            </p>
+                        </div>
+                    `;
+                    
+                    card.addEventListener("click", function() {
+                        selectRoom(
+                            parseInt(this.dataset.roomId),
+                            this.dataset.roomName,
+                            parseInt(this.dataset.roomCapacity)
+                        );
+                    });
+                    
+                    col.appendChild(card);
+                    roomsGrid.appendChild(col);
                 });
             }
         } catch (error) {
@@ -585,25 +753,207 @@ $additionalJS = '
         }
     }
 
-    // Vérifier la disponibilité d\'un créneau
-    async function checkAvailability() {
-        const gameId = document.getElementById("game_id").value;
-        const roomId = document.getElementById("room_id").value;
-        const bookingDate = document.getElementById("booking_date").value;
-        const startTime = document.getElementById("start_time").value;
-        const gameSelect = document.getElementById("game_id");
-
-        if (!gameId || !roomId || !bookingDate || !startTime) {
-            return true; // Ne pas vérifier si les champs ne sont pas remplis
+    // Sélectionner une salle
+    function selectRoom(id, name, capacity) {
+        wizardData.room = { id, name, capacity };
+        document.getElementById("selected_room_id").value = id;
+        
+        document.querySelectorAll(".room-card").forEach(card => card.classList.remove("selected"));
+        
+        // Trouver et marquer la carte sélectionnée
+        const selectedCard = document.querySelector(`.room-card[data-room-id="${id}"]`);
+        if (selectedCard) {
+            selectedCard.classList.add("selected");
         }
+        
+        document.getElementById("wizardNextBtn").disabled = false;
+    }
 
-        // Récupérer la durée du jeu depuis l\'option sélectionnée
-        const selectedOption = gameSelect.options[gameSelect.selectedIndex];
-        const duration = selectedOption ? parseInt(selectedOption.dataset.duration) || 60 : 60;
+    // Charger les créneaux disponibles
+    async function loadTimeSlots() {
+        const date = document.getElementById("booking_date").value;
+        if (!date || !wizardData.game || !wizardData.room) return;
 
-        // Calculer l\'heure de fin
-        const startDate = new Date(`2000-01-01T${startTime}:00`);
-        startDate.setMinutes(startDate.getMinutes() + duration);
+        try {
+            const response = await fetch(`${API_BASE_URL}/availability/slots?game_id=${wizardData.game.id}&date=${date}`);
+            const result = await response.json();
+            
+            if (result.status === "success") {
+                const container = document.getElementById("timeSlotsContainer");
+                container.innerHTML = "";
+                
+                const roomSlots = result.data[`room_${wizardData.room.id}`] || [];
+                
+                if (roomSlots.length === 0) {
+                    container.innerHTML = \'<div class="alert alert-warning">Aucun créneau disponible pour cette date</div>\';
+                    return;
+                }
+                
+                roomSlots.forEach(slot => {
+                    const timeSlot = document.createElement("div");
+                    timeSlot.className = "time-slot d-inline-block";
+                    timeSlot.textContent = slot.start_formatted;
+                    timeSlot.dataset.time = slot.start;
+                    
+                    timeSlot.addEventListener("click", function() {
+                        selectTimeSlot(this.dataset.time);
+                    });
+                    
+                    container.appendChild(timeSlot);
+                });
+            }
+        } catch (error) {
+            console.error("Erreur lors du chargement des créneaux:", error);
+        }
+    }
+
+    // Sélectionner un créneau
+    function selectTimeSlot(time) {
+        wizardData.time = time;
+        document.getElementById("selected_time").value = time;
+        
+        document.querySelectorAll(".time-slot").forEach(slot => slot.classList.remove("selected"));
+        
+        // Trouver et marquer le créneau sélectionné
+        const selectedSlot = document.querySelector(`.time-slot[data-time="${time}"]`);
+        if (selectedSlot) {
+            selectedSlot.classList.add("selected");
+        }
+        
+        document.getElementById("wizardNextBtn").disabled = false;
+    }
+
+    // Navigation du wizard
+    function wizardNext() {
+        if (!validateWizardStep(wizardCurrentStep)) {
+            return;
+        }
+        
+        if (wizardCurrentStep < 5) {
+            wizardCurrentStep++;
+            showWizardStep(wizardCurrentStep);
+            
+            if (wizardCurrentStep === 2) {
+                loadRoomsForGame(wizardData.game.id);
+            } else if (wizardCurrentStep === 3) {
+                const today = new Date().toISOString().split("T")[0];
+                document.getElementById("booking_date").min = today;
+                document.getElementById("booking_date").value = today;
+                loadTimeSlots();
+            } else if (wizardCurrentStep === 5) {
+                showBookingSummary();
+            }
+        }
+    }
+
+    function wizardPrev() {
+        if (wizardCurrentStep > 1) {
+            wizardCurrentStep--;
+            showWizardStep(wizardCurrentStep);
+        }
+    }
+
+    function showWizardStep(step) {
+        document.querySelectorAll(".wizard-content").forEach(content => {
+            content.classList.add("d-none");
+        });
+        
+        document.querySelector(`.wizard-content[data-step="${step}"]`).classList.remove("d-none");
+        
+        document.querySelectorAll(".wizard-step").forEach((stepEl, index) => {
+            stepEl.classList.remove("active", "completed");
+            if (index + 1 < step) {
+                stepEl.classList.add("completed");
+            } else if (index + 1 === step) {
+                stepEl.classList.add("active");
+            }
+        });
+        
+        const progress = (step / 5) * 100;
+        document.getElementById("wizardProgress").style.width = progress + "%";
+        
+        document.getElementById("wizardPrevBtn").style.display = step > 1 ? "inline-block" : "none";
+        document.getElementById("wizardNextBtn").style.display = step < 5 ? "inline-block" : "none";
+        document.getElementById("wizardSubmitBtn").classList.toggle("d-none", step !== 5);
+        
+        if (step === 1 || step === 2 || step === 3) {
+            document.getElementById("wizardNextBtn").disabled = true;
+        }
+    }
+
+    function validateWizardStep(step) {
+        switch(step) {
+            case 1:
+                if (!wizardData.game) {
+                    Swal.fire("Attention", "Veuillez sélectionner un jeu", "warning");
+                    return false;
+                }
+                break;
+            case 2:
+                if (!wizardData.room) {
+                    Swal.fire("Attention", "Veuillez sélectionner une salle", "warning");
+                    return false;
+                }
+                break;
+            case 3:
+                if (!wizardData.time) {
+                    Swal.fire("Attention", "Veuillez sélectionner un créneau horaire", "warning");
+                    return false;
+                }
+                break;
+            case 4:
+                const firstName = document.getElementById("customer_first_name").value;
+                const lastName = document.getElementById("customer_last_name").value;
+                const email = document.getElementById("customer_email").value;
+                const phone = document.getElementById("customer_phone").value;
+                const participants = document.getElementById("num_participants").value;
+                
+                if (!firstName || !lastName || !email || !phone || !participants) {
+                    Swal.fire("Attention", "Veuillez remplir tous les champs obligatoires", "warning");
+                    return false;
+                }
+                
+                wizardData.participants = parseInt(participants);
+                break;
+        }
+        return true;
+    }
+
+    function showBookingSummary() {
+        const summary = document.getElementById("bookingSummary");
+        const totalPrice = wizardData.game.price * wizardData.participants;
+        document.getElementById("total_price").value = totalPrice;
+        
+        const firstName = document.getElementById("customer_first_name").value;
+        const lastName = document.getElementById("customer_last_name").value;
+        const email = document.getElementById("customer_email").value;
+        const phone = document.getElementById("customer_phone").value;
+        const date = document.getElementById("booking_date").value;
+        
+        summary.innerHTML = `
+            <h5 class="mb-3">Détails de la réservation</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Jeu:</strong> ${wizardData.game.name}</p>
+                    <p><strong>Salle:</strong> ${wizardData.room.name}</p>
+                    <p><strong>Date:</strong> ${new Date(date).toLocaleDateString("fr-FR")}</p>
+                    <p><strong>Heure:</strong> ${wizardData.time.substring(0,5)}</p>
+                    <p><strong>Durée:</strong> ${wizardData.game.duration} minutes</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Client:</strong> ${firstName} ${lastName}</p>
+                    <p><strong>Email:</strong> ${email}</p>
+                    <p><strong>Téléphone:</strong> ${phone}</p>
+                    <p><strong>Participants:</strong> ${wizardData.participants}</p>
+                    <p><strong>Prix total:</strong> <span class="text-primary fs-4">${totalPrice} TND</span></p>
+                </div>
+            </div>
+        `;
+    }
+
+    // Vérifier la disponibilité d\'un créneau (fonction conservée pour compatibilité)
+    async function checkAvailability() {
+        return true;
         const endTime = startDate.toTimeString().substring(0, 5);
 
         try {
@@ -654,48 +1004,80 @@ $additionalJS = '
         loadFilterOptions();
         loadCreateFormOptions();
 
-        const gameSelect = document.getElementById("game_id");
         const numParticipants = document.getElementById("num_participants");
         const bookingForm = document.getElementById("createBookingForm");
+        const bookingDateInput = document.getElementById("booking_date");
 
-        // Charger les salles quand un jeu est sélectionné
-        gameSelect.addEventListener("change", function() {
-            loadRoomsForGame(this.value);
-            updatePrice();
+        // Boutons du wizard
+        document.getElementById("wizardNextBtn").addEventListener("click", wizardNext);
+        document.getElementById("wizardPrevBtn").addEventListener("click", wizardPrev);
+
+        // Mettre à jour le prix quand le nombre de participants change
+        numParticipants.addEventListener("input", function() {
+            wizardData.participants = parseInt(this.value) || 1;
         });
-        
-        numParticipants.addEventListener("input", updatePrice);
 
-        // Vérifier la disponibilité avant soumission
+        // Recharger les créneaux quand la date change
+        bookingDateInput.addEventListener("change", loadTimeSlots);
+
+        // Gérer la soumission du formulaire wizard
         bookingForm.addEventListener("submit", async function(e) {
             e.preventDefault();
             
-            const isAvailable = await checkAvailability();
+            // Soumettre directement le formulaire
+            const formData = new FormData(this);
             
-            if (!isAvailable) {
+            try {
+                const response = await fetch("/admin/bookings/create", {
+                    method: "POST",
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    await Swal.fire({
+                        icon: "success",
+                        title: "Succès",
+                        text: "La réservation a été créée avec succès"
+                    });
+                    
+                    // Fermer le modal et recharger le calendrier
+                    bootstrap.Modal.getInstance(document.getElementById("addBookingModal")).hide();
+                    calendar.refetchEvents();
+                    
+                    // Réinitialiser le wizard
+                    wizardCurrentStep = 1;
+                    wizardData = { game: null, room: null, date: null, time: null, participants: 1 };
+                    bookingForm.reset();
+                    showWizardStep(1);
+                } else {
+                    await Swal.fire({
+                        icon: "error",
+                        title: "Erreur",
+                        text: result.message || "Une erreur est survenue"
+                    });
+                }
+            } catch (error) {
+                console.error("Erreur:", error);
                 await Swal.fire({
                     icon: "error",
-                    title: "Créneau non disponible",
-                    text: "Ce créneau horaire est déjà réservé ou indisponible. Veuillez choisir une autre date/heure."
+                    title: "Erreur",
+                    text: "Une erreur est survenue lors de la création"
                 });
-                return;
             }
-            
-            // Si disponible, soumettre le formulaire
-            this.submit();
         });
-
-        // Définir la date minimale à aujourd\'hui
-        const bookingDateInput = document.getElementById("booking_date");
-        const today = new Date().toISOString().split("T")[0];
-        bookingDateInput.min = today;
-        bookingDateInput.value = today;
-
-        // Définir l\'heure par défaut
-        document.getElementById("start_time").value = "10:00";
     });
     
-    // Recharger le calendrier après création
+    // Réinitialiser le wizard quand le modal est ouvert
+    document.getElementById("addBookingModal").addEventListener("show.bs.modal", function() {
+        wizardCurrentStep = 1;
+        wizardData = { game: null, room: null, date: null, time: null, participants: 1 };
+        showWizardStep(1);
+        loadCreateFormOptions();
+    });
+    
+    // Recharger le calendrier après fermeture du modal
     document.getElementById("addBookingModal").addEventListener("hidden.bs.modal", function() {
         if (calendar) {
             calendar.refetchEvents();
