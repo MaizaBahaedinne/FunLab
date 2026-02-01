@@ -268,7 +268,7 @@ class BookingsController extends BaseController
             $firstName = $this->request->getPost('customer_first_name');
             $lastName = $this->request->getPost('customer_last_name');
             
-            $userId = $this->userModel->insert([
+            $inserted = $this->userModel->insert([
                 'username' => strtolower($firstName . '_' . $lastName . '_' . substr(uniqid(), -4)),
                 'email' => $customerEmail,
                 'first_name' => $firstName,
@@ -278,6 +278,15 @@ class BookingsController extends BaseController
                 'role' => 'user',
                 'email_verified' => 1
             ]);
+            
+            if (!$inserted) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'Erreur lors de la création de l\'utilisateur'
+                ]);
+            }
+            
+            $userId = $this->userModel->getInsertID();
         } else {
             $userId = $user['id'];
         }
@@ -311,10 +320,17 @@ class BookingsController extends BaseController
         $bookingId = $this->bookingModel->insert($bookingData);
 
         if ($bookingId) {
-            return redirect()->to('/admin/bookings/view/' . $bookingId)->with('success', 'Réservation créée avec succès');
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Réservation créée avec succès',
+                'booking_id' => $bookingId
+            ]);
         }
 
-        return redirect()->back()->withInput()->with('error', 'Erreur lors de la création de la réservation');
+        return $this->response->setJSON([
+            'success' => false,
+            'message' => 'Erreur lors de la création de la réservation'
+        ]);
     }
 
     /**
