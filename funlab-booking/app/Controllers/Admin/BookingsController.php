@@ -268,21 +268,25 @@ class BookingsController extends BaseController
             $firstName = $this->request->getPost('customer_first_name');
             $lastName = $this->request->getPost('customer_last_name');
             
-            $inserted = $this->userModel->insert([
+            $userData = [
                 'username' => strtolower($firstName . '_' . $lastName . '_' . substr(uniqid(), -4)),
                 'email' => $customerEmail,
                 'first_name' => $firstName,
                 'last_name' => $lastName,
                 'phone' => $this->request->getPost('customer_phone'),
-                'password' => password_hash(bin2hex(random_bytes(16)), PASSWORD_DEFAULT), // Mot de passe aléatoire
-                'role' => 'user',
-                'email_verified' => 1
-            ]);
+                'password' => bin2hex(random_bytes(16)), // Mot de passe aléatoire (sera hashé par le callback)
+                'role' => 'customer',
+                'email_verified' => 1,
+                'is_active' => 1
+            ];
+            
+            $inserted = $this->userModel->insert($userData);
             
             if (!$inserted) {
+                $errors = $this->userModel->errors();
                 return $this->response->setJSON([
                     'success' => false,
-                    'message' => 'Erreur lors de la création de l\'utilisateur'
+                    'message' => 'Erreur lors de la création de l\'utilisateur: ' . (is_array($errors) ? implode(', ', $errors) : 'Erreur inconnue')
                 ]);
             }
             
