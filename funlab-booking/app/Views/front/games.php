@@ -1,13 +1,6 @@
 <?php
 $additionalStyles = <<<CSS
 <style>
-.games-hero {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 80px 0;
-    margin-bottom: 50px;
-}
-
 .category-section {
     margin-bottom: 60px;
 }
@@ -133,11 +126,15 @@ CSS;
 <?= view('front/layouts/navbar', compact('activeMenu')) ?>
 
 <!-- Hero Section -->
-<section class="games-hero">
-    <div class="container text-center">
-        <h1 class="display-4 fw-bold mb-3">
-            <i class="bi bi-controller"></i> Nos Jeux
-        </h1>
+<?= view('front/components/hero', [
+    'title' => 'Nos Jeux',
+    'subtitle' => 'Découvrez nos activités',
+    'breadcrumbs' => [
+        'Accueil' => base_url('/'),
+        'Activités' => null
+    ],
+    'height' => 'small'
+]) ?>
         <p class="lead mb-0">Découvrez notre collection de jeux exceptionnels</p>
     </div>
 </section>

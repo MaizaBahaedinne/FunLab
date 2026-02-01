@@ -1,21 +1,28 @@
 <?php
-$title = 'FunLab Tunisie - Centre d\'Activités Indoor';
+$title = theme_setting('app_name', 'FunLab Tunisie') . ' - Centre d\'Activités Indoor';
 $activeMenu = 'home';
 ?>
 
 <?= view('front/layouts/header', compact('title')) ?>
 <?= view('front/layouts/navbar', compact('activeMenu')) ?>
 
-    <!-- Hero Section -->
-    <section class="hero-section text-center">
+<!-- Home Hero Section -->
+<section class="home-hero text-center">
+    <div class="home-hero-content">
         <div class="container">
-            <h1 class="display-3 fw-bold mb-4">Bienvenue chez FunLab Tunisie</h1>
-            <p class="lead mb-5">Escape Game • Réalité Virtuelle • Laser Game</p>
-            <a href="<?= base_url('booking') ?>" class="btn btn-light btn-lg px-5">
-                <i class="bi bi-calendar-check"></i> Réserver Maintenant
-            </a>
+            <h1 class="display-3 fw-bold mb-4">Bienvenue chez <?= theme_setting('app_name', 'FunLab Tunisie') ?></h1>
+            <p class="lead mb-5">Escape Game • Réalité Virtuelle • Laser Game • Arcade</p>
+            <div class="cta-buttons">
+                <a href="<?= base_url('booking') ?>" class="btn btn-light btn-lg px-5 me-3">
+                    <i class="bi bi-calendar-check"></i> Réserver Maintenant
+                </a>
+                <a href="<?= base_url('games') ?>" class="btn btn-outline-light btn-lg px-5">
+                    <i class="bi bi-controller"></i> Découvrir nos Activités
+                </a>
+            </div>
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- Activités -->
     <section class="py-5">

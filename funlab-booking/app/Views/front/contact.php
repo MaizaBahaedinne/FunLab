@@ -1,13 +1,6 @@
 <?php
 $additionalStyles = <<<CSS
 <style>
-.contact-hero {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 80px 0 60px;
-    margin-bottom: 50px;
-}
-
 .contact-info-card {
     background: white;
     border-radius: 20px;
@@ -219,16 +212,15 @@ CSS;
 <?= view('front/layouts/navbar', compact('activeMenu')) ?>
 
 <!-- Hero Section -->
-<section class="contact-hero">
-    <div class="container text-center">
-        <h1 class="display-4 fw-bold mb-3">
-            <?= esc($contactSettings['contact_title'] ?? 'Contactez-Nous') ?>
-        </h1>
-        <p class="lead mb-0">
-            <?= esc($contactSettings['contact_subtitle'] ?? 'Nous sommes là pour vous') ?>
-        </p>
-    </div>
-</section>
+<?= view('front/components/hero', [
+    'title' => $contactSettings['contact_title'] ?? 'Contactez-Nous',
+    'subtitle' => $contactSettings['contact_subtitle'] ?? 'Nous sommes là pour vous',
+    'breadcrumbs' => [
+        'Accueil' => base_url('/'),
+        'Contact' => null
+    ],
+    'height' => 'small'
+]) ?>
 
 <!-- Contact Content -->
 <section class="pb-5">
