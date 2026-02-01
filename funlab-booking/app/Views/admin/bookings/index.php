@@ -221,12 +221,6 @@ $additionalJS = '
         game: ""
     };
 
-    document.addEventListener("DOMContentLoaded", function() {
-        initCalendar();
-        setupFilters();
-        loadFilterOptions();
-    });
-
     function initCalendar() {
         const calendarEl = document.getElementById("calendar");
         
@@ -640,23 +634,29 @@ $additionalJS = '
     }
 
     // Calculer le prix total automatiquement
+    function updatePrice() {
+        const gameSelect = document.getElementById("game_id");
+        const numParticipants = document.getElementById("num_participants");
+        const totalPriceInput = document.getElementById("total_price");
+        
+        const selectedOption = gameSelect.options[gameSelect.selectedIndex];
+        if (selectedOption && selectedOption.dataset.price) {
+            const price = parseFloat(selectedOption.dataset.price);
+            const participants = parseInt(numParticipants.value) || 1;
+            totalPriceInput.value = (price * participants).toFixed(2);
+        }
+    }
+
+    // Initialiser le formulaire de création au chargement de la page
     document.addEventListener("DOMContentLoaded", function() {
+        initCalendar();
+        setupFilters();
+        loadFilterOptions();
         loadCreateFormOptions();
 
         const gameSelect = document.getElementById("game_id");
-        const roomSelect = document.getElementById("room_id");
         const numParticipants = document.getElementById("num_participants");
-        const totalPriceInput = document.getElementById("total_price");
         const bookingForm = document.getElementById("createBookingForm");
-
-        function updatePrice() {
-            const selectedOption = gameSelect.options[gameSelect.selectedIndex];
-            if (selectedOption && selectedOption.dataset.price) {
-                const price = parseFloat(selectedOption.dataset.price);
-                const participants = parseInt(numParticipants.value) || 1;
-                totalPriceInput.value = (price * participants).toFixed(2);
-            }
-        }
 
         // Charger les salles quand un jeu est sélectionné
         gameSelect.addEventListener("change", function() {
