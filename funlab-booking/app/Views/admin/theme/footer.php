@@ -1,4 +1,12 @@
-<?= view('admin/layouts/header', ['title' => $title]) ?>
+<?php
+$activeMenu = 'settings';
+$pageTitle = 'Options du pied de page';
+$breadcrumbs = ['Admin' => base_url('admin/dashboard'), 'Apparence' => null, 'Pied de page' => null];
+?>
+
+<?= view('admin/layouts/header', compact('title')) ?>
+<?= view('admin/layouts/sidebar', compact('activeMenu')) ?>
+<?= view('admin/layouts/topbar', compact('pageTitle', 'breadcrumbs')) ?>
 
 <div class="container-fluid">
     <div class="row">
