@@ -133,6 +133,9 @@ document.getElementById('colorsForm').addEventListener('submit', async function(
     try {
         const response = await fetch('<?= base_url('admin/theme/save') ?>', {
             method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
             body: formData
         });
         

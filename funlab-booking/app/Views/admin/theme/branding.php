@@ -127,6 +127,9 @@ document.getElementById('brandingForm').addEventListener('submit', async functio
     try {
         const response = await fetch('<?= base_url('admin/theme/save') ?>', {
             method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
             body: formData
         });
         
