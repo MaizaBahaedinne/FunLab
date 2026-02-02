@@ -6,20 +6,17 @@ $additionalStyles = <<<CSS
 .step-indicator {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
     align-items: center;
+    justify-content: center;
     margin: 40px auto 60px;
-    max-width: 100%;
     padding: 0 20px;
-    gap: 0;
 }
 
 .step {
-    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    position: relative;
+    min-width: 120px;
 }
 
 .step-number {
@@ -36,38 +33,29 @@ $additionalStyles = <<<CSS
     font-size: 1.2rem;
     margin-bottom: 10px;
     transition: all 0.3s ease;
-    position: relative;
-    z-index: 2;
 }
 
 .step-label {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: #6c757d;
     text-align: center;
     font-weight: 500;
-    transition: all 0.3s ease;
     white-space: nowrap;
 }
 
 .step-line {
-    position: absolute;
-    top: 25px;
-    left: calc(50% + 25px);
-    width: calc(100% - 50px);
+    width: 80px;
     height: 3px;
     background: #e9ecef;
-    z-index: 1;
-}
-
-.step:last-child .step-line {
-    display: none;
+    margin: 0 10px;
+    align-self: flex-start;
+    margin-top: 23px;
 }
 
 .step.active .step-number {
     background: var(--primary-color);
     border-color: var(--primary-color);
     color: white;
-    box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.2);
 }
 
 .step.active .step-label {
@@ -85,11 +73,14 @@ $additionalStyles = <<<CSS
     color: #28a745;
 }
 
-.step.completed .step-line {
+.step-line.completed {
     background: #28a745;
 }
 
 @media (max-width: 768px) {
+    .step {
+        min-width: 80px;
+    }
     .step-label {
         font-size: 0.7rem;
     }
@@ -99,8 +90,8 @@ $additionalStyles = <<<CSS
         font-size: 1rem;
     }
     .step-line {
-        top: 20px;
-        left: calc(50% + 20px);
+        width: 40px;
+        margin-top: 18px;
     }
 }
 .game-list-item {
@@ -227,27 +218,26 @@ CSS;
             <div class="step active" id="step1-indicator">
                 <div class="step-number">1</div>
                 <div class="step-label">Choisir un jeu</div>
-                <div class="step-line"></div>
             </div>
+            <div class="step-line"></div>
             <div class="step" id="step2-indicator">
                 <div class="step-number">2</div>
                 <div class="step-label">Choisir un créneau</div>
-                <div class="step-line"></div>
             </div>
+            <div class="step-line"></div>
             <div class="step" id="step3-indicator">
                 <div class="step-number">3</div>
                 <div class="step-label">Vos informations</div>
-                <div class="step-line"></div>
             </div>
+            <div class="step-line"></div>
             <div class="step" id="step4-indicator">
                 <div class="step-number">4</div>
                 <div class="step-label">Paiement</div>
-                <div class="step-line"></div>
             </div>
+            <div class="step-line"></div>
             <div class="step" id="step5-indicator">
                 <div class="step-number">5</div>
                 <div class="step-label">Confirmation</div>
-                <div class="step-line"></div>
             </div>
         </div>
 
