@@ -477,14 +477,19 @@ CSS;
         }
 
         function selectGame(gameId) {
-            // Récupérer les détails du jeu depuis l'API ou le DOM
+            // Récupérer les détails du jeu depuis le DOM
             const gameCard = event.currentTarget;
-            const gameName = gameCard.querySelector('.card-title').textContent;
-            const gamePrice = parseFloat(gameCard.querySelector('strong').textContent);
-            const durationText = gameCard.querySelector('.bi-clock').nextSibling.textContent.trim();
+            const gameName = gameCard.querySelector('h5').textContent.trim();
+            const gamePriceText = gameCard.querySelector('.game-price-badge').textContent.trim();
+            const gamePrice = parseFloat(gamePriceText.replace(/[^\d.]/g, ''));
+            
+            const durationText = gameCard.querySelector('.bi-clock').parentElement.textContent.trim();
             const duration = parseInt(durationText);
-            const playersText = gameCard.querySelector('.bi-people').nextSibling.textContent.trim();
-            const [minPlayers, maxPlayers] = playersText.split('-').map(p => parseInt(p));
+            
+            const playersText = gameCard.querySelector('.bi-people').parentElement.textContent.trim();
+            const playerMatch = playersText.match(/(\d+)-(\d+)/);
+            const minPlayers = playerMatch ? parseInt(playerMatch[1]) : 2;
+            const maxPlayers = playerMatch ? parseInt(playerMatch[2]) : 10;
 
             bookingData.game = {
                 id: gameId,

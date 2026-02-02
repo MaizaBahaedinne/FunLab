@@ -5,6 +5,13 @@ $logo = theme_setting('site_logo', '/assets/images/logo.png');
 $logoWidth = theme_setting('logo_width', 50);
 $logoHeight = theme_setting('logo_height', 50);
 $appName = theme_setting('app_name', 'FunLab');
+
+// Compter les notifications
+$bookingModel = new \App\Models\BookingModel();
+$reviewModel = new \App\Models\ReviewModel();
+
+$pendingBookingsCount = $bookingModel->where('status', 'pending')->countAllResults();
+$pendingReviewsCount = $reviewModel->where('is_approved', 0)->countAllResults();
 ?>
         <!-- Sidebar -->
         <div class="admin-sidebar text-white">
@@ -38,6 +45,9 @@ $appName = theme_setting('app_name', 'FunLab');
                 <a class="nav-link text-white <?= ($activeMenu ?? '') === 'bookings' ? 'active bg-primary rounded' : '' ?>" 
                    href="<?= base_url('admin/bookings') ?>">
                     <i class="bi bi-calendar-check"></i> Réservations
+                    <?php if ($pendingBookingsCount > 0): ?>
+                        <span class="badge bg-danger rounded-pill float-end"><?= $pendingBookingsCount ?></span>
+                    <?php endif; ?>
                 </a>
                 <?php endif; ?>
                 
@@ -62,6 +72,9 @@ $appName = theme_setting('app_name', 'FunLab');
                 <a class="nav-link text-white <?= ($activeMenu ?? '') === 'reviews' ? 'active bg-primary rounded' : '' ?>" 
                    href="<?= base_url('admin/reviews') ?>">
                     <i class="bi bi-star"></i> Avis
+                    <?php if ($pendingReviewsCount > 0): ?>
+                        <span class="badge bg-warning rounded-pill float-end"><?= $pendingReviewsCount ?></span>
+                    <?php endif; ?>
                 </a>
                 <?php endif; ?>
                 

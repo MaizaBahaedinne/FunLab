@@ -58,6 +58,11 @@
             background: var(--primary-color) !important;
             color: white !important;
         }
+        .admin-sidebar .badge {
+            font-size: 0.7rem;
+            padding: 3px 7px;
+            font-weight: 600;
+        }
         .admin-content {
             flex: 1;
             margin-left: 250px;
