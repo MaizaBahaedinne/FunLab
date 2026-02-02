@@ -37,6 +37,8 @@ $breadcrumbs = ['Admin' => base_url('admin'), 'Paramètres' => base_url('admin/s
                                                     <th class="text-center">Créer</th>
                                                     <th class="text-center">Modifier</th>
                                                     <th class="text-center">Supprimer</th>
+                                                    <th class="text-center">Approuver</th>
+                                                    <th class="text-center">Scanner</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -69,6 +71,20 @@ $breadcrumbs = ['Admin' => base_url('admin'), 'Paramètres' => base_url('admin/s
                                                                 name="permissions[<?= $role['name'] ?>][<?= $moduleKey ?>][]" 
                                                                 value="delete"
                                                                 <?= in_array('delete', $rolePerms) ? 'checked' : '' ?>>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <input type="checkbox" class="form-check-input" 
+                                                                name="permissions[<?= $role['name'] ?>][<?= $moduleKey ?>][]" 
+                                                                value="approve"
+                                                                <?= in_array('approve', $rolePerms) ? 'checked' : '' ?>
+                                                                <?= !in_array($moduleKey, ['reviews']) ? 'disabled' : '' ?>>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <input type="checkbox" class="form-check-input" 
+                                                                name="permissions[<?= $role['name'] ?>][<?= $moduleKey ?>][]" 
+                                                                value="scan"
+                                                                <?= in_array('scan', $rolePerms) ? 'checked' : '' ?>
+                                                                <?= $moduleKey !== 'scanner' ? 'disabled' : '' ?>>
                                                         </td>
                                                     </tr>
                                                 <?php endforeach; ?>

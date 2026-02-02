@@ -468,7 +468,12 @@ class SettingsController extends BaseController
                 'games' => 'Jeux',
                 'rooms' => 'Salles',
                 'closures' => 'Fermetures',
+                'reviews' => 'Avis Clients',
+                'participants' => 'Participants',
+                'teams' => 'Équipes',
                 'scanner' => 'Scanner QR',
+                'promo_codes' => 'Codes Promo',
+                'contacts' => 'Contacts & Newsletter',
                 'settings' => 'Paramètres',
                 'users' => 'Utilisateurs'
             ],
