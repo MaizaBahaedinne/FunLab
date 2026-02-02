@@ -126,7 +126,7 @@ $additionalStyles = '
 <?php endif; ?>
 
 <!-- Call to Action -->
-<section class="about-section" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); color: white;">
+<section class="about-section" style="background: var(--primary-color); color: white;">
     <div class="container text-center">
         <h2 class="mb-4">Prêt à vivre l'expérience FunLab ?</h2>
         <a href="<?= base_url('booking') ?>" class="btn btn-light btn-lg">

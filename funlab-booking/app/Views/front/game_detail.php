@@ -21,7 +21,7 @@ $additionalStyles = <<<CSS
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    background: var(--primary-color);
     color: white;
     font-size: 8rem;
 }
@@ -113,7 +113,7 @@ $additionalStyles = <<<CSS
     padding: 18px;
     font-size: 1.1rem;
     font-weight: 600;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important;
+    background: var(--primary-color) !important;
     border: none !important;
     color: white !important;
     border-radius: 12px;

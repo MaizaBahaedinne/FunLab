@@ -196,45 +196,86 @@ $theme = get_theme_settings();
         
         /* Book Now Button */
         .btn-book-now {
-            background: var(--primary-color);
-            color: white;
+            background: var(--primary-color) !important;
+            color: white !important;
             padding: 12px 30px;
-            border-radius: 0;
+            border-radius: 8px;
             font-family: 'Oswald', sans-serif;
             font-size: 16px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
-            border: 2px solid var(--primary-color);
+            border: 2px solid var(--primary-color) !important;
             transition: all 0.3s ease;
         }
         
         .btn-book-now:hover {
-            background: transparent;
-            color: var(--primary-color);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+            background: var(--secondary-color) !important;
+            border-color: var(--secondary-color) !important;
+            color: white !important;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
         
         /* Dropdown */
         .dropdown-menu-modern {
             border: none;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-            border-radius: 0;
-            padding: 10px 0;
-            margin-top: 0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 10px;
+            background: white;
+            backdrop-filter: blur(10px);
+            min-width: 280px;
+            animation: dropdownFadeIn 0.3s ease;
+        }
+        
+        @keyframes dropdownFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .dropdown-item-modern {
-            padding: 10px 25px;
+            padding: 12px 20px;
             font-size: 15px;
+            font-family: var(--font-body);
+            font-weight: 500;
+            color: var(--text-color);
+            border-radius: 10px;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .dropdown-item-modern:last-child {
+            margin-bottom: 0;
+        }
+        
+        .dropdown-item-modern i {
+            color: var(--primary-color);
+            transition: transform 0.3s ease;
         }
         
         .dropdown-item-modern:hover {
-            background: var(--light-color);
+            background: linear-gradient(to right, rgba(var(--primary-color-rgb, 255, 107, 53), 0.1), transparent);
             color: var(--primary-color);
-            padding-left: 30px;
+            transform: translateX(5px);
+        }
+        
+        .dropdown-item-modern:hover i {
+            transform: scale(1.2);
+        }
+        
+        .dropdown-divider {
+            margin: 10px 0;
+            border-top-color: rgba(0,0,0,0.05);
         }
         
         /* Cards */
@@ -351,7 +392,7 @@ $theme = get_theme_settings();
         .home-hero {
             position: relative;
             min-height: 700px;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background: var(--primary-color);
             overflow: hidden;
         }
         
@@ -444,7 +485,7 @@ $theme = get_theme_settings();
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: var(--primary-color);
             display: flex;
             align-items: center;
             justify-content: center;

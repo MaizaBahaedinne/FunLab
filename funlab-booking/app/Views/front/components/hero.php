@@ -30,7 +30,7 @@ $heroHeight = $heights[$height] ?? $heights['medium'];
 
 // Background style
 if ($background === 'gradient') {
-    $bgStyle = 'background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);';
+    $bgStyle = 'background: var(--primary-color);';
 } else {
     $bgStyle = "background-image: url('" . esc($background) . "'); background-size: cover; background-position: center;";
 }

@@ -34,7 +34,7 @@ $additionalStyles = <<<CSS
 
 .game-card-image {
     height: 200px;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    background: var(--primary-color);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -95,7 +95,7 @@ $additionalStyles = <<<CSS
 .btn-book-game {
     width: 100%;
     padding: 12px;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important;
+    background: var(--primary-color) !important;
     border: none !important;
     color: white !important;
     font-weight: 600;

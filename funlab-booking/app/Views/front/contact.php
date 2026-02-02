@@ -28,7 +28,7 @@ $additionalStyles = <<<CSS
 .contact-icon {
     width: 60px;
     height: 60px;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    background: var(--primary-color);
     border-radius: 15px;
     display: flex;
     align-items: center;
@@ -90,7 +90,7 @@ $additionalStyles = <<<CSS
 .btn-send {
     width: 100%;
     padding: 15px;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important;
+    background: var(--primary-color) !important;
     border: none !important;
     color: white !important;
     font-weight: 600;
