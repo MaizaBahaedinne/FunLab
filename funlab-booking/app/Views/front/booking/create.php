@@ -4,81 +4,99 @@ $activeMenu = 'booking';
 $additionalStyles = <<<CSS
 <style>
 .step-indicator {
-    display: flex !important;
-    flex-direction: row !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    margin-bottom: 50px;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    padding: 30px 20px;
-    border-radius: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 40px auto 60px;
+    max-width: 900px;
+    padding: 0 20px;
 }
+
 .step {
-    flex: 1 1 auto !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    text-align: center;
-    padding: 15px 10px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     position: relative;
-    transition: all 0.3s ease;
-    min-width: 100px;
 }
-.step i {
-    font-size: 2rem !important;
-    margin-bottom: 8px;
+
+.step-number {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #e9ecef;
+    border: 3px solid #e9ecef;
     color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
     transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
 }
-.step > div {
-    font-size: 0.85rem;
+
+.step-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    text-align: center;
     font-weight: 500;
-    color: #6c757d;
     transition: all 0.3s ease;
-    white-space: nowrap;
 }
-.step::after {
-    content: '';
+
+.step-line {
     position: absolute;
-    top: 35px;
-    left: 65%;
-    width: calc(100% - 30%);
+    top: 25px;
+    left: 50%;
+    width: 100%;
     height: 3px;
-    background: #dee2e6;
-    z-index: -1;
-    transition: all 0.3s ease;
+    background: #e9ecef;
+    z-index: 1;
 }
-.step:last-child::after {
-    display: none !important;
+
+.step:last-child .step-line {
+    display: none;
 }
-.step.active i {
-    color: var(--primary-color);
-    transform: scale(1.15);
+
+.step.active .step-number {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+    box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.2);
 }
-.step.active > div {
+
+.step.active .step-label {
     color: var(--primary-color);
     font-weight: 700;
 }
-.step.active::after {
-    background: var(--primary-color);
+
+.step.completed .step-number {
+    background: #28a745;
+    border-color: #28a745;
+    color: white;
 }
-.step.completed i {
+
+.step.completed .step-label {
     color: #28a745;
 }
-.step.completed > div {
-    color: #28a745;
-    font-weight: 600;
-}
-.step.completed::after {
+
+.step.completed .step-line {
     background: #28a745;
 }
+
 @media (max-width: 768px) {
-    .step > div {
+    .step-label {
         font-size: 0.75rem;
     }
-    .step i {
-        font-size: 1.5rem !important;
+    .step-number {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    .step-line {
+        top: 20px;
     }
 }
 .game-list-item {
@@ -203,24 +221,29 @@ CSS;
         <!-- Indicateur d'étapes -->
         <div class="step-indicator">
             <div class="step active" id="step1-indicator">
-                <i class="bi bi-controller"></i>
-                <div>Choisir un jeu</div>
+                <div class="step-number">1</div>
+                <div class="step-label">Choisir un jeu</div>
+                <div class="step-line"></div>
             </div>
             <div class="step" id="step2-indicator">
-                <i class="bi bi-calendar-check"></i>
-                <div>Choisir un créneau</div>
+                <div class="step-number">2</div>
+                <div class="step-label">Choisir un créneau</div>
+                <div class="step-line"></div>
             </div>
             <div class="step" id="step3-indicator">
-                <i class="bi bi-person-fill"></i>
-                <div>Vos informations</div>
+                <div class="step-number">3</div>
+                <div class="step-label">Vos informations</div>
+                <div class="step-line"></div>
             </div>
             <div class="step" id="step4-indicator">
-                <i class="bi bi-credit-card"></i>
-                <div>Paiement</div>
+                <div class="step-number">4</div>
+                <div class="step-label">Paiement</div>
+                <div class="step-line"></div>
             </div>
             <div class="step" id="step5-indicator">
-                <i class="bi bi-check-circle"></i>
-                <div>Confirmation</div>
+                <div class="step-number">5</div>
+                <div class="step-label">Confirmation</div>
+                <div class="step-line"></div>
             </div>
         </div>
 
