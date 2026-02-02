@@ -1,5 +1,6 @@
 <?php
-$pageTitle = $title ?? 'Rôles & Permissions';
+$title = $title ?? 'Rôles & Permissions';
+$pageTitle = $title;
 $activeMenu = 'settings-roles';
 $breadcrumbs = ['Admin' => base_url('admin'), 'Paramètres' => base_url('admin/settings'), 'Rôles & Permissions' => null];
 ?>

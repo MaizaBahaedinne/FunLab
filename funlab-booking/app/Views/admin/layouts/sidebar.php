@@ -28,7 +28,7 @@ $unreadContactsCount = $contactModel->where('status', 'new')->countAllResults();
                         <i class="bi bi-speedometer2" style="font-size: 2rem; color: var(--primary-color);"></i>
                     <?php endif; ?>
                     <h4 class="mb-0">
-                        <?= esc($appName) ?> Admin
+                       
                     </h4>
                 </div>
             </div>
@@ -63,13 +63,7 @@ $unreadContactsCount = $contactModel->where('status', 'new')->countAllResults();
                 </a>
                 <?php endif; ?>
                 
-                <!-- Équipes -->
-                <?php if (canAccessModule('teams')): ?>
-                <a class="nav-link text-white <?= ($activeMenu ?? '') === 'teams' ? 'active bg-primary rounded' : '' ?>" 
-                   href="<?= base_url('admin/teams') ?>">
-                    <i class="bi bi-people-fill"></i> Équipes
-                </a>
-                <?php endif; ?>
+              
                 
                 <div class="sidebar-section-title text-white-50 text-uppercase small px-2 mt-3 mb-2">Gestion Contenu</div>
                 
