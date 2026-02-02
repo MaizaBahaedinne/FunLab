@@ -67,6 +67,7 @@ if (!function_exists('getRolePermissions')) {
                 'participants' => ['view', 'edit', 'delete'],
                 'teams' => ['view', 'create', 'edit', 'delete'],
                 'scanner' => ['view', 'scan'],
+                'contacts' => ['view', 'delete'],
                 'settings' => ['view', 'edit'],
                 'users' => ['view', 'create', 'edit', 'delete']
             ],
@@ -80,6 +81,7 @@ if (!function_exists('getRolePermissions')) {
                 'participants' => ['view', 'edit'],
                 'teams' => ['view', 'create', 'edit'],
                 'scanner' => ['view', 'scan'],
+                'contacts' => ['view'],
                 'settings' => [],
                 'users' => []
             ],
@@ -93,6 +95,7 @@ if (!function_exists('getRolePermissions')) {
                 'participants' => [],
                 'teams' => [],
                 'scanner' => [],
+                'contacts' => [],
                 'settings' => [],
                 'users' => []
             ]

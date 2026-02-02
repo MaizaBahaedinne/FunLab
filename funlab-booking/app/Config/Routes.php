@@ -52,6 +52,8 @@ $routes->get('games/(:num)', 'Front\GamesController::view/$1');
 $routes->post('games/(:num)/review', 'Front\GamesController::submitReview/$1');
 $routes->get('contact', 'Front\ContactController::index');
 $routes->post('contact/send', 'Front\ContactController::send');
+$routes->post('contact/subscribe', 'Front\ContactController::subscribe');
+$routes->get('newsletter/unsubscribe', 'Front\ContactController::unsubscribe');
 
 // Routes de test pour les bots sociaux
 $routes->get('social-bot-test', 'Front\SocialBotTestController::index');
@@ -183,6 +185,16 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'ad
     $routes->get('scanner', 'ScannerController::index');
     $routes->post('scanner/scan', 'ScannerController::scan');
     $routes->post('scanner/validate', 'ScannerController::validateTicket');
+    
+    // Contacts & Newsletter
+    $routes->get('contacts', 'ContactController::index');
+    $routes->get('contacts/view/(:num)', 'ContactController::view/$1');
+    $routes->post('contacts/markReplied/(:num)', 'ContactController::markReplied/$1');
+    $routes->delete('contacts/delete/(:num)', 'ContactController::delete/$1');
+    
+    $routes->get('newsletters', 'NewsletterController::index');
+    $routes->get('newsletters/export', 'NewsletterController::export');
+    $routes->delete('newsletters/delete/(:num)', 'NewsletterController::delete/$1');
     
     // Paramètres et configuration
     $routes->get('settings', 'SettingsController::index');

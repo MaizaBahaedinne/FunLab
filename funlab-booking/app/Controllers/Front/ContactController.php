@@ -4,14 +4,20 @@ namespace App\Controllers\Front;
 
 use App\Controllers\BaseController;
 use App\Models\SettingModel;
+use App\Models\NewsletterModel;
+use App\Models\ContactMessageModel;
 
 class ContactController extends BaseController
 {
     protected $settingModel;
+    protected $newsletterModel;
+    protected $contactMessageModel;
 
     public function __construct()
     {
         $this->settingModel = new SettingModel();
+        $this->newsletterModel = new NewsletterModel();
+        $this->contactMessageModel = new ContactMessageModel();
     }
 
     /**
@@ -167,5 +173,111 @@ class ContactController extends BaseController
                            ->withInput()
                            ->with('error', 'Une erreur est survenue. Veuillez nous contacter directement par téléphone ou email.');
         }
+    }
+
+    /**
+     * S'abonner à la newsletter
+     */
+    public function subscribe()
+    {
+        if (!$this->request->isAJAX()) {
+            return redirect()->back();
+        }
+
+        $email = $this->request->getPost('email');
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Email invalide'
+            ]);
+        }
+
+        $ipAddress = $this->request->getIPAddress();
+        $result = $this->newsletterModel->subscribe($email, $ipAddress);
+
+        if ($result) {
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Merci ! Vous êtes maintenant inscrit à notre newsletter.'
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Cet email est déjà inscrit à notre newsletter.'
+            ]);
+        }
+    }
+
+    /**
+     * Se désabonner de la newsletter
+     */
+    public function unsubscribe($email = null)
+    {
+        if (!$email) {
+            $email = $this->request->getGet('email');
+        }
+
+        if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return view('front/newsletter_unsubscribe', [
+                'title' => 'Désinscription Newsletter',
+                'success' => false,
+                'message' => 'Email invalide ou manquant'
+            ]);
+        }
+
+        $result = $this->newsletterModel->unsubscribe($email);
+
+        return view('front/newsletter_unsubscribe', [
+            'title' => 'Désinscription Newsletter',
+            'success' => $result,
+            'message' => $result 
+                ? 'Vous avez été désinscrit avec succès de notre newsletter.' 
+                : 'Cet email n\'est pas inscrit à notre newsletter.'
+        ]);
+    }
+
+    /**
+     * Enregistrer un message de contact dans la base de données
+     */
+    public function submitMessage()
+    {
+        $validation = \Config\Services::validation();
+        
+        $validation->setRules([
+            'name' => 'required|min_length[3]|max_length[100]',
+            'email' => 'required|valid_email',
+            'phone' => 'permit_empty|min_length[8]|max_length[20]',
+            'subject' => 'required|min_length[3]|max_length[200]',
+            'message' => 'required|min_length[10]|max_length[2000]'
+        ]);
+
+        if (!$validation->withRequest($this->request)->run()) {
+            return redirect()->back()
+                           ->withInput()
+                           ->with('errors', $validation->getErrors());
+        }
+
+        $data = [
+            'name' => $this->request->getPost('name'),
+            'email' => $this->request->getPost('email'),
+            'phone' => $this->request->getPost('phone'),
+            'subject' => $this->request->getPost('subject'),
+            'message' => $this->request->getPost('message'),
+            'ip_address' => $this->request->getIPAddress(),
+            'status' => 'new'
+        ];
+
+        if ($this->contactMessageModel->insert($data)) {
+            // Envoyer aussi par email
+            $this->send();
+            
+            return redirect()->to('/contact')
+                           ->with('success', 'Votre message a été envoyé avec succès !');
+        }
+
+        return redirect()->back()
+                       ->withInput()
+                       ->with('error', 'Une erreur est survenue.');
     }
 }

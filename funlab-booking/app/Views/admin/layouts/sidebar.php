@@ -110,6 +110,35 @@ $pendingReviewsCount = $reviewModel->where('is_approved', 0)->countAllResults();
                 </a>
                 <?php endif; ?>
                 
+                <!-- Contacts & Newsletter -->
+                <?php if (canAccessModule('contacts')): ?>
+                <a class="nav-link text-white <?= in_array($activeMenu ?? '', ['contacts', 'newsletters']) ? 'active bg-primary rounded' : '' ?>" 
+                   data-bs-toggle="collapse" 
+                   href="#contactsMenu" 
+                   role="button" 
+                   aria-expanded="<?= in_array($activeMenu ?? '', ['contacts', 'newsletters']) ? 'true' : 'false' ?>"
+                   aria-controls="contactsMenu">
+                    <i class="bi bi-envelope-at"></i> Contacts & Newsletter
+                    <i class="bi bi-chevron-down float-end"></i>
+                </a>
+                <div class="collapse <?= in_array($activeMenu ?? '', ['contacts', 'newsletters']) ? 'show' : '' ?>" id="contactsMenu">
+                    <ul class="nav flex-column ms-3">
+                        <li class="nav-item">
+                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'contacts' ? 'text-white' : '' ?>" 
+                               href="<?= base_url('admin/contacts') ?>">
+                                <i class="bi bi-chat-left-text"></i> Messages Contact
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'newsletters' ? 'text-white' : '' ?>" 
+                               href="<?= base_url('admin/newsletters') ?>">
+                                <i class="bi bi-envelope-heart"></i> Abonnés Newsletter
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <?php endif; ?>
+                
                 <?php if (canAccessModule('settings') || canAccessModule('users')): ?>
                 <hr class="border-secondary my-3">
                 <?php endif; ?>

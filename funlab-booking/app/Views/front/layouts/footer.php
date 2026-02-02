@@ -234,6 +234,70 @@ if (empty($hoursDisplay)) {
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
+    <!-- Newsletter Form Handler -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const newsletterForms = document.querySelectorAll('#newsletterForm');
+        
+        newsletterForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const emailInput = this.querySelector('input[type="email"]');
+                const email = emailInput.value.trim();
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalBtnText = submitBtn.innerHTML;
+                
+                // Désactiver le bouton pendant l'envoi
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Envoi...';
+                
+                fetch('<?= base_url('contact/subscribe') ?>', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: 'email=' + encodeURIComponent(email)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Bravo !',
+                            text: data.message,
+                            confirmButtonColor: 'var(--primary-color)'
+                        });
+                        emailInput.value = '';
+                    } else {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Information',
+                            text: data.message,
+                            confirmButtonColor: 'var(--primary-color)'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erreur',
+                        text: 'Une erreur est survenue. Veuillez réessayer.',
+                        confirmButtonColor: 'var(--primary-color)'
+                    });
+                })
+                .finally(() => {
+                    // Réactiver le bouton
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                });
+            });
+        });
+    });
+    </script>
+    
     <?= $additionalJS ?? '' ?>
 </body>
 </html>
