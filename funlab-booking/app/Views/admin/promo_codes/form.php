@@ -175,7 +175,7 @@
                                                        id="game_<?= $game['id'] ?>"
                                                        <?= in_array($game['id'], $applicableGames) ? 'checked' : '' ?>>
                                                 <label class="form-check-label" for="game_<?= $game['id'] ?>">
-                                                    <?= esc($game['title']) ?>
+                                                    <?= esc($game['name']) ?>
                                                 </label>
                                             </div>
                                         </div>
