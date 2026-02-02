@@ -28,7 +28,7 @@ $additionalStyles = <<<CSS
 .contact-icon {
     width: 60px;
     height: 60px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     border-radius: 15px;
     display: flex;
     align-items: center;
@@ -53,7 +53,7 @@ $additionalStyles = <<<CSS
 }
 
 .contact-content a {
-    color: #667eea;
+    color: var(--link-color, var(--primary-color)) !important;
     text-decoration: none;
 }
 
@@ -83,16 +83,16 @@ $additionalStyles = <<<CSS
 }
 
 .form-control:focus, .form-select:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb, 102, 126, 234), 0.1);
 }
 
 .btn-send {
     width: 100%;
     padding: 15px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    color: white;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important;
+    border: none !important;
+    color: white !important;
     font-weight: 600;
     border-radius: 10px;
     font-size: 1.1rem;
@@ -101,7 +101,8 @@ $additionalStyles = <<<CSS
 
 .btn-send:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 10px 25px rgba(var(--primary-color-rgb, 102, 126, 234), 0.4);
+    color: white !important;
 }
 
 .map-container {
@@ -140,7 +141,7 @@ $additionalStyles = <<<CSS
 }
 
 .hours-time {
-    color: #667eea;
+    color: var(--primary-color) !important;
     font-weight: 500;
 }
 
@@ -184,7 +185,7 @@ $additionalStyles = <<<CSS
 
 .welcome-message {
     background: #f7fafc;
-    border-left: 4px solid #667eea;
+    border-left: 4px solid var(--primary-color);
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 30px;

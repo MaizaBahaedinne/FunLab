@@ -17,7 +17,7 @@ $additionalStyles = '
     }
     .about-icon {
         font-size: 3rem;
-        color: #667eea;
+        color: var(--primary-color) !important;
         margin-bottom: 20px;
     }
     .value-item {
@@ -25,7 +25,7 @@ $additionalStyles = '
         padding: 15px 20px;
         border-radius: 10px;
         margin-bottom: 10px;
-        border-left: 4px solid #667eea;
+        border-left: 4px solid var(--primary-color);
     }
 ';
 ?>
@@ -126,7 +126,7 @@ $additionalStyles = '
 <?php endif; ?>
 
 <!-- Call to Action -->
-<section class="about-section" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+<section class="about-section" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); color: white;">
     <div class="container text-center">
         <h2 class="mb-4">Prêt à vivre l'expérience FunLab ?</h2>
         <a href="<?= base_url('booking') ?>" class="btn btn-light btn-lg">

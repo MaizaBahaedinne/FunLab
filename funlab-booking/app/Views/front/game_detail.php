@@ -21,7 +21,7 @@ $additionalStyles = <<<CSS
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     color: white;
     font-size: 8rem;
 }
@@ -53,7 +53,7 @@ $additionalStyles = <<<CSS
 .game-price {
     font-size: 2.5rem;
     font-weight: 700;
-    color: #667eea;
+    color: var(--primary-color) !important;
     margin-bottom: 10px;
 }
 
@@ -81,7 +81,7 @@ $additionalStyles = <<<CSS
 
 .spec-icon {
     font-size: 1.5rem;
-    color: #667eea;
+    color: var(--primary-color) !important;
     width: 40px;
     height: 40px;
     display: flex;
@@ -113,9 +113,9 @@ $additionalStyles = <<<CSS
     padding: 18px;
     font-size: 1.1rem;
     font-weight: 600;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    color: white;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important;
+    border: none !important;
+    color: white !important;
     border-radius: 12px;
     transition: all 0.3s ease;
     display: flex;
@@ -126,7 +126,8 @@ $additionalStyles = <<<CSS
 
 .btn-book-now:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 10px 25px rgba(var(--primary-color-rgb, 102, 126, 234), 0.4);
+    color: white !important;
 }
 
 .share-buttons {
@@ -192,7 +193,7 @@ $additionalStyles = <<<CSS
 }
 
 .section-title i {
-    color: #667eea;
+    color: var(--primary-color) !important;
 }
 
 .game-description {
@@ -219,7 +220,7 @@ $additionalStyles = <<<CSS
 
 .feature-icon {
     font-size: 2rem;
-    color: #667eea;
+    color: var(--primary-color) !important;
 }
 
 .feature-content h4 {

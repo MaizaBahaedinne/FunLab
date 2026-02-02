@@ -34,7 +34,7 @@ $additionalStyles = <<<CSS
 
 .game-card-image {
     height: 200px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -50,7 +50,7 @@ $additionalStyles = <<<CSS
     font-size: 1.3rem;
     font-weight: 700;
     margin-bottom: 10px;
-    color: #2d3748;
+    color: var(--text-color, #2d3748);
 }
 
 .game-description {
@@ -82,22 +82,22 @@ $additionalStyles = <<<CSS
 }
 
 .detail-badge i {
-    color: #667eea;
+    color: var(--primary-color) !important;
 }
 
 .game-price {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #667eea;
+    color: var(--primary-color) !important;
     margin-bottom: 15px;
 }
 
 .btn-book-game {
     width: 100%;
     padding: 12px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    color: white;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important;
+    border: none !important;
+    color: white !important;
     font-weight: 600;
     border-radius: 8px;
     transition: all 0.3s ease;
@@ -105,7 +105,8 @@ $additionalStyles = <<<CSS
 
 .btn-book-game:hover {
     transform: scale(1.02);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 4px 12px rgba(var(--primary-color-rgb, 102, 126, 234), 0.4);
+    color: white !important;
 }
 
 .no-games {
