@@ -59,29 +59,35 @@ $breadcrumbs = ['Admin' => base_url('admin'), 'Newsletter' => null];
                                     <?php foreach ($subscribers as $subscriber): ?>
                                         <tr>
                                             <td>
-                                                <i class="bi bi-envelope me-2"></i>
+                                                <i class="bi bi-envelope-fill text-primary me-2"></i>
                                                 <?= esc($subscriber['email']) ?>
                                             </td>
                                             <td>
                                                 <?php if ($subscriber['status'] === 'active'): ?>
-                                                    <span class="badge bg-success">Actif</span>
+                                                    <span class="badge bg-success">
+                                                        <i class="bi bi-check-circle"></i> Actif
+                                                    </span>
                                                 <?php else: ?>
-                                                    <span class="badge bg-secondary">Désabonné</span>
+                                                    <span class="badge bg-secondary">
+                                                        <i class="bi bi-x-circle"></i> Désabonné
+                                                    </span>
                                                 <?php endif; ?>
                                             </td>
                                             <td>
                                                 <small class="text-muted">
+                                                    <i class="bi bi-calendar3"></i>
                                                     <?= date('d/m/Y H:i', strtotime($subscriber['subscribed_at'])) ?>
                                                 </small>
                                             </td>
                                             <td>
-                                                <small class="text-muted">
+                                                <small class="text-muted font-monospace">
                                                     <?= esc($subscriber['ip_address'] ?? '-') ?>
                                                 </small>
                                             </td>
                                             <td class="text-end">
                                                 <button class="btn btn-sm btn-danger" 
-                                                        onclick="deleteSubscriber(<?= $subscriber['id'] ?>)">
+                                                        onclick="deleteSubscriber(<?= $subscriber['id'] ?>)"
+                                                        title="Supprimer">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
                                             </td>
@@ -93,35 +99,6 @@ $breadcrumbs = ['Admin' => base_url('admin'), 'Newsletter' => null];
                     <?php endif; ?>
                 </div>
             </div>
-        </main>
-    </div>
-</div>
-
-<script>
-function deleteSubscriber(id) {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cet abonné ?')) {
-        return;
-    }
-
-    fetch(`<?= base_url('admin/newsletters/delete/') ?>${id}`, {
-        method: 'DELETE',
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            location.reload();
-        } else {
-            alert(data.message || 'Erreur lors de la suppression');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Erreur lors de la suppression');
-    });
-}
-</script>
+        </div>
 
 <?= view('admin/layouts/footer') ?>
