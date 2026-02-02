@@ -4,19 +4,19 @@ $activeMenu = 'booking';
 $additionalStyles = <<<CSS
 <style>
 .step-indicator {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
+    display: table;
+    width: 100%;
     margin: 40px auto 60px;
-    padding: 0 20px;
+    table-layout: fixed;
+}
+
+.step, .step-line {
+    display: table-cell;
+    vertical-align: top;
 }
 
 .step {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 120px;
+    text-align: center;
 }
 
 .step-number {
@@ -24,37 +24,35 @@ $additionalStyles = <<<CSS
     height: 50px;
     border-radius: 50%;
     background: #e9ecef;
-    border: 3px solid #e9ecef;
     color: #6c757d;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
     font-size: 1.2rem;
     margin-bottom: 10px;
-    transition: all 0.3s ease;
 }
 
 .step-label {
     font-size: 0.85rem;
     color: #6c757d;
-    text-align: center;
     font-weight: 500;
-    white-space: nowrap;
 }
 
 .step-line {
     width: 80px;
+    padding-top: 25px;
+}
+
+.step-line::before {
+    content: '';
+    display: block;
     height: 3px;
     background: #e9ecef;
-    margin: 0 10px;
-    align-self: flex-start;
-    margin-top: 23px;
 }
 
 .step.active .step-number {
     background: var(--primary-color);
-    border-color: var(--primary-color);
     color: white;
 }
 
@@ -65,7 +63,6 @@ $additionalStyles = <<<CSS
 
 .step.completed .step-number {
     background: #28a745;
-    border-color: #28a745;
     color: white;
 }
 
@@ -73,27 +70,10 @@ $additionalStyles = <<<CSS
     color: #28a745;
 }
 
-.step-line.completed {
+.step-line.completed::before {
     background: #28a745;
 }
 
-@media (max-width: 768px) {
-    .step {
-        min-width: 80px;
-    }
-    .step-label {
-        font-size: 0.7rem;
-    }
-    .step-number {
-        width: 40px;
-        height: 40px;
-        font-size: 1rem;
-    }
-    .step-line {
-        width: 40px;
-        margin-top: 18px;
-    }
-}
 .game-list-item {
     background: white;
     border: 2px solid #e0e0e0;

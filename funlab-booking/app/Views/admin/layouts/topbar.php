@@ -1,9 +1,15 @@
 <?php helper('permission'); ?>
+        <!-- Sidebar Overlay -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
         <!-- Main Content -->
         <div class="admin-content">
             <!-- Top Bar -->
             <div class="admin-topbar">
-                <div class="d-flex justify-content-between align-items-center">
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="bi bi-list"></i>
+                </button>
+                <div class="d-flex justify-content-between align-items-center flex-grow-1">
                     <div>
                         <h5 class="mb-0"><?= $pageTitle ?? 'Admin' ?></h5>
                         <?php if (isset($breadcrumbs) && is_array($breadcrumbs)): ?>

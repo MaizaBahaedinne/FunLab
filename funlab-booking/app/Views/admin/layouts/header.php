@@ -38,13 +38,28 @@
         }
         .admin-sidebar {
             width: 250px;
-            min-height: 100vh;
+            height: 100vh;
             background: var(--dark-color);
             position: fixed;
             top: 0;
             left: 0;
             z-index: 1000;
             overflow-y: auto;
+            overflow-x: hidden;
+            transition: transform 0.3s ease;
+        }
+        .admin-sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .admin-sidebar::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+        }
+        .admin-sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+        }
+        .admin-sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.3);
         }
         .admin-sidebar .nav-link {
             color: rgba(255,255,255,0.8);
@@ -77,6 +92,51 @@
             top: 0;
             z-index: 999;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .sidebar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--dark-color);
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+        .sidebar-toggle:hover {
+            color: var(--primary-color);
+        }
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+        @media (max-width: 991px) {
+            .admin-sidebar {
+                transform: translateX(-100%);
+            }
+            .admin-sidebar.show {
+                transform: translateX(0);
+            }
+            .admin-content {
+                margin-left: 0;
+            }
+            .sidebar-toggle {
+                display: block;
+            }
+            .sidebar-overlay.show {
+                display: block;
+            }
+            .admin-main {
+                padding: 20px 15px;
+            }
         }
         .admin-main {
             padding: 30px;
