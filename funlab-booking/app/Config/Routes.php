@@ -206,6 +206,13 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'ad
     $routes->post('promo-codes/toggle-status/(:num)', 'PromoCodesController::toggleStatus/$1');
     $routes->get('promo-codes/validate', 'PromoCodesController::validatePromoCode');
     
+    // Permissions (nouveau système dynamique)
+    $routes->get('permissions', 'PermissionsController::index');
+    $routes->post('permissions/update', 'PermissionsController::update');
+    $routes->post('permissions/sync', 'PermissionsController::sync');
+    $routes->get('permissions/modules', 'PermissionsController::modules');
+    $routes->post('permissions/modules/update/(:num)', 'PermissionsController::updateModule/$1');
+    
     // Paramètres et configuration
     $routes->get('settings', 'SettingsController::index');
     $routes->get('settings/general', 'SettingsController::general');

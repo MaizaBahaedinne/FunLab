@@ -341,7 +341,7 @@ $unreadContactsCount = $contactModel->where('status', 'new')->countAllResults();
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-roles' ? 'text-white' : '' ?>" 
-                               href="<?= base_url('admin/settings/roles') ?>">
+                               href="<?= base_url('admin/permissions') ?>">
                                 <i class="bi bi-shield-check"></i> Permissions
                             </a>
                         </li>
