@@ -58,7 +58,7 @@ class PromoCodesController extends BaseController
                 ['title' => 'Codes Promo', 'url' => base_url('admin/promo-codes')],
                 ['title' => 'Créer']
             ],
-            'games' => $this->gameModel->where('is_active', 1)->findAll()
+            'games' => $this->gameModel->where('status', 'active')->findAll()
         ];
 
         return view('admin/layouts/header', $data)
@@ -140,7 +140,7 @@ class PromoCodesController extends BaseController
                 ['title' => 'Modifier']
             ],
             'promoCode' => $promoCode,
-            'games' => $this->gameModel->where('is_active', 1)->findAll()
+            'games' => $this->gameModel->where('status', 'active')->findAll()
         ];
 
         return view('admin/layouts/header', $data)
