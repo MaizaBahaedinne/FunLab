@@ -11,6 +11,7 @@ class NewsletterController extends BaseController
 
     public function __construct()
     {
+        helper('permission');
         $this->newsletterModel = new NewsletterModel();
     }
 

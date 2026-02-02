@@ -11,6 +11,7 @@ class ContactController extends BaseController
 
     public function __construct()
     {
+        helper('permission');
         $this->contactModel = new ContactMessageModel();
     }
 
