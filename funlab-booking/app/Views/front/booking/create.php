@@ -5,11 +5,13 @@ $additionalStyles = <<<CSS
 <style>
 .step-indicator {
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
     margin: 40px auto 60px;
-    max-width: 900px;
+    max-width: 100%;
     padding: 0 20px;
+    gap: 0;
 }
 
 .step {
@@ -44,13 +46,14 @@ $additionalStyles = <<<CSS
     text-align: center;
     font-weight: 500;
     transition: all 0.3s ease;
+    white-space: nowrap;
 }
 
 .step-line {
     position: absolute;
     top: 25px;
-    left: 50%;
-    width: 100%;
+    left: calc(50% + 25px);
+    width: calc(100% - 50px);
     height: 3px;
     background: #e9ecef;
     z-index: 1;
@@ -88,7 +91,7 @@ $additionalStyles = <<<CSS
 
 @media (max-width: 768px) {
     .step-label {
-        font-size: 0.75rem;
+        font-size: 0.7rem;
     }
     .step-number {
         width: 40px;
@@ -97,6 +100,7 @@ $additionalStyles = <<<CSS
     }
     .step-line {
         top: 20px;
+        left: calc(50% + 20px);
     }
 }
 .game-list-item {
