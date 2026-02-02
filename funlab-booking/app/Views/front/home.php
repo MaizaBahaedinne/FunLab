@@ -6,23 +6,8 @@ $activeMenu = 'home';
 <?= view('front/layouts/header', compact('title')) ?>
 <?= view('front/layouts/navbar', compact('activeMenu')) ?>
 
-<!-- Home Hero Section -->
-<section class="home-hero text-center">
-    <div class="home-hero-content">
-        <div class="container">
-            <h1 class="display-3 fw-bold mb-4">Bienvenue chez <?= theme_setting('app_name', 'FunLab Tunisie') ?></h1>
-            <p class="lead mb-5">Escape Game • Réalité Virtuelle • Laser Game • Arcade</p>
-            <div class="cta-buttons">
-                <a href="<?= base_url('booking') ?>" class="btn btn-light btn-lg px-5 me-3">
-                    <i class="bi bi-calendar-check"></i> Réserver Maintenant
-                </a>
-                <a href="<?= base_url('games') ?>" class="btn btn-outline-light btn-lg px-5">
-                    <i class="bi bi-controller"></i> Découvrir nos Activités
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
+<!-- Slider Homepage -->
+<?= view('front/components/slider') ?>
 
     <!-- Activités -->
     <section class="py-5">
@@ -104,28 +89,25 @@ $activeMenu = 'home';
             <div class="row g-4">
                 <?php foreach ($reviews as $review): ?>
                 <div class="col-md-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="me-3">
-                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                        <span class="fw-bold"><?= strtoupper(substr($review['name'] ?? 'A', 0, 1)) ?></span>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h5 class="mb-0"><?= esc($review['name'] ?? ($review['first_name'] . ' ' . $review['last_name'])) ?></h5>
-                                    <div class="text-warning">
-                                        <?php for ($i = 0; $i < $review['rating']; $i++): ?>
-                                        <i class="bi bi-star-fill"></i>
-                                        <?php endfor; ?>
-                                        <?php for ($i = $review['rating']; $i < 5; $i++): ?>
-                                        <i class="bi bi-star"></i>
-                                        <?php endfor; ?>
-                                    </div>
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="review-avatar">
+                                <span><?= strtoupper(substr($review['name'] ?? ($review['first_name'] ?? 'A'), 0, 1)) ?></span>
+                            </div>
+                            <div class="review-info">
+                                <h5 class="review-name"><?= esc($review['name'] ?? ($review['first_name'] . ' ' . $review['last_name'])) ?></h5>
+                                <div class="review-rating">
+                                    <?php for ($i = 0; $i < 5; $i++): ?>
+                                    <i class="bi bi-star-fill <?= $i < $review['rating'] ? 'active' : '' ?>"></i>
+                                    <?php endfor; ?>
                                 </div>
                             </div>
-                            <p class="card-text">"<?= esc($review['comment']) ?>"</p>
-                            <small class="text-muted"><?= date('d/m/Y', strtotime($review['created_at'])) ?></small>
+                        </div>
+                        <p class="review-comment">"<?= esc($review['comment']) ?>"</p>
+                        <div class="review-footer">
+                            <small class="review-date">
+                                <i class="bi bi-calendar3"></i> <?= date('d/m/Y', strtotime($review['created_at'])) ?>
+                            </small>
                         </div>
                     </div>
                 </div>

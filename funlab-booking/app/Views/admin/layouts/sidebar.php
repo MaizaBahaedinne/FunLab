@@ -165,6 +165,12 @@
                     <ul class="nav flex-column ms-3">
                         <li class="nav-item">
                             <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'pages' ? 'text-white' : '' ?>" 
+                               href="<?= base_url('admin/slides') ?>">
+                                <i class="bi bi-images"></i> Slider Homepage
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'pages' ? 'text-white' : '' ?>" 
                                href="<?= base_url('admin/pages') ?>">
                                 <i class="bi bi-file-earmark"></i> Pages
                             </a>

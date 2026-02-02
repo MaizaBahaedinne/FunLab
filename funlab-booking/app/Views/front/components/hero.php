@@ -78,8 +78,7 @@ if ($background === 'gradient') {
                 <div class="hero-cta mt-4">
                     <?php foreach ($ctaButtons as $button): ?>
                     <a href="<?= esc($button['url']) ?>" 
-                       class="btn btn-<?= esc($button['style'] ?? 'primary') ?> btn-lg me-2 mb-2"
-                       style="border-radius: 0; text-transform: uppercase; font-weight: 600; padding: 15px 40px;">
+                       class="btn btn-<?= esc($button['style'] ?? 'primary') ?> btn-lg me-2 mb-2">
                         <?php if (isset($button['icon'])): ?>
                         <i class="bi bi-<?= esc($button['icon']) ?> me-2"></i>
                         <?php endif; ?>
@@ -92,6 +91,9 @@ if ($background === 'gradient') {
         </div>
     </div>
 </section>
+
+<!-- Spacing après hero -->
+<div class="hero-spacing" style="margin-top: 60px;"></div>
 
 <style>
 .hero-section {

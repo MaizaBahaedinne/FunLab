@@ -215,6 +215,16 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'ad
     $routes->post('pages/save/(:num)', 'PageController::save/$1');
     $routes->post('pages/save', 'PageController::save');
     $routes->get('pages/delete/(:num)', 'PageController::delete/$1');
+    
+    // Gestion du slider homepage
+    $routes->get('slides', 'SlideController::index');
+    $routes->get('slides/create', 'SlideController::create');
+    $routes->get('slides/edit/(:num)', 'SlideController::edit/$1');
+    $routes->post('slides/save/(:num)', 'SlideController::save/$1');
+    $routes->post('slides/save', 'SlideController::save');
+    $routes->get('slides/delete/(:num)', 'SlideController::delete/$1');
+    $routes->post('slides/updateOrder', 'SlideController::updateOrder');
+    
     $routes->get('settings/users', 'SettingsController::users');
     $routes->get('settings/roles', 'SettingsController::roles');
     $routes->post('settings/save', 'SettingsController::save');

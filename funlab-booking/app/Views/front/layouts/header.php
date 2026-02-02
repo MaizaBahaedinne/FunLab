@@ -261,41 +261,52 @@ $theme = get_theme_settings();
         }
         
         /* Buttons */
-        .btn-primary-modern {
-            background: var(--primary-color);
-            color: white;
+        .btn-primary, .btn-primary-modern {
+            background: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
+            color: white !important;
             padding: 12px 35px;
-            border: 2px solid var(--primary-color);
             border-radius: 0;
-            font-family: 'Oswald', sans-serif;
+            font-family: var(--font-heading);
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
             transition: all 0.3s ease;
         }
         
-        .btn-primary-modern:hover {
-            background: transparent;
-            color: var(--primary-color);
+        .btn-primary:hover, .btn-primary-modern:hover {
+            background: transparent !important;
+            color: var(--primary-color) !important;
             transform: translateY(-2px);
         }
         
-        .btn-secondary-modern {
-            background: var(--secondary-color);
-            color: white;
+        .btn-secondary, .btn-secondary-modern {
+            background: var(--secondary-color) !important;
+            border-color: var(--secondary-color) !important;
+            color: white !important;
             padding: 12px 35px;
-            border: 2px solid var(--secondary-color);
             border-radius: 0;
-            font-family: 'Oswald', sans-serif;
+            font-family: var(--font-heading);
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
             transition: all 0.3s ease;
         }
         
-        .btn-secondary-modern:hover {
-            background: transparent;
-            color: var(--secondary-color);
+        .btn-secondary:hover, .btn-secondary-modern:hover {
+            background: transparent !important;
+            color: var(--secondary-color) !important;
+        }
+        
+        .btn-outline-primary {
+            background: transparent !important;
+            border-color: var(--primary-color) !important;
+            color: var(--primary-color) !important;
+        }
+        
+        .btn-outline-primary:hover {
+            background: var(--primary-color) !important;
+            color: white !important;
         }
         
         /* Section Headers */
@@ -390,6 +401,100 @@ $theme = get_theme_settings();
             .home-hero .lead {
                 font-size: 1.2rem;
             }
+        }
+        
+        /* Modern Review Cards */
+        .review-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .review-card::before {
+            content: '"';
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            font-size: 80px;
+            color: var(--primary-color);
+            opacity: 0.1;
+            font-family: Georgia, serif;
+        }
+        
+        .review-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+        
+        .review-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+        
+        .review-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        
+        .review-info {
+            flex: 1;
+        }
+        
+        .review-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 5px;
+        }
+        
+        .review-rating {
+            font-size: 16px;
+        }
+        
+        .review-rating .bi-star-fill {
+            color: #e0e0e0;
+        }
+        
+        .review-rating .bi-star-fill.active {
+            color: #ffc107;
+        }
+        
+        .review-comment {
+            font-size: 0.95rem;
+            color: #555;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            flex: 1;
+            font-style: italic;
+        }
+        
+        .review-footer {
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .review-date {
+            color: #999;
+            font-size: 0.85rem;
         }
         
         <?= $additionalStyles ?? '' ?>
