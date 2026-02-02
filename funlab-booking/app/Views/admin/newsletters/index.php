@@ -1,28 +1,28 @@
-<?= view('admin/layouts/header', compact('title')) ?>
+<?php
+$pageTitle = 'Abonnés Newsletter';
+$breadcrumbs = ['Admin' => base_url('admin'), 'Newsletter' => null];
+?>
 
-<div class="container-fluid">
-    <div class="row">
-        <?= view('admin/layouts/sidebar', compact('activeMenu')) ?>
-        
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 admin-content">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">
-                    <i class="bi bi-envelope-heart text-primary"></i> Abonnés Newsletter
-                </h1>
-                <div class="btn-toolbar mb-2 mb-md-0">
-                    <div class="btn-group me-2">
-                        <a href="<?= base_url('admin/newsletters/export') ?>" class="btn btn-sm btn-success">
-                            <i class="bi bi-download"></i> Exporter (CSV)
-                        </a>
+<?= view('admin/layouts/header', compact('title')) ?>
+<?= view('admin/layouts/sidebar', compact('activeMenu')) ?>
+<?= view('admin/layouts/topbar', compact('pageTitle', 'breadcrumbs')) ?>
+
+            <div class="container-fluid p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2><i class="bi bi-envelope-heart text-primary"></i> Abonnés Newsletter</h2>
+                        <span class="badge bg-primary fs-6">
+                            <?= $activeCount ?> abonné<?= $activeCount > 1 ? 's' : '' ?> actif<?= $activeCount > 1 ? 's' : '' ?>
+                        </span>
                     </div>
-                    <span class="badge bg-primary fs-6">
-                        <?= $activeCount ?> abonné<?= $activeCount > 1 ? 's' : '' ?> actif<?= $activeCount > 1 ? 's' : '' ?>
-                    </span>
+                    <a href="<?= base_url('admin/newsletters/export') ?>" class="btn btn-success">
+                        <i class="bi bi-download"></i> Exporter (CSV)
+                    </a>
                 </div>
-            </div>
 
             <?php if (session()->has('success')): ?>
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle"></i>
                     <?= session('success') ?>
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
@@ -30,12 +30,13 @@
 
             <?php if (session()->has('error')): ?>
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle"></i>
                     <?= session('error') ?>
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             <?php endif; ?>
 
-            <div class="card">
+            <div class="card shadow-sm">
                 <div class="card-body">
                     <?php if (empty($subscribers)): ?>
                         <div class="text-center py-5">
@@ -44,10 +45,10 @@
                         </div>
                     <?php else: ?>
                         <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
                                     <tr>
-                                        <th>Email</th>
+                                        <th><i class="bi bi-envelope me-2"></i>Email</th>
                                         <th>Statut</th>
                                         <th>Date d'inscription</th>
                                         <th>Adresse IP</th>
