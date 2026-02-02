@@ -1,8 +1,8 @@
 <?php 
 helper('theme');
 $logo = theme_setting('site_logo', '/assets/images/logo.png');
-$logoWidth = theme_setting('logo_width', 60);
-$logoHeight = theme_setting('logo_height', 60);
+$logoWidth = theme_setting('logo_width', 75);
+$logoHeight = theme_setting('logo_height', 75);
 $phone = theme_setting('header_topbar_phone', theme_setting('footer_phone', ''));
 $email = theme_setting('header_topbar_email', theme_setting('footer_email', ''));
 $showTopbar = theme_setting('header_show_topbar', '1') === '1';
