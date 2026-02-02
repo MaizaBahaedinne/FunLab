@@ -8,44 +8,91 @@ $additionalStyles = <<<CSS
     justify-content: space-between;
     align-items: center;
     margin-bottom: 50px;
-    background: #f8f9fa;
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 30px 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    position: relative;
+    overflow: visible;
 }
 .step {
     flex: 1;
     text-align: center;
-    padding: 20px 15px;
+    padding: 15px 10px;
     position: relative;
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+.step i {
+    display: block;
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: #6c757d;
+    transition: all 0.3s ease;
+}
+.step div {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #6c757d;
+    transition: all 0.3s ease;
+}
+.step::before {
+    content: '';
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    width: 50px;
+    height: 50px;
+    background: white;
+    border: 3px solid #dee2e6;
+    border-radius: 50%;
+    transform: translateX(-50%);
+    z-index: -1;
     transition: all 0.3s ease;
 }
 .step::after {
     content: '';
     position: absolute;
-    top: 50%;
-    right: -50%;
-    width: 100%;
-    height: 2px;
-    background: #e0e0e0;
-    z-index: 0;
+    top: 54px;
+    left: 60%;
+    width: calc(100% - 60px);
+    height: 3px;
+    background: #dee2e6;
+    z-index: -2;
+    transition: all 0.3s ease;
 }
 .step:last-child::after {
     display: none;
 }
-.step.active {
+.step.active i {
     color: var(--primary-color);
-    font-weight: bold;
-    transform: scale(1.05);
+    transform: scale(1.1);
 }
-.step.active::after {
+.step.active div {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+.step.active::before {
     background: var(--primary-color);
+    border-color: var(--primary-color);
+    transform: translateX(-50%) scale(1.15);
+    box-shadow: 0 0 0 8px rgba(255, 107, 53, 0.2);
 }
-.step.completed {
+.step.completed i {
     color: #28a745;
+}
+.step.completed div {
+    color: #28a745;
+}
+.step.completed::before {
+    background: #28a745;
+    border-color: #28a745;
 }
 .step.completed::after {
     background: #28a745;
+}
+.step.active::after {
+    background: linear-gradient(to right, var(--primary-color), #dee2e6);
 }
 .game-list-item {
     background: white;

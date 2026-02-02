@@ -9,9 +9,11 @@ $appName = theme_setting('app_name', 'FunLab');
 // Compter les notifications
 $bookingModel = new \App\Models\BookingModel();
 $reviewModel = new \App\Models\ReviewModel();
+$contactModel = new \App\Models\ContactMessageModel();
 
 $pendingBookingsCount = $bookingModel->where('status', 'pending')->countAllResults();
 $pendingReviewsCount = $reviewModel->where('is_approved', 0)->countAllResults();
+$unreadContactsCount = $contactModel->where('status', 'new')->countAllResults();
 ?>
         <!-- Sidebar -->
         <div class="admin-sidebar text-white">
@@ -119,6 +121,9 @@ $pendingReviewsCount = $reviewModel->where('is_approved', 0)->countAllResults();
                    aria-expanded="<?= in_array($activeMenu ?? '', ['contacts', 'newsletters']) ? 'true' : 'false' ?>"
                    aria-controls="contactsMenu">
                     <i class="bi bi-envelope-at"></i> Contacts & Newsletter
+                    <?php if ($unreadContactsCount > 0): ?>
+                        <span class="badge bg-danger rounded-pill float-end me-2"><?= $unreadContactsCount ?></span>
+                    <?php endif; ?>
                     <i class="bi bi-chevron-down float-end"></i>
                 </a>
                 <div class="collapse <?= in_array($activeMenu ?? '', ['contacts', 'newsletters']) ? 'show' : '' ?>" id="contactsMenu">
@@ -127,6 +132,9 @@ $pendingReviewsCount = $reviewModel->where('is_approved', 0)->countAllResults();
                             <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'contacts' ? 'text-white' : '' ?>" 
                                href="<?= base_url('admin/contacts') ?>">
                                 <i class="bi bi-chat-left-text"></i> Messages Contact
+                                <?php if ($unreadContactsCount > 0): ?>
+                                    <span class="badge bg-danger rounded-pill float-end"><?= $unreadContactsCount ?></span>
+                                <?php endif; ?>
                             </a>
                         </li>
                         <li class="nav-item">

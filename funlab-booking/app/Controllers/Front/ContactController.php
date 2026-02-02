@@ -120,6 +120,19 @@ class ContactController extends BaseController
         $subject = $this->request->getPost('subject');
         $message = $this->request->getPost('message');
 
+        // Enregistrer dans la base de données
+        $contactData = [
+            'name' => $name,
+            'email' => $email,
+            'phone' => $phone,
+            'subject' => $subject,
+            'message' => $message,
+            'ip_address' => $this->request->getIPAddress(),
+            'status' => 'new'
+        ];
+
+        $this->contactMessageModel->insert($contactData);
+
         // Récupérer l'email de destination depuis les paramètres
         $contactSettings = $this->settingModel->getByCategory('contact');
         $toEmail = '';
@@ -235,49 +248,5 @@ class ContactController extends BaseController
                 ? 'Vous avez été désinscrit avec succès de notre newsletter.' 
                 : 'Cet email n\'est pas inscrit à notre newsletter.'
         ]);
-    }
-
-    /**
-     * Enregistrer un message de contact dans la base de données
-     */
-    public function submitMessage()
-    {
-        $validation = \Config\Services::validation();
-        
-        $validation->setRules([
-            'name' => 'required|min_length[3]|max_length[100]',
-            'email' => 'required|valid_email',
-            'phone' => 'permit_empty|min_length[8]|max_length[20]',
-            'subject' => 'required|min_length[3]|max_length[200]',
-            'message' => 'required|min_length[10]|max_length[2000]'
-        ]);
-
-        if (!$validation->withRequest($this->request)->run()) {
-            return redirect()->back()
-                           ->withInput()
-                           ->with('errors', $validation->getErrors());
-        }
-
-        $data = [
-            'name' => $this->request->getPost('name'),
-            'email' => $this->request->getPost('email'),
-            'phone' => $this->request->getPost('phone'),
-            'subject' => $this->request->getPost('subject'),
-            'message' => $this->request->getPost('message'),
-            'ip_address' => $this->request->getIPAddress(),
-            'status' => 'new'
-        ];
-
-        if ($this->contactMessageModel->insert($data)) {
-            // Envoyer aussi par email
-            $this->send();
-            
-            return redirect()->to('/contact')
-                           ->with('success', 'Votre message a été envoyé avec succès !');
-        }
-
-        return redirect()->back()
-                       ->withInput()
-                       ->with('error', 'Une erreur est survenue.');
     }
 }
