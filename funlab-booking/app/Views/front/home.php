@@ -188,31 +188,27 @@ $activeMenu = 'home';
     <!-- Newsletter -->
     <section class="py-5 bg-light">
         <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="newsletter-box">
-                        <div class="row align-items-center">
-                            <div class="col-md-6 mb-4 mb-md-0">
-                                <div class="newsletter-icon">
-                                    <i class="bi bi-envelope-heart"></i>
-                                </div>
-                                <h3 class="newsletter-title">Restez Informé</h3>
-                                <p class="newsletter-subtitle">Inscrivez-vous à notre newsletter pour recevoir nos offres exclusives et nouveautés</p>
-                            </div>
-                            <div class="col-md-6">
-                                <form id="newsletterForm" class="newsletter-form">
-                                    <div class="input-group">
-                                        <input type="email" class="form-control" placeholder="Votre email" required>
-                                        <button class="btn btn-primary" type="submit">
-                                            <i class="bi bi-send"></i> S'inscrire
-                                        </button>
-                                    </div>
-                                    <small class="text-muted d-block mt-2">
-                                        <i class="bi bi-shield-check"></i> Vos données sont protégées
-                                    </small>
-                                </form>
-                            </div>
+            <div class="newsletter-box">
+                <div class="row align-items-center">
+                    <div class="col-md-5 mb-4 mb-md-0 text-center text-md-start">
+                        <div class="newsletter-icon">
+                            <i class="bi bi-envelope-heart"></i>
                         </div>
+                        <h3 class="newsletter-title">Restez Informé</h3>
+                        <p class="newsletter-subtitle">Inscrivez-vous à notre newsletter pour recevoir nos offres exclusives et nouveautés</p>
+                    </div>
+                    <div class="col-md-7">
+                        <form id="newsletterForm" class="newsletter-form">
+                            <div class="input-group">
+                                <input type="email" class="form-control" placeholder="Votre email" required>
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="bi bi-send"></i> S'inscrire
+                                </button>
+                            </div>
+                            <small class="text-muted d-block mt-2">
+                                <i class="bi bi-shield-check"></i> Vos données sont protégées
+                            </small>
+                        </form>
                     </div>
                 </div>
             </div>
