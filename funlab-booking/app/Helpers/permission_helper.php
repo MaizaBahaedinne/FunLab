@@ -67,6 +67,7 @@ if (!function_exists('getRolePermissions')) {
                 'participants' => ['view', 'edit', 'delete'],
                 'teams' => ['view', 'create', 'edit', 'delete'],
                 'scanner' => ['view', 'scan'],
+                'promo_codes' => ['view', 'create', 'edit', 'delete'],
                 'contacts' => ['view', 'delete'],
                 'settings' => ['view', 'edit'],
                 'users' => ['view', 'create', 'edit', 'delete']
@@ -81,6 +82,7 @@ if (!function_exists('getRolePermissions')) {
                 'participants' => ['view', 'edit'],
                 'teams' => ['view', 'create', 'edit'],
                 'scanner' => ['view', 'scan'],
+                'promo_codes' => ['view'],
                 'contacts' => ['view'],
                 'settings' => [],
                 'users' => []
@@ -95,6 +97,7 @@ if (!function_exists('getRolePermissions')) {
                 'participants' => [],
                 'teams' => [],
                 'scanner' => [],
+                'promo_codes' => [],
                 'contacts' => [],
                 'settings' => [],
                 'users' => []

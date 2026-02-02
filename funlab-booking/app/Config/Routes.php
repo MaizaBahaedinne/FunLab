@@ -196,6 +196,16 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'ad
     $routes->get('newsletters/export', 'NewsletterController::export');
     $routes->delete('newsletters/delete/(:num)', 'NewsletterController::delete/$1');
     
+    // Codes Promo
+    $routes->get('promo-codes', 'PromoCodesController::index');
+    $routes->get('promo-codes/create', 'PromoCodesController::create');
+    $routes->post('promo-codes/store', 'PromoCodesController::store');
+    $routes->get('promo-codes/edit/(:num)', 'PromoCodesController::edit/$1');
+    $routes->post('promo-codes/update/(:num)', 'PromoCodesController::update/$1');
+    $routes->post('promo-codes/delete/(:num)', 'PromoCodesController::delete/$1');
+    $routes->post('promo-codes/toggle-status/(:num)', 'PromoCodesController::toggleStatus/$1');
+    $routes->get('promo-codes/validate', 'PromoCodesController::validate');
+    
     // Paramètres et configuration
     $routes->get('settings', 'SettingsController::index');
     $routes->get('settings/general', 'SettingsController::general');

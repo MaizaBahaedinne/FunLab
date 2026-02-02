@@ -112,6 +112,14 @@ $unreadContactsCount = $contactModel->where('status', 'new')->countAllResults();
                 </a>
                 <?php endif; ?>
                 
+                <!-- Codes Promo -->
+                <?php if (canAccessModule('promo_codes')): ?>
+                <a class="nav-link text-white <?= ($activeMenu ?? '') === 'promo-codes' ? 'active bg-primary rounded' : '' ?>" 
+                   href="<?= base_url('admin/promo-codes') ?>">
+                    <i class="bi bi-ticket-perforated"></i> Codes Promo
+                </a>
+                <?php endif; ?>
+                
                 <!-- Contacts & Newsletter -->
                 <?php if (canAccessModule('contacts')): ?>
                 <a class="nav-link text-white <?= in_array($activeMenu ?? '', ['contacts', 'newsletters']) ? 'active bg-primary rounded' : '' ?>" 
