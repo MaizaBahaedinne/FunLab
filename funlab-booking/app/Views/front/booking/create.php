@@ -6,35 +6,58 @@ $additionalStyles = <<<CSS
 .step-indicator {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 30px;
+    align-items: center;
+    margin-bottom: 50px;
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 .step {
     flex: 1;
     text-align: center;
-    padding: 15px;
-    border-bottom: 3px solid #e0e0e0;
+    padding: 20px 15px;
     position: relative;
+    transition: all 0.3s ease;
+}
+.step::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -50%;
+    width: 100%;
+    height: 2px;
+    background: #e0e0e0;
+    z-index: 0;
+}
+.step:last-child::after {
+    display: none;
 }
 .step.active {
-    border-color: var(--primary-color);
     color: var(--primary-color);
     font-weight: bold;
+    transform: scale(1.05);
+}
+.step.active::after {
+    background: var(--primary-color);
 }
 .step.completed {
-    border-color: #28a745;
     color: #28a745;
+}
+.step.completed::after {
+    background: #28a745;
 }
 .game-list-item {
     background: white;
     border: 2px solid #e0e0e0;
     border-radius: 15px;
-    padding: 20px;
+    padding: 25px;
     cursor: pointer;
     transition: all 0.3s;
-    margin-bottom: 15px;
+    margin-bottom: 25px;
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 25px;
 }
 .game-list-item:hover {
     border-color: var(--primary-color);
@@ -102,22 +125,25 @@ $additionalStyles = <<<CSS
     position: sticky;
     top: 100px;
     background: #f8f9fa;
-    padding: 20px;
+    padding: 25px;
     border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 .qr-container {
     text-align: center;
-    padding: 30px;
+    padding: 40px;
 }
 .qr-code-img {
     max-width: 300px;
-    margin: 20px auto;
+    margin: 25px auto;
     display: block;
 }
 .payment-method {
     cursor: pointer;
     transition: all 0.3s;
     border: 2px solid #e0e0e0;
+    padding: 20px;
+    margin-bottom: 20px;
 }
 .payment-method:hover {
     border-color: var(--primary-color);
@@ -129,7 +155,8 @@ $additionalStyles = <<<CSS
     background-color: rgba(var(--primary-color-rgb, 255, 107, 53), 0.05);
 }
 .booking-content {
-    padding-top: 60px;
+    padding-top: 80px;
+    padding-bottom: 60px;
 }
 </style>
 CSS;
@@ -163,11 +190,11 @@ CSS;
             </div>
         </div>
 
-        <div class="row">
+        <div class="row g-4">
             <div class="col-lg-8">
                 <!-- ÉTAPE 1 : Sélection du jeu -->
                 <div id="step1" class="booking-step">
-                    <h2 class="mb-4">1. Choisissez votre activité</h2>
+                    <h2 class="mb-5">1. Choisissez votre activité</h2>
                     <div id="games-list">
                         <div class="text-center py-5">
                             <div class="spinner-border text-primary" role="status">
@@ -179,9 +206,9 @@ CSS;
 
                 <!-- ÉTAPE 2 : Sélection du créneau -->
                 <div id="step2" class="booking-step" style="display: none;">
-                    <h2 class="mb-4">2. Choisissez votre créneau</h2>
+                    <h2 class="mb-5">2. Choisissez votre créneau</h2>
                     
-                    <div class="mb-4">
+                    <div class="mb-5">
                         <label for="booking-date" class="form-label">Date</label>
                         <input type="date" class="form-control" id="booking-date">
                     </div>
@@ -193,33 +220,33 @@ CSS;
 
                 <!-- ÉTAPE 3 : Formulaire d'informations -->
                 <div id="step3" class="booking-step" style="display: none;">
-                    <h2 class="mb-4">3. Vos informations</h2>
+                    <h2 class="mb-5">3. Vos informations</h2>
                     
                     <form id="booking-form">
                         <div class="row">
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-6 mb-4">
                                 <label class="form-label">Nom complet *</label>
                                 <input type="text" class="form-control" id="customer-name" required>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-6 mb-4">
                                 <label class="form-label">Email *</label>
                                 <input type="email" class="form-control" id="customer-email" required>
                             </div>
                         </div>
                         
                         <div class="row">
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-6 mb-4">
                                 <label class="form-label">Téléphone *</label>
                                 <input type="tel" class="form-control" id="customer-phone" placeholder="+216 20 123 456" required>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-6 mb-4">
                                 <label class="form-label">Nombre de joueurs *</label>
                                 <input type="number" class="form-control" id="num-players" min="1" value="2" required>
                                 <small class="text-muted" id="players-limit"></small>
                             </div>
                         </div>
 
-                        <div class="mb-3">
+                        <div class="mb-4">
                             <label class="form-label">Notes (optionnel)</label>
                             <textarea class="form-control" id="booking-notes" rows="3" placeholder="Anniversaire, demandes spéciales..."></textarea>
                         </div>
