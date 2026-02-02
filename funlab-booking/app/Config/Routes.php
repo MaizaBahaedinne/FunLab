@@ -204,7 +204,7 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin', 'filter' => 'ad
     $routes->post('promo-codes/update/(:num)', 'PromoCodesController::update/$1');
     $routes->post('promo-codes/delete/(:num)', 'PromoCodesController::delete/$1');
     $routes->post('promo-codes/toggle-status/(:num)', 'PromoCodesController::toggleStatus/$1');
-    $routes->get('promo-codes/validate', 'PromoCodesController::validate');
+    $routes->get('promo-codes/validate', 'PromoCodesController::validatePromoCode');
     
     // Paramètres et configuration
     $routes->get('settings', 'SettingsController::index');

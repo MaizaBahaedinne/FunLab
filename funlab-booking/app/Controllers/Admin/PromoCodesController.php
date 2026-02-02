@@ -268,7 +268,7 @@ class PromoCodesController extends BaseController
         ]);
     }
 
-    public function validate()
+    public function validatePromoCode()
     {
         $code = $this->request->getGet('code');
         $amount = (float) $this->request->getGet('amount');

@@ -38,9 +38,11 @@ $unreadContactsCount = $contactModel->where('status', 'new')->countAllResults();
                 <?php if (canAccessModule('dashboard')): ?>
                 <a class="nav-link text-white <?= ($activeMenu ?? '') === 'dashboard' ? 'active bg-primary rounded' : '' ?>" 
                    href="<?= base_url('admin/dashboard') ?>">
-                    <i class="bi bi-house"></i> Dashboard
+                    <i class="bi bi-speedometer2"></i> Dashboard
                 </a>
                 <?php endif; ?>
+                
+                <div class="sidebar-section-title text-white-50 text-uppercase small px-2 mt-3 mb-2">Opérations</div>
                 
                 <!-- Réservations -->
                 <?php if (canAccessModule('bookings')): ?>
@@ -53,64 +55,98 @@ $unreadContactsCount = $contactModel->where('status', 'new')->countAllResults();
                 </a>
                 <?php endif; ?>
                 
-                <!-- Jeux -->
-                <?php if (canAccessModule('games')): ?>
-                <a class="nav-link text-white <?= ($activeMenu ?? '') === 'games' ? 'active bg-primary rounded' : '' ?>" 
-                   href="<?= base_url('admin/games') ?>">
-                    <i class="bi bi-controller"></i> Jeux
+                <!-- Scanner -->
+                <?php if (canAccessModule('scanner')): ?>
+                <a class="nav-link text-white <?= ($activeMenu ?? '') === 'scanner' ? 'active bg-primary rounded' : '' ?>" 
+                   href="<?= base_url('admin/scanner') ?>">
+                    <i class="bi bi-qr-code-scan"></i> Scanner Tickets
                 </a>
                 <?php endif; ?>
                 
-                <!-- Catégories (lié aux jeux) -->
-                <?php if (canAccessModule('games')): ?>
-                <a class="nav-link text-white <?= ($activeMenu ?? '') === 'categories' ? 'active bg-primary rounded' : '' ?>" 
-                   href="<?= base_url('admin/game-categories') ?>">
-                    <i class="bi bi-grid"></i> Catégories
+                <!-- Équipes -->
+                <?php if (canAccessModule('teams')): ?>
+                <a class="nav-link text-white <?= ($activeMenu ?? '') === 'teams' ? 'active bg-primary rounded' : '' ?>" 
+                   href="<?= base_url('admin/teams') ?>">
+                    <i class="bi bi-people-fill"></i> Équipes
                 </a>
+                <?php endif; ?>
+                
+                <div class="sidebar-section-title text-white-50 text-uppercase small px-2 mt-3 mb-2">Gestion Contenu</div>
+                
+                <!-- Jeux & Catégories -->
+                <?php if (canAccessModule('games')): ?>
+                <a class="nav-link text-white <?= in_array($activeMenu ?? '', ['games', 'categories']) ? 'active bg-primary rounded' : '' ?>" 
+                   data-bs-toggle="collapse" 
+                   href="#gamesMenu" 
+                   role="button" 
+                   aria-expanded="<?= in_array($activeMenu ?? '', ['games', 'categories']) ? 'true' : 'false' ?>"
+                   aria-controls="gamesMenu">
+                    <i class="bi bi-controller"></i> Jeux
+                    <i class="bi bi-chevron-down float-end"></i>
+                </a>
+                <div class="collapse <?= in_array($activeMenu ?? '', ['games', 'categories']) ? 'show' : '' ?>" id="gamesMenu">
+                    <ul class="nav flex-column ms-3">
+                        <li class="nav-item">
+                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'games' ? 'text-white' : '' ?>" 
+                               href="<?= base_url('admin/games') ?>">
+                                <i class="bi bi-joystick"></i> Liste des Jeux
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'categories' ? 'text-white' : '' ?>" 
+                               href="<?= base_url('admin/game-categories') ?>">
+                                <i class="bi bi-grid"></i> Catégories
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <?php endif; ?>
+                
+                <!-- Salles & Fermetures -->
+                <?php if (canAccessModule('rooms') || canAccessModule('closures')): ?>
+                <a class="nav-link text-white <?= in_array($activeMenu ?? '', ['rooms', 'closures']) ? 'active bg-primary rounded' : '' ?>" 
+                   data-bs-toggle="collapse" 
+                   href="#roomsMenu" 
+                   role="button" 
+                   aria-expanded="<?= in_array($activeMenu ?? '', ['rooms', 'closures']) ? 'true' : 'false' ?>"
+                   aria-controls="roomsMenu">
+                    <i class="bi bi-door-closed"></i> Salles
+                    <i class="bi bi-chevron-down float-end"></i>
+                </a>
+                <div class="collapse <?= in_array($activeMenu ?? '', ['rooms', 'closures']) ? 'show' : '' ?>" id="roomsMenu">
+                    <ul class="nav flex-column ms-3">
+                        <?php if (canAccessModule('rooms')): ?>
+                        <li class="nav-item">
+                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'rooms' ? 'text-white' : '' ?>" 
+                               href="<?= base_url('admin/rooms') ?>">
+                                <i class="bi bi-building"></i> Gestion Salles
+                            </a>
+                        </li>
+                        <?php endif; ?>
+                        <?php if (canAccessModule('closures')): ?>
+                        <li class="nav-item">
+                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'closures' ? 'text-white' : '' ?>" 
+                               href="<?= base_url('admin/closures') ?>">
+                                <i class="bi bi-x-circle"></i> Fermetures
+                            </a>
+                        </li>
+                        <?php endif; ?>
+                    </ul>
+                </div>
                 <?php endif; ?>
                 
                 <!-- Avis -->
                 <?php if (canAccessModule('reviews')): ?>
                 <a class="nav-link text-white <?= ($activeMenu ?? '') === 'reviews' ? 'active bg-primary rounded' : '' ?>" 
                    href="<?= base_url('admin/reviews') ?>">
-                    <i class="bi bi-star"></i> Avis
+                    <i class="bi bi-star-fill"></i> Avis Clients
                     <?php if ($pendingReviewsCount > 0): ?>
                         <span class="badge bg-warning rounded-pill float-end"><?= $pendingReviewsCount ?></span>
                     <?php endif; ?>
                 </a>
                 <?php endif; ?>
                 
-                <!-- Salles -->
-                <?php if (canAccessModule('rooms')): ?>
-                <a class="nav-link text-white <?= ($activeMenu ?? '') === 'rooms' ? 'active bg-primary rounded' : '' ?>" 
-                   href="<?= base_url('admin/rooms') ?>">
-                    <i class="bi bi-door-closed"></i> Salles
-                </a>
-                <?php endif; ?>
-                
-                <!-- Fermetures -->
-                <?php if (canAccessModule('closures')): ?>
-                <a class="nav-link text-white <?= ($activeMenu ?? '') === 'closures' ? 'active bg-primary rounded' : '' ?>" 
-                   href="<?= base_url('admin/closures') ?>">
-                    <i class="bi bi-x-circle"></i> Fermetures
-                </a>
-                <?php endif; ?>
-                
-                <!-- Scanner -->
-                <?php if (canAccessModule('scanner')): ?>
-                <a class="nav-link text-white <?= ($activeMenu ?? '') === 'scanner' ? 'active bg-primary rounded' : '' ?>" 
-                   href="<?= base_url('admin/scanner') ?>">
-                    <i class="bi bi-qr-code-scan"></i> Scanner
-                </a>
-                <?php endif; ?>
-                
-                <!-- Équipes (lié aux bookings) -->
-                <?php if (canAccessModule('teams')): ?>
-                <a class="nav-link text-white <?= ($activeMenu ?? '') === 'teams' ? 'active bg-primary rounded' : '' ?>" 
-                   href="<?= base_url('admin/teams') ?>">
-                    <i class="bi bi-people"></i> Équipes
-                </a>
-                <?php endif; ?>
+                <div class="sidebar-section-title text-white-50 text-uppercase small px-2 mt-3 mb-2">Marketing</div>
                 
                 <!-- Codes Promo -->
                 <?php if (canAccessModule('promo_codes')): ?>
@@ -128,7 +164,7 @@ $unreadContactsCount = $contactModel->where('status', 'new')->countAllResults();
                    role="button" 
                    aria-expanded="<?= in_array($activeMenu ?? '', ['contacts', 'newsletters']) ? 'true' : 'false' ?>"
                    aria-controls="contactsMenu">
-                    <i class="bi bi-envelope-at"></i> Contacts & Newsletter
+                    <i class="bi bi-envelope-at"></i> Communication
                     <?php if ($unreadContactsCount > 0): ?>
                         <span class="badge bg-danger rounded-pill float-end me-2"><?= $unreadContactsCount ?></span>
                     <?php endif; ?>
@@ -139,7 +175,7 @@ $unreadContactsCount = $contactModel->where('status', 'new')->countAllResults();
                         <li class="nav-item">
                             <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'contacts' ? 'text-white' : '' ?>" 
                                href="<?= base_url('admin/contacts') ?>">
-                                <i class="bi bi-chat-left-text"></i> Messages Contact
+                                <i class="bi bi-chat-left-text"></i> Messages
                                 <?php if ($unreadContactsCount > 0): ?>
                                     <span class="badge bg-danger rounded-pill float-end"><?= $unreadContactsCount ?></span>
                                 <?php endif; ?>
@@ -148,7 +184,7 @@ $unreadContactsCount = $contactModel->where('status', 'new')->countAllResults();
                         <li class="nav-item">
                             <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'newsletters' ? 'text-white' : '' ?>" 
                                href="<?= base_url('admin/newsletters') ?>">
-                                <i class="bi bi-envelope-heart"></i> Abonnés Newsletter
+                                <i class="bi bi-envelope-heart"></i> Newsletter
                             </a>
                         </li>
                     </ul>
@@ -156,21 +192,21 @@ $unreadContactsCount = $contactModel->where('status', 'new')->countAllResults();
                 <?php endif; ?>
                 
                 <?php if (canAccessModule('settings') || canAccessModule('users')): ?>
-                <hr class="border-secondary my-3">
+                <div class="sidebar-section-title text-white-50 text-uppercase small px-2 mt-4 mb-2">Configuration</div>
                 <?php endif; ?>
                 
-                <!-- Configuration Système (ADMIN ONLY) -->
+                <!-- Paramètres Généraux -->
                 <?php if (canAccessModule('settings')): ?>
-                <a class="nav-link text-white <?= (str_starts_with($activeMenu ?? '', 'settings-')) && in_array($activeMenu, ['settings-general', 'settings-hours', 'settings-oauth']) ? 'active bg-primary rounded' : '' ?>" 
+                <a class="nav-link text-white <?= in_array($activeMenu ?? '', ['settings-general', 'settings-hours', 'settings-oauth', 'settings-about', 'settings-footer', 'settings-contact', 'settings-seo']) ? 'active bg-primary rounded' : '' ?>" 
                    data-bs-toggle="collapse" 
-                   href="#configMenu" 
+                   href="#settingsMenu" 
                    role="button" 
-                   aria-expanded="<?= (str_starts_with($activeMenu ?? '', 'settings-')) && in_array($activeMenu, ['settings-general', 'settings-hours', 'settings-oauth']) ? 'true' : 'false' ?>"
-                   aria-controls="configMenu">
-                    <i class="bi bi-gear"></i> Configuration
+                   aria-expanded="<?= in_array($activeMenu ?? '', ['settings-general', 'settings-hours', 'settings-oauth', 'settings-about', 'settings-footer', 'settings-contact', 'settings-seo']) ? 'true' : 'false' ?>"
+                   aria-controls="settingsMenu">
+                    <i class="bi bi-gear-fill"></i> Paramètres
                     <i class="bi bi-chevron-down float-end"></i>
                 </a>
-                <div class="collapse <?= (str_starts_with($activeMenu ?? '', 'settings-')) && in_array($activeMenu, ['settings-general', 'settings-hours', 'settings-oauth']) ? 'show' : '' ?>" id="configMenu">
+                <div class="collapse <?= in_array($activeMenu ?? '', ['settings-general', 'settings-hours', 'settings-oauth', 'settings-about', 'settings-footer', 'settings-contact', 'settings-seo']) ? 'show' : '' ?>" id="settingsMenu">
                     <ul class="nav flex-column ms-3">
                         <li class="nav-item">
                             <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-general' ? 'text-white' : '' ?>" 
@@ -190,66 +226,6 @@ $unreadContactsCount = $contactModel->where('status', 'new')->countAllResults();
                                 <i class="bi bi-shield-lock"></i> OAuth
                             </a>
                         </li>
-                    </ul>
-                </div>
-                
-                <!-- Communications (ADMIN ONLY) -->
-                <a class="nav-link text-white <?= in_array($activeMenu ?? '', ['settings-mail', 'settings-sms', 'email-templates']) ? 'active bg-primary rounded' : '' ?>" 
-                   data-bs-toggle="collapse" 
-                   href="#commsMenu" 
-                   role="button" 
-                   aria-expanded="<?= in_array($activeMenu ?? '', ['settings-mail', 'settings-sms', 'email-templates']) ? 'true' : 'false' ?>"
-                   aria-controls="commsMenu">
-                    <i class="bi bi-chat-dots"></i> Communications
-                    <i class="bi bi-chevron-down float-end"></i>
-                </a>
-                <div class="collapse <?= in_array($activeMenu ?? '', ['settings-mail', 'settings-sms', 'email-templates']) ? 'show' : '' ?>" id="commsMenu">
-                    <ul class="nav flex-column ms-3">
-                        <li class="nav-item">
-                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-mail' ? 'text-white' : '' ?>" 
-                               href="<?= base_url('admin/settings/mail') ?>">
-                                <i class="bi bi-envelope"></i> Email
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-sms' ? 'text-white' : '' ?>" 
-                               href="<?= base_url('admin/settings/sms') ?>">
-                                <i class="bi bi-phone"></i> SMS
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'email-templates' ? 'text-white' : '' ?>" 
-                               href="<?= base_url('admin/email-templates') ?>">
-                                <i class="bi bi-envelope-paper"></i> Templates Emails
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                
-                <!-- Pages & Contenu (ADMIN ONLY) -->
-                <a class="nav-link text-white <?= in_array($activeMenu ?? '', ['settings-about', 'settings-footer', 'settings-seo', 'pages', 'theme']) ? 'active bg-primary rounded' : '' ?>" 
-                   data-bs-toggle="collapse" 
-                   href="#contentMenu" 
-                   role="button" 
-                   aria-expanded="<?= in_array($activeMenu ?? '', ['settings-about', 'settings-footer', 'settings-seo', 'pages', 'theme']) ? 'true' : 'false' ?>"
-                   aria-controls="contentMenu">
-                    <i class="bi bi-file-earmark-text"></i> Pages & Contenu
-                    <i class="bi bi-chevron-down float-end"></i>
-                </a>
-                <div class="collapse <?= in_array($activeMenu ?? '', ['settings-about', 'settings-footer', 'settings-seo', 'pages', 'theme']) ? 'show' : '' ?>" id="contentMenu">
-                    <ul class="nav flex-column ms-3">
-                        <li class="nav-item">
-                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'pages' ? 'text-white' : '' ?>" 
-                               href="<?= base_url('admin/slides') ?>">
-                                <i class="bi bi-images"></i> Slider Homepage
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'pages' ? 'text-white' : '' ?>" 
-                               href="<?= base_url('admin/pages') ?>">
-                                <i class="bi bi-file-earmark"></i> Pages
-                            </a>
-                        </li>
                         <li class="nav-item">
                             <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-about' ? 'text-white' : '' ?>" 
                                href="<?= base_url('admin/settings/about') ?>">
@@ -257,15 +233,9 @@ $unreadContactsCount = $contactModel->where('status', 'new')->countAllResults();
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-footer' ? 'text-white' : '' ?>" 
-                               href="<?= base_url('admin/settings/footer') ?>">
-                                <i class="bi bi-layout-text-sidebar-reverse"></i> Footer
-                            </a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-contact' ? 'text-white' : '' ?>" 
                                href="<?= base_url('admin/settings/contact') ?>">
-                                <i class="bi bi-envelope"></i> Contact
+                                <i class="bi bi-telephone"></i> Contact
                             </a>
                         </li>
                         <li class="nav-item">
@@ -277,28 +247,67 @@ $unreadContactsCount = $contactModel->where('status', 'new')->countAllResults();
                     </ul>
                 </div>
                 
-                <!-- Apparence / Thème (ADMIN ONLY) -->
-                <a class="nav-link text-white <?= str_starts_with($activeMenu ?? '', 'theme-') ? 'active bg-primary rounded' : '' ?>" 
+                <!-- Communication -->
+                <a class="nav-link text-white <?= in_array($activeMenu ?? '', ['settings-mail', 'settings-sms', 'email-templates']) ? 'active bg-primary rounded' : '' ?>" 
                    data-bs-toggle="collapse" 
-                   href="#themeMenu" 
+                   href="#commsMenu" 
                    role="button" 
-                   aria-expanded="<?= str_starts_with($activeMenu ?? '', 'theme-') ? 'true' : 'false' ?>"
-                   aria-controls="themeMenu">
-                    <i class="bi bi-palette"></i> Apparence
+                   aria-expanded="<?= in_array($activeMenu ?? '', ['settings-mail', 'settings-sms', 'email-templates']) ? 'true' : 'false' ?>"
+                   aria-controls="commsMenu">
+                    <i class="bi bi-send-fill"></i> Email & SMS
                     <i class="bi bi-chevron-down float-end"></i>
                 </a>
-                <div class="collapse <?= str_starts_with($activeMenu ?? '', 'theme-') ? 'show' : '' ?>" id="themeMenu">
+                <div class="collapse <?= in_array($activeMenu ?? '', ['settings-mail', 'settings-sms', 'email-templates']) ? 'show' : '' ?>" id="commsMenu">
                     <ul class="nav flex-column ms-3">
+                        <li class="nav-item">
+                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-mail' ? 'text-white' : '' ?>" 
+                               href="<?= base_url('admin/settings/mail') ?>">
+                                <i class="bi bi-envelope"></i> Config Email
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-sms' ? 'text-white' : '' ?>" 
+                               href="<?= base_url('admin/settings/sms') ?>">
+                                <i class="bi bi-phone"></i> Config SMS
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'email-templates' ? 'text-white' : '' ?>" 
+                               href="<?= base_url('admin/email-templates') ?>">
+                                <i class="bi bi-envelope-paper"></i> Templates
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Apparence -->
+                <a class="nav-link text-white <?= in_array($activeMenu ?? '', ['pages', 'theme-branding', 'theme-colors', 'theme-typography', 'theme-header', 'theme-footer']) ? 'active bg-primary rounded' : '' ?>" 
+                   data-bs-toggle="collapse" 
+                   href="#appearanceMenu" 
+                   role="button" 
+                   aria-expanded="<?= in_array($activeMenu ?? '', ['pages', 'theme-branding', 'theme-colors', 'theme-typography', 'theme-header', 'theme-footer']) ? 'true' : 'false' ?>"
+                   aria-controls="appearanceMenu">
+                    <i class="bi bi-palette-fill"></i> Apparence
+                    <i class="bi bi-chevron-down float-end"></i>
+                </a>
+                <div class="collapse <?= in_array($activeMenu ?? '', ['pages', 'theme-branding', 'theme-colors', 'theme-typography', 'theme-header', 'theme-footer']) ? 'show' : '' ?>" id="appearanceMenu">
+                    <ul class="nav flex-column ms-3">
+                        <li class="nav-item">
+                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'pages' ? 'text-white' : '' ?>" 
+                               href="<?= base_url('admin/slides') ?>">
+                                <i class="bi bi-images"></i> Slider Homepage
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'theme-branding' ? 'text-white' : '' ?>" 
                                href="<?= base_url('admin/theme/branding') ?>">
-                                <i class="bi bi-image"></i> Logo & Branding
+                                <i class="bi bi-image"></i> Logo
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'theme-colors' ? 'text-white' : '' ?>" 
                                href="<?= base_url('admin/theme/colors') ?>">
-                                <i class="bi bi-palette-fill"></i> Couleurs
+                                <i class="bi bi-palette"></i> Couleurs
                             </a>
                         </li>
                         <li class="nav-item">
@@ -307,23 +316,11 @@ $unreadContactsCount = $contactModel->where('status', 'new')->countAllResults();
                                 <i class="bi bi-fonts"></i> Typographie
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'theme-header' ? 'text-white' : '' ?>" 
-                               href="<?= base_url('admin/theme/header') ?>">
-                                <i class="bi bi-layout-text-window"></i> En-tête
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'theme-footer' ? 'text-white' : '' ?>" 
-                               href="<?= base_url('admin/theme/footer') ?>">
-                                <i class="bi bi-layout-text-window-reverse"></i> Pied de page
-                            </a>
-                        </li>
                     </ul>
                 </div>
                 <?php endif; ?>
                 
-                <!-- Utilisateurs & Permissions (ADMIN ONLY) -->
+                <!-- Utilisateurs -->
                 <?php if (canAccessModule('users')): ?>
                 <a class="nav-link text-white <?= in_array($activeMenu ?? '', ['settings-users', 'settings-roles']) ? 'active bg-primary rounded' : '' ?>" 
                    data-bs-toggle="collapse" 
@@ -331,7 +328,7 @@ $unreadContactsCount = $contactModel->where('status', 'new')->countAllResults();
                    role="button" 
                    aria-expanded="<?= in_array($activeMenu ?? '', ['settings-users', 'settings-roles']) ? 'true' : 'false' ?>"
                    aria-controls="usersMenu">
-                    <i class="bi bi-person-gear"></i> Utilisateurs
+                    <i class="bi bi-people"></i> Utilisateurs
                     <i class="bi bi-chevron-down float-end"></i>
                 </a>
                 <div class="collapse <?= in_array($activeMenu ?? '', ['settings-users', 'settings-roles']) ? 'show' : '' ?>" id="usersMenu">
@@ -345,7 +342,7 @@ $unreadContactsCount = $contactModel->where('status', 'new')->countAllResults();
                         <li class="nav-item">
                             <a class="nav-link text-white-50 <?= ($activeMenu ?? '') === 'settings-roles' ? 'text-white' : '' ?>" 
                                href="<?= base_url('admin/settings/roles') ?>">
-                                <i class="bi bi-shield-check"></i> Rôles & Permissions
+                                <i class="bi bi-shield-check"></i> Permissions
                             </a>
                         </li>
                     </ul>
@@ -360,7 +357,7 @@ $unreadContactsCount = $contactModel->where('status', 'new')->countAllResults();
                 </a>
                 
                 <a class="nav-link text-white" href="<?= base_url('/') ?>" target="_blank">
-                    <i class="bi bi-box-arrow-up-right"></i> Voir le site
+                    <i class="bi bi-box-arrow-up-right"></i> Voir le Site
                 </a>
                 
                 <a class="nav-link text-white" href="<?= base_url('logout') ?>">

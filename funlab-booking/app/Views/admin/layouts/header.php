@@ -152,6 +152,12 @@
         .badge.bg-primary {
             background: var(--primary-color) !important;
         }
+        .sidebar-section-title {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            opacity: 0.7;
+        }
         <?= $additionalStyles ?? '' ?>
     </style>
 </head>
