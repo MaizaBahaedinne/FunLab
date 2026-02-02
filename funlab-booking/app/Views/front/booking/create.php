@@ -4,95 +4,82 @@ $activeMenu = 'booking';
 $additionalStyles = <<<CSS
 <style>
 .step-indicator {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
     margin-bottom: 50px;
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     padding: 30px 20px;
     border-radius: 20px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    position: relative;
-    overflow: visible;
 }
 .step {
-    flex: 1;
+    flex: 1 1 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
     text-align: center;
     padding: 15px 10px;
     position: relative;
     transition: all 0.3s ease;
-    z-index: 1;
+    min-width: 100px;
 }
 .step i {
-    display: block;
-    font-size: 2.5rem;
-    margin-bottom: 10px;
+    font-size: 2rem !important;
+    margin-bottom: 8px;
     color: #6c757d;
     transition: all 0.3s ease;
 }
-.step div {
-    font-size: 0.9rem;
+.step > div {
+    font-size: 0.85rem;
     font-weight: 500;
     color: #6c757d;
     transition: all 0.3s ease;
-}
-.step::before {
-    content: '';
-    position: absolute;
-    top: 30px;
-    left: 50%;
-    width: 50px;
-    height: 50px;
-    background: white;
-    border: 3px solid #dee2e6;
-    border-radius: 50%;
-    transform: translateX(-50%);
-    z-index: -1;
-    transition: all 0.3s ease;
+    white-space: nowrap;
 }
 .step::after {
     content: '';
     position: absolute;
-    top: 54px;
-    left: 60%;
-    width: calc(100% - 60px);
+    top: 35px;
+    left: 65%;
+    width: calc(100% - 30%);
     height: 3px;
     background: #dee2e6;
-    z-index: -2;
+    z-index: -1;
     transition: all 0.3s ease;
 }
 .step:last-child::after {
-    display: none;
+    display: none !important;
 }
 .step.active i {
     color: var(--primary-color);
-    transform: scale(1.1);
+    transform: scale(1.15);
 }
-.step.active div {
+.step.active > div {
     color: var(--primary-color);
     font-weight: 700;
 }
-.step.active::before {
+.step.active::after {
     background: var(--primary-color);
-    border-color: var(--primary-color);
-    transform: translateX(-50%) scale(1.15);
-    box-shadow: 0 0 0 8px rgba(255, 107, 53, 0.2);
 }
 .step.completed i {
     color: #28a745;
 }
-.step.completed div {
+.step.completed > div {
     color: #28a745;
-}
-.step.completed::before {
-    background: #28a745;
-    border-color: #28a745;
+    font-weight: 600;
 }
 .step.completed::after {
     background: #28a745;
 }
-.step.active::after {
-    background: linear-gradient(to right, var(--primary-color), #dee2e6);
+@media (max-width: 768px) {
+    .step > div {
+        font-size: 0.75rem;
+    }
+    .step i {
+        font-size: 1.5rem !important;
+    }
 }
 .game-list-item {
     background: white;
@@ -216,23 +203,23 @@ CSS;
         <!-- Indicateur d'étapes -->
         <div class="step-indicator">
             <div class="step active" id="step1-indicator">
-                <i class="bi bi-controller fs-3"></i>
+                <i class="bi bi-controller"></i>
                 <div>Choisir un jeu</div>
             </div>
             <div class="step" id="step2-indicator">
-                <i class="bi bi-calendar-check fs-3"></i>
+                <i class="bi bi-calendar-check"></i>
                 <div>Choisir un créneau</div>
             </div>
             <div class="step" id="step3-indicator">
-                <i class="bi bi-person-fill fs-3"></i>
+                <i class="bi bi-person-fill"></i>
                 <div>Vos informations</div>
             </div>
             <div class="step" id="step4-indicator">
-                <i class="bi bi-credit-card fs-3"></i>
+                <i class="bi bi-credit-card"></i>
                 <div>Paiement</div>
             </div>
             <div class="step" id="step5-indicator">
-                <i class="bi bi-check-circle fs-3"></i>
+                <i class="bi bi-check-circle"></i>
                 <div>Confirmation</div>
             </div>
         </div>
