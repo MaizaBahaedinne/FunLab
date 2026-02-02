@@ -538,6 +538,159 @@ $theme = get_theme_settings();
             font-size: 0.85rem;
         }
         
+        /* Stat Boxes */
+        .stat-box {
+            background: white;
+            border-radius: 15px;
+            padding: 30px 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        }
+        
+        .stat-box:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        
+        .stat-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 15px 0 10px;
+            font-family: var(--font-heading);
+        }
+        
+        .stat-label {
+            color: #6c757d;
+            font-size: 1rem;
+            margin: 0;
+        }
+        
+        /* Feature Boxes */
+        .feature-box {
+            text-align: center;
+            padding: 30px 20px;
+            background: white;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            height: 100%;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        }
+        
+        .feature-box:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        
+        .feature-icon-circle {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: rgba(var(--primary-color-rgb, 255, 107, 53), 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 2rem;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-box:hover .feature-icon-circle {
+            background: var(--primary-color);
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .feature-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 10px;
+            font-family: var(--font-heading);
+        }
+        
+        .feature-description {
+            color: #6c757d;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            background: var(--primary-color);
+        }
+        
+        /* Newsletter */
+        .newsletter-box {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.1);
+        }
+        
+        .newsletter-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(var(--primary-color-rgb, 255, 107, 53), 0.1);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .newsletter-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 10px;
+            font-family: var(--font-heading);
+        }
+        
+        .newsletter-subtitle {
+            color: #6c757d;
+            font-size: 1rem;
+            margin: 0;
+        }
+        
+        .newsletter-form .input-group {
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .newsletter-form .form-control {
+            border: none;
+            padding: 15px 20px;
+            font-size: 1rem;
+        }
+        
+        .newsletter-form .form-control:focus {
+            box-shadow: none;
+        }
+        
+        .newsletter-form .btn {
+            padding: 15px 30px;
+            font-weight: 600;
+            border: none;
+        }
+        
         <?= $additionalStyles ?? '' ?>
     </style>
 </head>

@@ -61,21 +61,33 @@ $activeMenu = 'home';
     <!-- Statistiques -->
     <section class="bg-light py-5">
         <div class="container">
-            <div class="row text-center">
-                <div class="col-md-4 mb-4 mb-md-0">
-                    <i class="bi bi-trophy feature-icon text-primary mb-3"></i>
-                    <h3 class="display-4 fw-bold"><?= $stats['total_games'] ?></h3>
-                    <p class="text-muted">Jeux Disponibles</p>
-                </div>
-                <div class="col-md-4 mb-4 mb-md-0">
-                    <i class="bi bi-calendar-check feature-icon text-primary mb-3"></i>
-                    <h3 class="display-4 fw-bold"><?= $stats['total_bookings'] ?></h3>
-                    <p class="text-muted">Réservations</p>
+            <div class="row text-center g-4">
+                <div class="col-md-4">
+                    <div class="stat-box">
+                        <div class="stat-icon">
+                            <i class="bi bi-trophy"></i>
+                        </div>
+                        <h3 class="stat-number"><?= $stats['total_games'] ?></h3>
+                        <p class="stat-label">Jeux Disponibles</p>
+                    </div>
                 </div>
                 <div class="col-md-4">
-                    <i class="bi bi-emoji-smile feature-icon text-primary mb-3"></i>
-                    <h3 class="display-4 fw-bold"><?= $stats['happy_customers'] ?></h3>
-                    <p class="text-muted">Clients Satisfaits</p>
+                    <div class="stat-box">
+                        <div class="stat-icon">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+                        <h3 class="stat-number"><?= $stats['total_bookings'] ?></h3>
+                        <p class="stat-label">Réservations</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-box">
+                        <div class="stat-icon">
+                            <i class="bi bi-emoji-smile"></i>
+                        </div>
+                        <h3 class="stat-number"><?= $stats['happy_customers'] ?></h3>
+                        <p class="stat-label">Clients Satisfaits</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -118,42 +130,92 @@ $activeMenu = 'home';
     <?php endif; ?>
 
     <!-- Pourquoi FunLab -->
-    <section class="bg-light py-5">
+    <section class="bg-white py-5">
         <div class="container">
             <h2 class="text-center mb-5">Pourquoi Choisir FunLab ?</h2>
             <div class="row g-4">
-                <div class="col-md-3 text-center">
-                    <i class="bi bi-trophy feature-icon mb-3"></i>
-                    <h4>Qualité Premium</h4>
-                    <p>Équipements dernière génération</p>
+                <div class="col-md-3">
+                    <div class="feature-box">
+                        <div class="feature-icon-circle">
+                            <i class="bi bi-trophy"></i>
+                        </div>
+                        <h4 class="feature-title">Qualité Premium</h4>
+                        <p class="feature-description">Équipements dernière génération</p>
+                    </div>
                 </div>
-                <div class="col-md-3 text-center">
-                    <i class="bi bi-shield-check feature-icon mb-3"></i>
-                    <h4>Sécurisé</h4>
-                    <p>Réservation en ligne sécurisée</p>
+                <div class="col-md-3">
+                    <div class="feature-box">
+                        <div class="feature-icon-circle">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <h4 class="feature-title">Sécurisé</h4>
+                        <p class="feature-description">Réservation en ligne sécurisée</p>
+                    </div>
                 </div>
-                <div class="col-md-3 text-center">
-                    <i class="bi bi-clock feature-icon mb-3"></i>
-                    <h4>Horaires Flexibles</h4>
-                    <p>Ouvert de 9h à 22h</p>
+                <div class="col-md-3">
+                    <div class="feature-box">
+                        <div class="feature-icon-circle">
+                            <i class="bi bi-clock"></i>
+                        </div>
+                        <h4 class="feature-title">Horaires Flexibles</h4>
+                        <p class="feature-description">Ouvert de 9h à 22h</p>
+                    </div>
                 </div>
-                <div class="col-md-3 text-center">
-                    <i class="bi bi-people feature-icon mb-3"></i>
-                    <h4>Pour Tous</h4>
-                    <p>Idéal pour familles et groupes</p>
+                <div class="col-md-3">
+                    <div class="feature-box">
+                        <div class="feature-icon-circle">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <h4 class="feature-title">Pour Tous</h4>
+                        <p class="feature-description">Idéal pour familles et groupes</p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- CTA Section -->
-    <section class="py-5 bg-primary text-white text-center">
+    <section class="py-5 text-white text-center cta-section">
         <div class="container">
             <h2 class="mb-4">Prêt pour l'Aventure ?</h2>
             <p class="lead mb-4">Réservez votre créneau dès maintenant et vivez une expérience inoubliable !</p>
             <a href="<?= base_url('booking') ?>" class="btn btn-light btn-lg px-5">
                 Réserver Maintenant
             </a>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="newsletter-box">
+                        <div class="row align-items-center">
+                            <div class="col-md-6 mb-4 mb-md-0">
+                                <div class="newsletter-icon">
+                                    <i class="bi bi-envelope-heart"></i>
+                                </div>
+                                <h3 class="newsletter-title">Restez Informé</h3>
+                                <p class="newsletter-subtitle">Inscrivez-vous à notre newsletter pour recevoir nos offres exclusives et nouveautés</p>
+                            </div>
+                            <div class="col-md-6">
+                                <form id="newsletterForm" class="newsletter-form">
+                                    <div class="input-group">
+                                        <input type="email" class="form-control" placeholder="Votre email" required>
+                                        <button class="btn btn-primary" type="submit">
+                                            <i class="bi bi-send"></i> S'inscrire
+                                        </button>
+                                    </div>
+                                    <small class="text-muted d-block mt-2">
+                                        <i class="bi bi-shield-check"></i> Vos données sont protégées
+                                    </small>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
