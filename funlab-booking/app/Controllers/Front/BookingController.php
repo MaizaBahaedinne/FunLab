@@ -25,6 +25,12 @@ class BookingController extends BaseController
             }
         }
         
+        // Récupérer le paramètre game de l'URL
+        $preselectedGame = $this->request->getGet('game');
+        if ($preselectedGame) {
+            $data['preselected_game'] = (int)$preselectedGame;
+        }
+        
         return view('front/booking/create', $data);
     }
 

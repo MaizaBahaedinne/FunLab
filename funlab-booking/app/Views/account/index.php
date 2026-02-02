@@ -1,79 +1,80 @@
 <?php
 $title = 'Mon compte - FunLab Tunisie';
 $activeMenu = 'account';
-$additionalStyles = '
-        body {
-            background: #f8f9fa;
-        }
-        .navbar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .sidebar {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            padding: 20px;
-        }
-        .sidebar .nav-link {
-            color: #333;
-            padding: 12px 15px;
-            margin-bottom: 5px;
-            border-radius: 8px;
-            transition: all 0.3s;
-        }
-        .sidebar .nav-link:hover {
-            background: #f8f9fa;
-            color: #667eea;
-        }
-        .sidebar .nav-link.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        .content-card {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            padding: 30px;
-        }
-        .user-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .booking-card {
-            border: 1px solid #dee2e6;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 15px;
-            transition: all 0.3s;
-        }
-        .booking-card:hover {
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transform: translateY(-2px);
-        }
-        .badge-status {
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-        }
-';
+$additionalStyles = <<<CSS
+<style>
+body {
+    background: #f8f9fa;
+}
+.account-content {
+    padding-top: 60px;
+}
+.sidebar {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    padding: 20px;
+}
+.sidebar .nav-link {
+    color: #333;
+    padding: 12px 15px;
+    margin-bottom: 5px;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+.sidebar .nav-link:hover {
+    background: #f8f9fa;
+    color: var(--primary-color);
+}
+.sidebar .nav-link.active {
+    background: var(--primary-color) !important;
+    color: white !important;
+}
+.content-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    padding: 30px;
+}
+.user-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+.stat-card {
+    background: var(--primary-color);
+    color: white;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.booking-card {
+    border: 1px solid #dee2e6;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 15px;
+    transition: all 0.3s;
+}
+.booking-card:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+.badge-status {
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+</style>
+CSS;
 ?>
 
 <?= view('front/layouts/header', compact('title', 'additionalStyles')) ?>
 <?= view('front/layouts/navbar', compact('activeMenu')) ?>
 
-    <div class="container">
+    <div class="container account-content">
         <div class="row">
             <!-- Sidebar -->
             <div class="col-lg-3">

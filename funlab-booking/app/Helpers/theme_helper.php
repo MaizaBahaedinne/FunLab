@@ -35,7 +35,17 @@ if (!function_exists('theme_setting')) {
     function theme_setting($key, $default = null)
     {
         $settings = get_theme_settings();
-        return $settings[$key] ?? $default;
+        $value = $settings[$key] ?? $default;
+        
+        // Pour les URLs de logo et favicon, convertir les chemins relatifs en URLs complètes
+        if (in_array($key, ['site_logo', 'site_favicon']) && $value) {
+            // Si le chemin ne commence pas par http:// ou https://, ajouter base_url
+            if (!preg_match('/^https?:\/\//', $value)) {
+                $value = base_url($value);
+            }
+        }
+        
+        return $value;
     }
 }
 

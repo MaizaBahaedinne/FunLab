@@ -1,10 +1,27 @@
-<?php helper('permission'); ?>
+<?php 
+helper('permission');
+helper('theme');
+$logo = theme_setting('site_logo', '/assets/images/logo.png');
+$logoWidth = theme_setting('logo_width', 50);
+$logoHeight = theme_setting('logo_height', 50);
+$appName = theme_setting('app_name', 'FunLab');
+?>
         <!-- Sidebar -->
         <div class="admin-sidebar text-white">
             <div class="p-4 border-bottom border-secondary">
-                <h4 class="mb-0">
-                    <i class="bi bi-speedometer2"></i> FunLab Admin
-                </h4>
+                <div class="d-flex align-items-center gap-2">
+                    <?php if ($logo): ?>
+                        <img src="<?= esc($logo) ?>" 
+                             alt="<?= esc($appName) ?> Logo" 
+                             width="<?= esc($logoWidth) ?>" 
+                             height="<?= esc($logoHeight) ?>">
+                    <?php else: ?>
+                        <i class="bi bi-speedometer2" style="font-size: 2rem; color: var(--primary-color);"></i>
+                    <?php endif; ?>
+                    <h4 class="mb-0">
+                        <?= esc($appName) ?> Admin
+                    </h4>
+                </div>
             </div>
             
             <nav class="nav flex-column p-3">

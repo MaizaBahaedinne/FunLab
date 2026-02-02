@@ -1,3 +1,4 @@
+<?php helper('theme'); ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -8,10 +9,28 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <!-- SweetAlert2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=<?= urlencode(theme_font('body', 'Roboto')) ?>:wght@300;400;500;700&family=<?= urlencode(theme_font('heading', 'Oswald')) ?>:wght@400;500;600;700&display=swap" rel="stylesheet">
     <?= $additionalCSS ?? '' ?>
     <style>
+        :root {
+            --primary-color: <?= theme_color('primary', '#ff6b35') ?>;
+            --secondary-color: <?= theme_color('secondary', '#004e89') ?>;
+            --dark-color: <?= theme_color('dark', '#1a1a1a') ?>;
+            --light-color: <?= theme_color('light', '#f7f7f7') ?>;
+            --text-color: <?= theme_color('text', '#333333') ?>;
+            --link-color: <?= theme_color('link', '#ff6b35') ?>;
+            --font-heading: '<?= theme_font('heading', 'Oswald') ?>', sans-serif;
+            --font-body: '<?= theme_font('body', 'Roboto') ?>', sans-serif;
+            --font-size-base: <?= theme_setting('font_size_base', '16') ?>px;
+        }
         body {
             overflow-x: hidden;
+            font-family: var(--font-body);
+            color: var(--text-color);
+            font-size: var(--font-size-base);
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
         }
         .admin-layout {
             display: flex;
@@ -20,18 +39,30 @@
         .admin-sidebar {
             width: 250px;
             min-height: 100vh;
-            background: #2c3e50;
+            background: var(--dark-color);
             position: fixed;
             top: 0;
             left: 0;
             z-index: 1000;
             overflow-y: auto;
         }
+        .admin-sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            transition: all 0.3s;
+        }
+        .admin-sidebar .nav-link:hover {
+            color: white;
+            background: rgba(255,255,255,0.1);
+        }
+        .admin-sidebar .nav-link.active {
+            background: var(--primary-color) !important;
+            color: white !important;
+        }
         .admin-content {
             flex: 1;
             margin-left: 250px;
             min-height: 100vh;
-            background: #f8f9fa;
+            background: var(--light-color);
         }
         .admin-topbar {
             background: white;
@@ -44,6 +75,17 @@
         }
         .admin-main {
             padding: 30px;
+        }
+        .btn-primary {
+            background: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
+        }
+        .btn-primary:hover {
+            background: var(--secondary-color) !important;
+            border-color: var(--secondary-color) !important;
+        }
+        .badge.bg-primary {
+            background: var(--primary-color) !important;
         }
         <?= $additionalStyles ?? '' ?>
     </style>

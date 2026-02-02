@@ -1,127 +1,144 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Réservation - FunLab Tunisie</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <style>
-        .step-indicator {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 30px;
-        }
-        .step {
-            flex: 1;
-            text-align: center;
-            padding: 15px;
-            border-bottom: 3px solid #e0e0e0;
-            position: relative;
-        }
-        .step.active {
-            border-color: #667eea;
-            color: #667eea;
-            font-weight: bold;
-        }
-        .step.completed {
-            border-color: #28a745;
-            color: #28a745;
-        }
-        .game-option {
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-bottom: 15px;
-        }
-        .game-option:hover {
-            border-color: #667eea;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        .game-option.selected {
-            border-color: #667eea;
-            background-color: #f0f4ff;
-        }
-        .slot-btn {
-            min-width: 120px;
-            margin: 5px;
-        }
-        .slot-btn.selected {
-            background-color: #28a745;
-            border-color: #28a745;
-            color: white;
-        }
-        .slot-btn:disabled {
-            background-color: #e9ecef;
-            border-color: #dee2e6;
-            color: #6c757d;
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        .slot-btn:disabled:hover {
-            transform: none;
-            box-shadow: none;
-        }
-        .booking-summary {
-            position: sticky;
-            top: 20px;
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-        }
-        .qr-container {
-            text-align: center;
-            padding: 30px;
-        }
-        .qr-code-img {
-            max-width: 300px;
-            margin: 20px auto;
-            display: block;
-        }
-        .payment-method {
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid #e0e0e0;
-        }
-        .payment-method:hover {
-            border-color: #667eea;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        .payment-method.selected {
-            border-color: #667eea;
-            background-color: #f0f4ff;
-        }
-        .game-card {
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid #e0e0e0;
-        }
-        .game-card:hover {
-            border-color: #667eea;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-    </style>
-</head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="<?= base_url('/') ?>">
-                <i class="bi bi-joystick"></i> FunLab Tunisie
-            </a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="<?= base_url('/') ?>">Accueil</a>
-                <a class="nav-link active" href="<?= base_url('booking') ?>">Réserver</a>
-            </div>
-        </div>
-    </nav>
+<?php
+$title = 'Réservation - FunLab Tunisie';
+$activeMenu = 'booking';
+$additionalStyles = <<<CSS
+<style>
+.step-indicator {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+.step {
+    flex: 1;
+    text-align: center;
+    padding: 15px;
+    border-bottom: 3px solid #e0e0e0;
+    position: relative;
+}
+.step.active {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    font-weight: bold;
+}
+.step.completed {
+    border-color: #28a745;
+    color: #28a745;
+}
+.game-list-item {
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 15px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+.game-list-item:hover {
+    border-color: var(--primary-color);
+    transform: translateX(5px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+.game-list-item.selected {
+    border-color: var(--primary-color);
+    background-color: rgba(var(--primary-color-rgb, 255, 107, 53), 0.05);
+}
+.game-icon-circle {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+.game-info-content {
+    flex: 1;
+}
+.game-meta {
+    display: flex;
+    gap: 20px;
+    margin-top: 10px;
+}
+.game-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+.game-price-badge {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    white-space: nowrap;
+}
+.slot-btn {
+    min-width: 120px;
+    margin: 5px;
+}
+.slot-btn.selected {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+}
+.slot-btn:disabled {
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+    color: #6c757d;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+.slot-btn:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+.booking-summary {
+    position: sticky;
+    top: 100px;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 15px;
+}
+.qr-container {
+    text-align: center;
+    padding: 30px;
+}
+.qr-code-img {
+    max-width: 300px;
+    margin: 20px auto;
+    display: block;
+}
+.payment-method {
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px solid #e0e0e0;
+}
+.payment-method:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+.payment-method.selected {
+    border-color: var(--primary-color);
+    background-color: rgba(var(--primary-color-rgb, 255, 107, 53), 0.05);
+}
+.booking-content {
+    padding-top: 60px;
+}
+</style>
+CSS;
+?>
 
-    <div class="container my-5">
+<?= view('front/layouts/header', compact('title', 'additionalStyles')) ?>
+<?= view('front/layouts/navbar', compact('activeMenu')) ?>
+
+    <div class="container booking-content">
         <!-- Indicateur d'étapes -->
         <div class="step-indicator">
             <div class="step active" id="step1-indicator">
@@ -359,6 +376,9 @@
 
         // Données utilisateur si connecté
         const userData = <?= isset($user) ? json_encode($user) : 'null' ?>;
+        
+        // ID du jeu présélectionné depuis l'URL
+        const preselectedGameId = <?= isset($preselected_game) ? $preselected_game : 'null' ?>;
 
         // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
@@ -412,32 +432,48 @@
                     icon = 'bi-headset-vr';
                 } else if (game.name.toLowerCase().includes('escape')) {
                     icon = 'bi-door-closed';
+                } else if (game.name.toLowerCase().includes('laser')) {
+                    icon = 'bi-bullseye';
                 }
 
-                const gameCard = document.createElement('div');
-                gameCard.className = 'col-md-4 mb-4';
-                gameCard.innerHTML = `
-                    <div class="card game-card h-100" onclick="selectGame(${game.id})">
-                        <div class="card-body text-center">
-                            <i class="${icon}" style="font-size: 3rem; color: var(--primary);"></i>
-                            <h5 class="card-title mt-3">${game.name}</h5>
-                            <p class="card-text text-muted">${game.description || ''}</p>
-                            <div class="game-info mt-3">
-                                <small class="d-block">
-                                    <i class="bi bi-clock"></i> ${game.duration_minutes} minutes
-                                </small>
-                                <small class="d-block">
-                                    <i class="bi bi-people"></i> ${game.min_players}-${game.max_players} joueurs
-                                </small>
-                                <strong class="d-block mt-2" style="font-size: 1.2rem; color: var(--primary);">
-                                    ${game.price} DT
-                                </strong>
+                const gameItem = document.createElement('div');
+                gameItem.innerHTML = `
+                    <div class="game-list-item" onclick="selectGame(${game.id})" data-game-id="${game.id}">
+                        <div class="game-icon-circle">
+                            <i class="${icon}"></i>
+                        </div>
+                        <div class="game-info-content">
+                            <h5 class="mb-1">${game.name}</h5>
+                            <p class="text-muted mb-2">${game.description || 'Expérience immersive garantie'}</p>
+                            <div class="game-meta">
+                                <div class="game-meta-item">
+                                    <i class="bi bi-clock"></i>
+                                    <span>${game.duration_minutes} min</span>
+                                </div>
+                                <div class="game-meta-item">
+                                    <i class="bi bi-people"></i>
+                                    <span>${game.min_players}-${game.max_players} joueurs</span>
+                                </div>
                             </div>
+                        </div>
+                        <div class="game-price-badge">
+                            ${game.price} DT
                         </div>
                     </div>
                 `;
-                container.appendChild(gameCard);
+                container.appendChild(gameItem);
             });
+            
+            // Auto-sélection du jeu si présélectionné
+            if (preselectedGameId) {
+                const preselectedCard = container.querySelector(`[data-game-id="${preselectedGameId}"]`);
+                if (preselectedCard) {
+                    // Petit délai pour que le DOM soit bien chargé
+                    setTimeout(() => {
+                        preselectedCard.click();
+                    }, 300);
+                }
+            }
         }
 
         function selectGame(gameId) {
